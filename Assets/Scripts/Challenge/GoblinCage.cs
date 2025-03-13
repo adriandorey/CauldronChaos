@@ -19,7 +19,7 @@ public class GoblinCage : MonoBehaviour
         Actions.OnMoveCage -= MoveCage;
     }
 
-
+    // Should tip the cage when told to, if not. it will set the cage back to it's normal rotation.
     private void MoveCage(bool tipped)
     {
         if (tipped)

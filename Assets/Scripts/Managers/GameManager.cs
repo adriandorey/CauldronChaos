@@ -13,11 +13,10 @@ public class GameManager : MonoBehaviour
     private GameState _newState;
 
     private bool _isInDebugMode;
+    internal bool IsInTutorialMode;
 
     private Dictionary<GameState, Action> _stateActions;
     
-    [SerializeField] private bool _debugModetimes23;
-
     private void Awake()
     {
         if (Instance == null)
@@ -49,18 +48,21 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnStateChange += LoadState;
+        Actions.OnTutorialDay += SetTutorialMode;
         InputManager.PauseAction += EscapeState;
     }
 
     private void OnDisable()
     {
         Actions.OnStateChange -= LoadState;
+        Actions.OnTutorialDay -= SetTutorialMode;
         InputManager.PauseAction -= EscapeState;
     }
 
     private void OnDestroy()
     {
         Actions.OnStateChange -= LoadState;
+        Actions.OnTutorialDay -= SetTutorialMode;
         InputManager.PauseAction -= EscapeState;
     }
 
@@ -132,6 +134,12 @@ public class GameManager : MonoBehaviour
     {
         _isInDebugMode = debug;
     }
+
+    private void SetTutorialMode()
+    {
+        IsInTutorialMode = !IsInTutorialMode;
+    }
+    
 
     public void QuitGame()
     {

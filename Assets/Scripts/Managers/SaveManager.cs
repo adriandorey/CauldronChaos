@@ -179,18 +179,15 @@ public class SaveManager : MonoBehaviour
             File.Delete(_savePath);
 
             // Will reset the game data and refresh the level select screen
-            if (!File.Exists(_savePath))
-            {
-                gameData = new GameData();
-                gameData.CreateNewSave();
-                Actions.OnSaveDeleted?.Invoke();
-                _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("Save File Deleted"));
-            }
+            if (File.Exists(_savePath)) return;
+            
+            gameData = new GameData();
+            gameData.CreateNewSave();
+            _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("Save File Deleted"));
+            return;
         }
-        else
-        {
-            _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("No Save File Found"));
-        }
+        
+        _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("No Save File Found"));
     }
 
     private IEnumerator ShowDeleteConfirmation(string text)

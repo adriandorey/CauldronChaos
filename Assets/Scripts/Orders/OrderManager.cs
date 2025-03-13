@@ -45,4 +45,11 @@ public class OrderManager : MonoBehaviour
 
         return assignedOrder;
     }
+
+    internal RecipeSO TutorialOrder()
+    {
+        if(_availableRecipes.Count == 0) return null;
+        var assignedOrder = _availableRecipes[4];
+        return assignedOrder;
+    }
 } 

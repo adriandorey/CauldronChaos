@@ -3,7 +3,7 @@ using System;
 
 public class CauldronTrigger : MonoBehaviour
 {
-    [SerializeField] private CauldronInteraction cauldron; //cached referene to the cauldron
+    [SerializeField] private CauldronInteraction cauldron; //cached reference to the cauldron
 
     //Function called whenever a collider enters the trigger volume
     private void OnTriggerStay(Collider other)

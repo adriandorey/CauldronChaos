@@ -20,7 +20,7 @@ public class ChallengeManager : MonoBehaviour
             {1, () =>
             {
                 Actions.OnIceDay?.Invoke(true);
-                Actions.OnApplyFoorMaterial?.Invoke(slipperyMaterial, icyTexture);
+                Actions.OnApplyFloorMaterial?.Invoke(slipperyMaterial, icyTexture);
             }},
             {2, () => Actions.OnStartCauldron?.Invoke()},
             { 3, () => { 
@@ -73,7 +73,7 @@ public class ChallengeManager : MonoBehaviour
     // Reset all challenges
     private void ResetChallenges()
     {
-        Actions.OnApplyFoorMaterial?.Invoke(defaultMaterial, defaultTexture);
+        Actions.OnApplyFloorMaterial?.Invoke(defaultMaterial, defaultTexture);
         Actions.OnEndCauldron?.Invoke();
         Actions.OnIceDay?.Invoke(false);
         Actions.OnEndGoblin?.Invoke();

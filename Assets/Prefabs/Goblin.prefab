@@ -76,13 +76,15 @@ MonoBehaviour:
   actionCooldown: 4
   goblinHands: {fileID: 3411744906653277463}
   agent: {fileID: 7947374703834326683}
+  chanceOfItems: 0.4
+  chanceOfCrates: 0.3
+  chanceOfSlurping: 0.2
+  chanceOfScaring: 0.1
+  wanderingWeight: 0.3
   wanderRadius: 5
   minWanderTime: 2
   maxWanderTime: 5
-  goblinActive: 0
-  throwFromCrate: 2
-  throwFloorIngredient: 2
-  enableSFX: 1
+  enableSfx: 0
   noiseTimerMin: 5
   noiseTimerMax: 20
   goblinIdle: {fileID: 6392678485550906933}

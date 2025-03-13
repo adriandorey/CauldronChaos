@@ -4,80 +4,139 @@ using System;
 public static class Actions
 {
     // Interaction Actions
-    #region Interaction Actions
+    /// <summary> Used to toggle recipe book on and off </summary>
     public static Action OnToggleRecipeBook;
-    public static Action OnRemovePotion;
-    public static Action OnRemoveIngredient;
-    #endregion
 
     // Shop Actions
-    #region Shop Actions
-    public static Action OnStartDay;
-    public static Action OnEndDay;
-    public static Action<int> OnCustomerServed;
-    public static Action FilledOrder;
-    public static Action<PotionOutput> OnCheckCustomers;
-    #endregion
 
-    // Day Actions
-    #region Day Actions
+    #region Shop Actions
+
+    /// <summary> Starts tutorial Day  </summary>
+    public static Action OnTutorialDay;
+
+    /// <summary> Starts Shop Day, this is meant to start anything that has to run when the store opens.  </summary>
+    public static Action OnStartDay;
+
+    /// <summary> Ends the shop day. Anything that needs to stop running when this happens will happen.  </summary>
+    public static Action OnEndDay;
+
+    /// <summary> When a customer is served this will trigger any other script that needs to know about it </summary>
+    public static Action<int> OnCustomerServed;
+
+    /// <summary> Sets the day for everything that needs to know what the day is </summary>
     public static Action<int> OnSetDay;
-    public static Action OnDayLoad;
+
     #endregion
 
     // Game Manager Actions
-    #region Game Manager Actions
+    /// <summary> Changes the state of the game manager </summary>
     public static Action<string> OnStateChange;
+
+    /// <summary> Changes the Ui based on the state </summary>
     public static Action<GameState> OnChangeUi; // used for UI changes
-    public static Action<bool> OnLoading;
-    #endregion
 
     // Gameplay Actions
+
     #region Gameplay Actions
+
+    /// <summary> Updates the Level Select buttons</summary>
     public static Action UpdateLevelButtons;
+
+    /// <summary> Sets the unlocked days</summary>
     public static Action<int> OnSetUnlockedDays;
+
+    /// <summary> Sets the score based on the day</summary>
     public static Action<int[]> OnSetScore;
+
+    /// <summary> This is used to reset any values that need to be reset at the end</summary>
     public static Action OnResetValues;
+
     #endregion
 
     // Save Manager Actions
+
     #region Save Manager Actions
+
+    /// <summary> Tells listeners if a save exists or not </summary>
     public static Action<bool> OnSaveExist;
+
+    /// <summary> This is used to save the day, score and if the next day should be unlocked </summary>
     public static Action<int, int, bool> OnSaveDay;
-    public static Action OnSaveDeleted;
+
+    /// <summary> This tells any listener that the save should be deleted. </summary>
     public static Action OnDeleteSaveFile;
+
     #endregion
 
     // Actions for First Select
+
     #region First Select Actions
+
+    /// <summary> </summary>
     public static Action<GameObject> OnSelectRecipeButton;
+
+    /// <summary> </summary>
     public static Action<Page> OnSetUiLocation;
+
     #endregion
 
     // Actions for Menu
+
     #region Menu Actions
+
+    /// <summary> Used to open settings </summary>
     public static Action OnOpenSettingsAction;
-    public static Action<bool> SetCursorVisibility;
+
+    /// <summary> Used to activate how to play based on if its a loading screen or not </summary>
     public static Action<bool> OnActivateHowToPlay;
+
+    /// <summary> Deactivates how to play </summary>
     public static Action OnDeactivateHowToPlay;
+
+    /// <summary> This is used for the camera dolly to say where they've reached</summary>
     public static Action<string> ReachedWaypoint;
-    public static Action OnCloseDebugMenu;
+
     #endregion
 
     // Challenge Actions
+
     #region Challenge Actions
-    public static Action<int> OnStartChallenge; // used for ChallengeManager.cs
-    public static Action<PhysicMaterial, Texture> OnApplyFoorMaterial; // used for Challenge 1 - Floor.cs
-    public static Action<bool> OnIceDay; // used for Challenge 1 - Floor.cs
-    public static Action OnStartCauldron; // used for Challenge 2 - CauldronMovement.cs
-    public static Action OnEndCauldron; // used for Challenge 2 - CauldronMovement.cs
-    public static Action<bool> OnMoveCage; // used to move the goblin cage 
-    public static Action<bool> OnStartGoblin; // used for Challenge 3 - GoblinAI.cs - set if it's the first challenge day or not.
-    public static Action OnEndGoblin; // used for Challenge 3 - GoblinAI.cs
-    public static Action OnScareGoblin; // used for Challenge 3 - GoblinAI.cs
-    public static Action OnStartWindy; // used for Challenge 4 - WindyDay.cs
-    public static Action OnStopWindy; // used for Challenge 4 - WindyDay.cs
-    public static Action OnStartSlime;  // used for Challenge 5 - SlimeTrail.cs
-    public static Action OnEndSlime; // used for Challenge 5 - SlimeTrail.cs
+
+    /// <summary> Used to start a challenge based on the day </summary>
+    public static Action<int> OnStartChallenge;
+
+    /// <summary> Used for challenge one to apply floor physics material and texture </summary>
+    public static Action<PhysicMaterial, Texture> OnApplyFloorMaterial;
+
+    /// <summary> Used for challenge 1 to tell any listener that it's an ice day or not</summary>
+    public static Action<bool> OnIceDay;
+
+    /// <summary> Used for challenge 2, tells the cauldrons to start moving</summary>
+    public static Action OnStartCauldron;
+
+    /// <summary> Used for challenge 2, tells the cauldrons to stop moving </summary>
+    public static Action OnEndCauldron;
+
+    /// <summary> Used to top the goblin cage or reset it </summary>
+    public static Action<bool> OnMoveCage;
+
+    /// <summary> Used to start the goblin, telling it if its the first day or not </summary>
+    public static Action<bool> OnStartGoblin;
+
+    /// <summary> Tells the goblin to stop </summary>
+    public static Action OnEndGoblin;
+
+    /// <summary> Starts the windy day </summary>
+    public static Action OnStartWindy;
+
+    /// <summary> Stops the windy day </summary>
+    public static Action OnStopWindy;
+
+    /// <summary> Starts the slime </summary>
+    public static Action OnStartSlime;
+
+    /// <summary> Ends the slime </summary>
+    public static Action OnEndSlime;
+
     #endregion
 }

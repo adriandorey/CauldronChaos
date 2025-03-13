@@ -181,6 +181,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeForCustomer: 1
+  tutorialCustomer: {fileID: 6356803835694476596, guid: 96e79bc864b817642932067c309ecb93,
+    type: 3}
   customerPrefabs:
   - {fileID: 6356803835694476596, guid: 96e79bc864b817642932067c309ecb93, type: 3}
   - {fileID: 8284360445958240951, guid: 21d958019fefd5c43a1bd31ed71dec50, type: 3}
@@ -4174,6 +4176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a39f372956c66246a75b82338757d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  queueManager: {fileID: 1756704728737677199}
 --- !u!65 &6046749161918434926
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4193,8 +4196,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.79127926, y: 0.65557075, z: 1.8351932}
-  m_Center: {x: -0.0037387263, y: 0.5013764, z: -0.42219043}
+  m_Size: {x: 0.79127926, y: 1.7229705, z: 0.72696376}
+  m_Center: {x: -0.0037387065, y: 1.0350764, z: 0.17384064}
 --- !u!114 &8177146680142514291
 MonoBehaviour:
   m_ObjectHideFlags: 0

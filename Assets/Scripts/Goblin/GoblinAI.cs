@@ -3,28 +3,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class GoblinAI : MonoBehaviour
 {
     [Header("Goblin Behaviour Settings")]
     [SerializeField] private float actionCooldown = 5f;
+
     [SerializeField] private Transform goblinHands;
     [SerializeField] private NavMeshAgent agent;
-    private bool _isPerformingAction;
+
+    #region Goblin Action Chance Variables
+
+    [Header("Goblin Actions Chances")]
+    private List<GoblinActions> _goblinActions;
+
+    [Tooltip("Chance of throwing items on the floor")]
+    [SerializeField] private float chanceOfItems = 0.4f;
+
+    [Tooltip("Chance of throwing items from crates or shelves")]
+    [SerializeField] private float chanceOfCrates = 0.3f;
+
+    [Tooltip("Chance of slurping from the cauldron")]
+    [SerializeField] private float chanceOfSlurping = 0.2f;
+
+    [Tooltip("Chance of scaring a customer inline")]
+    [SerializeField] private float chanceOfScaring = 0.1f;
+
+    private float _totalWeight;
+
+    #endregion
+
+    #region Wandering Settings
+
+    [Header("Goblin Wander Settings")]
+    [Tooltip("Chance of wandering. This only happens on non challenge day")]
+    [SerializeField] private float wanderingWeight = 0.3f;
+
     [SerializeField] private float wanderRadius = 5f;
-    [SerializeField] private float minWanderTime = 2f;
-    [SerializeField] private float maxWanderTime = 5f;
-    private bool _goblinActive;
+
+    #endregion
+
+    private bool _isGoblinActive;
     private Vector3 _currentDestination;
 
-    [Header("Time Between Action")]
-    [SerializeField] private float throwFromCrate;
-    [SerializeField] private float throwFloorIngredient;
+    #region Sfx
 
     [Header("SFX")]
     [SerializeField] private bool enableSfx;
+
     [SerializeField] private float noiseTimerMin;
-    [SerializeField] private float noiseTimerMax; 
+    [SerializeField] private float noiseTimerMax;
     [SerializeField] private SFXLibrary goblinIdle;
     [SerializeField] private SFXLibrary goblinCry;
     [SerializeField] private SFXLibrary goblinScream;
@@ -33,18 +62,26 @@ public class GoblinAI : MonoBehaviour
     [SerializeField] private AudioClip rummageSound;
     [SerializeField] private AudioClip goblinMovement;
 
+    private CustomTimer _noiseTimer;
+
+    #endregion
+
     //Idle SFX variables
     private bool _isFree = false;
-    private float _noiseTimer;
 
     // References to the things the goblin can interact with - the only thing that changes is ingredients.
     private CrateHolder[] _crates;
     private List<GameObject> _ingredients;
     private CauldronInteraction[] _cauldrons;
     private QueueManager _queue;
+    private GameObject _customerToScare;
+
+    // Reference to item that might be moving
+    private GameObject _itemToThrow;
 
     [Header("Slime Movement")]
     [SerializeField] private LayerMask slime;
+
     [SerializeField] private float slowMultiplier = 0.5f;
     private bool _isInSlime;
     private float _defaultSpeed;
@@ -55,45 +92,51 @@ public class GoblinAI : MonoBehaviour
 
     private void Start()
     {
-        if(agent != null)
+        SetActions();
+
+        if (agent != null)
             _defaultSpeed = agent.speed;
 
-        _noiseTimer = Random.Range(noiseTimerMin, noiseTimerMax);
+        _noiseTimer = new CustomTimer(Random.Range(noiseTimerMin, noiseTimerMax), false);
         _crates = FindObjectsOfType<CrateHolder>();
         _queue = FindObjectOfType<QueueManager>();
         _cauldrons = FindObjectsOfType<CauldronInteraction>();
+        _isFree = false;
     }
 
     //update loop to handle playing of idle sounds
     private void Update()
     {
-        if(GameManager.Instance.gameState == GameState.Gameplay)
+        // If the game state isn't in gameplay, nothing will happen
+        if (GameManager.Instance.gameState != GameState.Gameplay) return;
+
+        // Using the custom timer to time the goblin noises. 
+        if (_noiseTimer.UpdateTimer())
         {
-            if (_noiseTimer < 0 && enableSfx)
+            SFXLibrary goblinSounds;
+            // if the goblin is free the goblin sounds will be goblin idle else it'll be goblin cry.
+            if (_isFree)
             {
-                SFXLibrary goblinSounds;
-
-                if (_isFree)
-                {
-                    goblinSounds = goblinIdle;
-                }
-                else
-                {
-                    goblinSounds = goblinCry;
-                }
-
-                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinSounds.PickAudioClip(), true); //play audio clip
-                _noiseTimer = Random.Range(noiseTimerMin, noiseTimerMax); //reset timer
+                goblinSounds = goblinIdle;
+            }
+            else
+            {
+                goblinSounds = goblinCry;
             }
 
-            if (enableSfx)
-            {
-                _noiseTimer -= Time.deltaTime;
-            }
+            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinSounds.PickAudioClip(),
+                true); //play audio clip
+
+            _noiseTimer = new CustomTimer(Random.Range(noiseTimerMin, noiseTimerMax), false);
         }
 
-        //Debug.Log(noiseTimer);
-        if(Physics.Raycast(transform.position, Vector3.right, 1f, slime))
+        // if the goblin isn't active return
+        if (!_isGoblinActive) return;
+
+        // Need to do something here to check to see if the item the goblin needs has been picked up or moved.
+
+        // Check below the character to see if they've stepped in a slime trail
+        if (Physics.Raycast(transform.position, Vector3.down, 1f, slime))
         {
             if (!_isInSlime)
             {
@@ -103,15 +146,15 @@ public class GoblinAI : MonoBehaviour
         }
         else
         {
-            if (_isInSlime)
-            {
-                _isInSlime = false;
-                agent.speed = _defaultSpeed;
-            }
+            if (!_isInSlime) return;
+
+            _isInSlime = false;
+            agent.speed = _defaultSpeed;
         }
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
+
     private void OnEnable()
     {
         Actions.OnStartGoblin += StartChaos;
@@ -129,131 +172,176 @@ public class GoblinAI : MonoBehaviour
         Actions.OnStartGoblin -= StartChaos;
         Actions.OnEndGoblin -= EndChaos;
     }
+
     #endregion
 
     private void StartChaos(bool isChallengeDay)
     {
-        _goblinActive = true;
-        transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        _isGoblinActive = true;
+        _isFree = true;
+
         agent.enabled = true;
+        transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         _goblinBehaviour = StartCoroutine(BehaviourLoop(isChallengeDay));
     }
 
     private void EndChaos()
     {
-        _goblinActive = false;
+        _isGoblinActive = false;
         if (_goblinBehaviour != null)
+        {
+            StopCoroutine(_currentAction);
             StopCoroutine(_goblinBehaviour);
+        }
+    }
+
+    private void SetActions()
+    {
+        _goblinActions = new List<GoblinActions>
+        {
+            new GoblinActions
+            {
+                actionName = "ThrowItems", weight = chanceOfItems,
+                ActionToExecute = () => StartCoroutine(ThrowItemsOffFloor())
+            },
+            new GoblinActions
+            {
+                actionName = "ThrowIngredients", weight = chanceOfCrates,
+                ActionToExecute = () => StartCoroutine(ThrowItemsFromCrate())
+            },
+            new GoblinActions
+            {
+                actionName = "SlurpCauldron", weight = chanceOfSlurping,
+                ActionToExecute = () => StartCoroutine(SlurpCauldron())
+            },
+            new GoblinActions
+            {
+                actionName = "ScareCustomer", weight = chanceOfScaring,
+                ActionToExecute = () => StartCoroutine(ScareCustomer())
+            }
+        };
+
+        _totalWeight = 0f;
+        // Calculate total weight by summing all the individual weights
+        foreach (var action in _goblinActions)
+        {
+            _totalWeight += action.weight;
+        }
+
+        if (_totalWeight != 1)
+            Debug.LogError("Total weight of goblin actions must be 1");
     }
 
     private IEnumerator BehaviourLoop(bool isChallengeDay)
     {
-        // if it's a challenge day goblin will be more active. else they need a wandering time
-        _currentAction = null;
         while (true)
         {
-            yield return new WaitForSeconds(actionCooldown);
-
-            var roll = Random.Range(0f, 1f);
-
             if (_currentAction != null)
-            {
                 StopCoroutine(_currentAction);
-                AudioManager.instance.sfxManager.StopConstantSFX(); //stop any constant SFX
-            }
 
-            if (isChallengeDay)
+            // if it's a challenge day goblin will be more active. else they need a wandering time
+            if (!isChallengeDay)
             {
-                PickWhatAction(roll);
-            }
-            else
-            {
-                // if roll is less than or equal to this number the goblin will wander - if not, they will pick a new action to do.
-                if (roll <= 0.3f)
-                    _currentAction = StartCoroutine(GoblinWanders());
-                else
+                var random = Random.value;
+
+                if (random <= wanderingWeight)
                 {
-                    var newRoll = Random.Range(0f, 1f);
-                    PickWhatAction(newRoll);
+                    _currentAction = StartCoroutine(Wandering());
+                    yield break;
                 }
             }
 
+            // pick random action
+            PickRandomAction();
+            yield return new WaitForSeconds(actionCooldown);
         }
     }
 
-    private void PickWhatAction(float roll)
+    private void PickRandomAction()
     {
-        switch (roll)
+        var roll = Random.value * _totalWeight;
+
+        // Loop through the actions and accumulate their weights until the roll value is reached
+        float accumulatedWeight = 0f;
+        foreach (var action in _goblinActions)
         {
-            case float n when n < 0.4f:
-                FindFloorItems();
-                if (_ingredients.Count > 0)
-                    _currentAction = StartCoroutine(ThrowItems());
-                break;
-            case float n when n < 0.7f:
-                _currentAction = StartCoroutine(ThrowIngredients());
-                break;
-            case float n when n < 0.9f:
-                _currentAction = StartCoroutine(SlurpCauldron());
-                break;
-            case float n when n < 1f:
-                if (_queue.AreThereCustomers() != 0)
-                    _currentAction = StartCoroutine(ScareCustomer());
-                break;
-        }
-    }
+            accumulatedWeight += action.weight;
 
-    private IEnumerator GoblinWanders()
-    {
-        Debug.Log("Goblin Wandering");
-        if (!_isPerformingAction)
-        {
-            PickNewDestination();
+            if (!(roll <= accumulatedWeight)) continue;
 
-            while (!ReachedTarget())
-            {
-                yield return null;
-            }
-
-            // random delay before next move
-            yield return new WaitForSeconds(Random.Range(minWanderTime, maxWanderTime));
-
-
-
+            action.ActionToExecute?.Invoke();
+            Debug.Log($"{action.actionName} was chosen");
+            return;
         }
     }
 
     #region Goblin Actions
+
     // Throwing items on the floor
-    private IEnumerator ThrowItems()
+    private IEnumerator ThrowItemsOffFloor()
     {
-        _isPerformingAction = true;
-        // finds a random action from the ingredients list
-        var item = _ingredients[Random.Range(0, _ingredients.Count)];
-
-        if (item == null)
-            yield break;
-
-        agent.SetDestination(item.transform.position);
-
-        AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); //start movement sound
-        while (!ReachedTarget())
+        while (true) // Keep trying until a valid item is found and thrown
         {
-            yield return null;
+            FindFloorItems(); // Refresh the list of available items
+
+            if (_ingredients.Count == 0) yield break; // No items left, exit
+
+            // Pick a random item
+            _itemToThrow = _ingredients[Random.Range(0, _ingredients.Count)];
+
+            // Validate the item
+            if (!IsItemValid(_itemToThrow))
+            {
+                yield return null; // Wait and retry next frame
+                continue;
+            }
+
+            Vector3 lastKnownPosition = _itemToThrow.transform.position;
+
+            // Set goblin destination
+            agent.SetDestination(lastKnownPosition);
+            AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); // Start movement sound
+
+            while (!ReachedTarget())
+            {
+                // Refresh items in case something changed
+                FindFloorItems();
+
+                // If the item is no longer valid, restart the loop
+                if (!IsItemValid(_itemToThrow))
+                {
+                    AudioManager.instance.sfxManager.StopConstantSFX();
+                    yield return null;
+                    break;
+                }
+
+                // Update destination if the item moved
+                if (_itemToThrow.transform.position != lastKnownPosition)
+                {
+                    lastKnownPosition = _itemToThrow.transform.position;
+                    agent.SetDestination(lastKnownPosition);
+                }
+
+                yield return null;
+            }
+
+            // If the goblin reached the item, throw it
+            if (IsItemValid(_itemToThrow) && ReachedTarget())
+            {
+                AudioManager.instance.sfxManager.StopConstantSFX();
+
+                var randomDir = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f)).normalized;
+                _itemToThrow.transform.DOJump(randomDir, 1, 1, 0.5f);
+
+                yield return new WaitForSeconds(1f); // Simulated action time
+                yield break; // Successfully threw an item, exit
+            }
         }
-
-        AudioManager.instance.sfxManager.StopConstantSFX(); // stop movement sound
-
-        var randomDir = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f)).normalized;
-        item.transform.DOJump(randomDir, 1, 1, 0.5f);
-        yield return new WaitForSeconds(throwFloorIngredient); // Simulated action time
-        _isPerformingAction = false;
     }
 
-    private IEnumerator ThrowIngredients()
-    {
-        _isPerformingAction = true;
 
+    private IEnumerator ThrowItemsFromCrate()
+    {
         var crate = _crates[Random.Range(0, _crates.Length)];
 
         agent.SetDestination(crate.transform.position);
@@ -264,6 +352,7 @@ public class GoblinAI : MonoBehaviour
         {
             yield return null;
         }
+
         AudioManager.instance.sfxManager.StopConstantSFX(); // stop movement sound
 
         AudioManager.instance.sfxManager.StartConstantSFX(rummageSound); //playing the sound for rummaging
@@ -271,54 +360,95 @@ public class GoblinAI : MonoBehaviour
         {
             crate.GoblinInteraction(goblinHands);
         }
-        yield return new WaitForSeconds(throwFromCrate); // Simulated action time
+
+        yield return new WaitForSeconds(1f); // Simulated action time
         AudioManager.instance.sfxManager.StopConstantSFX(); //stop rummage sound
-        _isPerformingAction = false;
     }
 
 
     private IEnumerator SlurpCauldron()
     {
-        _isPerformingAction = true;
-
         var cauldron = _cauldrons[Random.Range(0, _cauldrons.Length)];
 
         agent.SetDestination(cauldron.transform.position);
         AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); //start movement sound
+
         while (!ReachedTarget())
         {
             yield return null;
         }
+
         AudioManager.instance.sfxManager.StopConstantSFX(); // stop movement sound
 
         cauldron.GetComponent<CauldronInteraction>().GoblinInteraction();
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinSlurp.PickAudioClip(), true);
 
         yield return new WaitForSeconds(2f);
-        _isPerformingAction = false;
     }
 
     private IEnumerator ScareCustomer()
     {
-        _isPerformingAction = true;
+        while (true) // Keep trying until a valid customer is found
+        {
+            _customerToScare = _queue.FindCustomer(); // Find a valid customer
 
-        agent.SetDestination(_queue.transform.position);
-        AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); //start movement sound
+            if (_customerToScare == null) yield break; // No customers left, exit
+
+            Vector3 lastKnownPosition = _customerToScare.transform.position;
+
+            // Set goblin's destination
+            agent.SetDestination(lastKnownPosition);
+            AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); // Start movement sound
+
+            while (!ReachedTarget())
+            {
+                yield return null; // Wait for the next frame
+
+                // Refresh customers list and check if the target is still valid
+                if (_customerToScare == null || !_customerToScare.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+                {
+                    AudioManager.instance.sfxManager.StopConstantSFX(); // Stop movement sound
+                    yield return null; // Try finding a new customer next frame
+                    break;
+                }
+
+                // Update destination if the customer moved
+                if (_customerToScare.transform.position != lastKnownPosition)
+                {
+                    lastKnownPosition = _customerToScare.transform.position;
+                    agent.SetDestination(lastKnownPosition);
+                }
+            }
+
+            // If the goblin successfully reached the target, scare them
+            if (_customerToScare != null && ReachedTarget())
+            {
+                AudioManager.instance.sfxManager.StopConstantSFX();
+
+                _queue.ScareCustomer(_customerToScare);
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinScream.PickAudioClip(), true);
+
+                yield return new WaitForSeconds(2f); // Simulated scare time
+                yield break; // Scared the customer, exit
+            }
+        }
+    }
+
+    #endregion
+
+    #region Wandering Action
+
+    private IEnumerator Wandering()
+    {
+        PickNewDestination();
+
         while (!ReachedTarget())
         {
             yield return null;
         }
-        AudioManager.instance.sfxManager.StopConstantSFX(); // stop movement sound
-
-        _queue.ScareCustomer();
-        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinScream.PickAudioClip(), true);
-
-        yield return new WaitForSeconds(2f);
-        _isPerformingAction = false;
     }
-    #endregion
 
-    #region Wandering Action
+
     private void PickNewDestination()
     {
         _currentDestination = RandomNavSphere(transform.position, wanderRadius, -1);
@@ -330,8 +460,11 @@ public class GoblinAI : MonoBehaviour
         var randomDirection = Random.insideUnitSphere * distance;
         randomDirection += origin;
 
-        return NavMesh.SamplePosition(randomDirection, out var navHit, distance, layermask) ? navHit.position : origin; // If no valid point found, stay put
+        return NavMesh.SamplePosition(randomDirection, out var navHit, distance, layermask)
+            ? navHit.position
+            : origin; // If no valid point found, stay put
     }
+
     #endregion
 
     /// <summary> Used to find all the ingredients on the floor </summary>
@@ -356,11 +489,34 @@ public class GoblinAI : MonoBehaviour
         }
     }
 
+    private bool IsItemValid(GameObject item)
+    {
+        if (item == null) return false;
+
+        // Check if item is a PickupObject and has been added to the cauldron or picked up
+        var pickup = item.GetComponent<PickupObject>();
+        if (pickup != null)
+        {
+            if (pickup.isHeld || pickup.AddedToCauldron()) return false;
+        }
+
+        // Check if item is a PotionOutput and has been given to a customer
+        var potion = item.GetComponent<PotionOutput>();
+        if (potion != null)
+        {
+            if (potion.givenToCustomer) return false;
+        }
+
+        return true;
+    }
+
+
     /// <summary> Check if the agent has reached the target </summary>
+    // Check if the cauldron has reached the target
     private bool ReachedTarget()
     {
         return !agent.pathPending &&
                agent.remainingDistance <= agent.stoppingDistance &&
-               (!agent.hasPath || agent.velocity.sqrMagnitude < 0.1f);
+               (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
     }
 }

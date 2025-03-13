@@ -9,26 +9,24 @@ public class PickupObject : MonoBehaviour
 
     [Header("Pick Up")]
     public bool isHeld = false; //bool tracking if the pickup is held
-    private Transform targetPos = null; //transform tarcking the target position of the pickup
+    private Transform _targetPos; //transform tracking the target position of the pickup
     private Rigidbody rb; //rigidbody component of the pickup
-    private bool addedToCauldron = false;
-    private Collider objCollider;
+    private bool _addedToCauldron = false;
+    private Collider _objCollider;
 
     [Header("SFX")]
     [SerializeField] private AudioClip pickUpSFX;
     [SerializeField] private AudioClip dropSFX;
 
     // Windy Day Variables
-    private bool inWindZone = false;
-    private Vector3 windDirection;
-    private WindyDay windArea;
-    private WindyDay.WindDirection windDir;
+    private bool _inWindZone = false;
+    private WindyDay _windArea;
 
     // Start is called before the first frame update
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        objCollider = GetComponent<Collider>();
+        _objCollider = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -43,25 +41,27 @@ public class PickupObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (inWindZone && !addedToCauldron && !isHeld)
+        // If the item is in the wind zone, not being added to the cauldron and isn't being held
+        if (_inWindZone && !_addedToCauldron && !isHeld)
         {
-            rb.AddForce(windDirection * windArea.strength);
+            // Add wind resistance (force) to the item
+            rb.AddForce(_windArea.AddWindResistance());
         }
     }
 
     //Function that picks up the pickup
-    public void PickUp(Transform targetPos)
+    public void PickUp(Transform newTargetPos)
     {
         //setting held to true and removing gravity
         isHeld = true;
         rb.isKinematic = true;
-        objCollider.enabled = false;
+        _objCollider.enabled = false;
         //rb.useGravity = false;
 
         //setting target position & parenting
-        this.targetPos = targetPos;
-        transform.position = targetPos.position;
-        transform.parent = targetPos;
+        _targetPos = newTargetPos;
+        transform.position = newTargetPos.position;
+        transform.parent = newTargetPos;
 
         //playing SFX
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ItemInteraction, pickUpSFX, true);
@@ -70,15 +70,15 @@ public class PickupObject : MonoBehaviour
     //Function that drops the pickup
     public void Drop()
     {
-        //settomg held to false and enabling gravity
+        //setting held to false and enabling gravity
         isHeld = false;
         rb.isKinematic = false;
-        objCollider.enabled = true;
+        _objCollider.enabled = true;
 
         //rb.useGravity = true;
 
         //removing target position & parent
-        targetPos = null;
+        _targetPos = null;
         transform.parent = null;
 
         //playing SFX
@@ -87,44 +87,31 @@ public class PickupObject : MonoBehaviour
 
     public bool AddedToCauldron()
     {
-        return addedToCauldron;
+        return _addedToCauldron;
     }
 
     //Mutator method that marks the ingredient as added to the cauldron
     public void AddToCauldron()
     {
-        addedToCauldron = true;
+        _addedToCauldron = true;
     }
 
+    // Checks if it's in the wind zone and gets the wind component
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("WindArea"))
-        {
-            inWindZone = true;
-            windArea = other.GetComponent<WindyDay>();
-            windDir = windArea.windDirect;
-            windDirection = windArea.direction;
-        }
+        if (!other.CompareTag("WindArea")) return;
+        
+        _inWindZone = true;
+        _windArea = other.GetComponent<WindyDay>();
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(windArea != null)
-        {
-            if (windArea.windDirect != windDir)
-            {
-                windDirection = windArea.direction;
-            }
-        }
-    }
-
+    // Checks if it's exit the wind zone and removes wind component
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("WindArea"))
-        {
-            inWindZone = false;
-            windArea = null;
-        }
+        if (!other.CompareTag("WindArea")) return;
+        
+        _inWindZone = false;
+        _windArea = null;
     }
 
 }

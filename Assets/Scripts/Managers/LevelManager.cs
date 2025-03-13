@@ -21,12 +21,15 @@ public class LevelManager : MonoBehaviour
 
     [Header("Event System")]
     [SerializeField] private EventSystem eventSystem;
+    
+    private DayManager _dayManager;
 
     // Callback function to be invoked after fade animation completes
     private Action _fadeCallback;
 
     public void Start()
     {
+        _dayManager = FindObjectOfType<DayManager>();
         _fadeAnimator = GetComponent<Animator>();
         _fadeAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
@@ -46,8 +49,8 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        // Disable player interactions during transition
-        InputManager.Instance.TurnOffInteraction();
+        // // Disable player interactions during transition
+        // InputManager.Instance.TurnOffInteraction();
 
 
         // start fade out animation before loading the new scene
@@ -162,8 +165,8 @@ public class LevelManager : MonoBehaviour
         {
             Actions.OnDeactivateHowToPlay?.Invoke();
             Actions.OnStateChange("Gameplay");
-            Actions.OnDayLoad?.Invoke();
-            InputManager.Instance.TurnOnInteraction();
+            _dayManager.ShowStartDayPanel();
+            // InputManager.Instance.TurnOnInteraction();
         }
 
         if (currentScene.name == "MainMenu" || currentScene.name == "LevelSelect")

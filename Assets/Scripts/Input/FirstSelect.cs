@@ -172,6 +172,7 @@ public class FirstSelect : MonoBehaviour
 
         if (_isMouseControlling) return;
 
+        // if the mouse has moved and it's not in gameplay the mouse will take over.
         if (mouse?.delta.magnitude > 0.1f)
         {
             if (_currentLocation == Page.Gameplay) return;
@@ -221,6 +222,7 @@ public class FirstSelect : MonoBehaviour
 
         if (_isControllerControlling) return;
 
+        // Only switch if the controller is actively used
         if (!gamepad.buttonSouth.wasPressedThisFrame &&
             !gamepad.buttonNorth.wasPressedThisFrame &&
             !gamepad.buttonEast.wasPressedThisFrame &&
@@ -228,13 +230,14 @@ public class FirstSelect : MonoBehaviour
             !(gamepad.leftStick.ReadValue().magnitude > 0.1f) &&
             !(gamepad.rightStick.ReadValue().magnitude > 0.1f) &&
             !(gamepad.dpad.ReadValue().magnitude > 0.1f)) return;
-        
+
         Cursor.lockState = CursorLockMode.Locked;
 
-        //Debug.Log("Controller is now navigating");
+        // Debug.Log("Controller is now navigating");
         _isControllerControlling = true;
         _isMouseControlling = false;
         _isKeyboardControlling = false;
+
         if (_selectActions.ContainsKey(_currentLocation))
             _selectActions[_currentLocation]();
     }
@@ -245,13 +248,6 @@ public class FirstSelect : MonoBehaviour
         {
             switch (change)
             {
-                case InputDeviceChange.Added:
-                    _isControllerControlling = true;
-                    _isMouseControlling = false;
-                    _isKeyboardControlling = false;
-                    if (_selectActions.ContainsKey(_currentLocation))
-                        _selectActions[_currentLocation]();
-                    break;
                 case InputDeviceChange.Removed:
                     _isControllerControlling = false;
                     OnRemoveSelection();

@@ -1,19 +1,20 @@
 using UnityEngine;
 
+public enum WindDirection
+{
+    GoingLeft,
+    GoingRight,
+    TowardsScreen,
+    AwayFromScreen
+}
+
 public class WindyDay : MonoBehaviour
 {
-    public enum WindDirection
-    {
-        GoingLeft,
-        GoingRight,
-        TowardsScreen,
-        AwayFromScreen
-    }
     public WindDirection windDirect;
 
-    public float strength = 5;
-    private float _defaultWindStrength;
-    public Vector3 direction;
+    [Header("Wind Settings")]
+    [SerializeField] private float strength = 5;
+    private Vector3 _direction;
     private CustomTimer _windDirectionChange;
     private readonly float _windChangeTime = 30f;
     [SerializeField] private GameObject[] windows;
@@ -21,7 +22,6 @@ public class WindyDay : MonoBehaviour
 
     private void Awake()
     {
-        _defaultWindStrength = strength;
         _windDirectionChange = new CustomTimer(_windChangeTime, false);
     }
 
@@ -47,25 +47,30 @@ public class WindyDay : MonoBehaviour
 
     private void Update()
     {
+        // if the timer is completed the wind will change direction.
         if(_windDirectionChange.UpdateTimer())
         {
             ChangeWindDirection();
         }
     }
 
+    // Starts the wind challenge. 
     private void StartWind()
     {
+        // Removes all the windows from their pane        
         foreach(var window in windows)
         {
             window.SetActive(false);
         }
-        strength = _defaultWindStrength;
+        // Starts the wind changing direction
         ChangeWindDirection();
     }
 
+    // Stops the wind from changing direction
     private void StopWind()
     {
         strength = 0;
+        _windDirectionChange.StopTimer();
         foreach (var window in windows)
         {
             window.SetActive(true);
@@ -74,17 +79,25 @@ public class WindyDay : MonoBehaviour
 
     private void ChangeWindDirection()
     {
+        // picks a random direction for the wind to change to
         windDirect = (WindDirection)Random.Range(0, 4);
         
+        // Depending on which direction, it will change the transform of the force
         switch (windDirect)
         {
-            case WindDirection.GoingLeft: direction = -transform.right; break;
-            case WindDirection.GoingRight: direction = transform.right; break;
-            case WindDirection.TowardsScreen: direction = -transform.forward; break;
-            case WindDirection.AwayFromScreen: direction = transform.forward; break;
+            case WindDirection.GoingLeft: _direction = -transform.right; break;
+            case WindDirection.GoingRight: _direction = transform.right; break;
+            case WindDirection.TowardsScreen: _direction = -transform.forward; break;
+            case WindDirection.AwayFromScreen: _direction = transform.forward; break;
         }
         Debug.Log("Wind Direction Changed to: " + windDirect);
 
         _windDirectionChange.ResetTimer();
+    }
+
+    // Is called to add the wind resistance (force) to the rigidbody of the item/character
+    internal Vector3 AddWindResistance()
+    {
+        return _direction * strength;
     }
 }

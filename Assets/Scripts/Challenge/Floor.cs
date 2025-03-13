@@ -5,20 +5,23 @@ public class Floor : MonoBehaviour
     #region OnEnable / OnDisable / OnDestroy Events
     private void OnEnable()
     {
-        Actions.OnApplyFoorMaterial += ApplyMaterial;
+        Actions.OnApplyFloorMaterial += ApplyMaterial;
     }
 
     private void OnDisable()
     {
-        Actions.OnApplyFoorMaterial -= ApplyMaterial;
+        Actions.OnApplyFloorMaterial -= ApplyMaterial;
     }
 
     private void OnDestroy()
     {
-        Actions.OnApplyFoorMaterial -= ApplyMaterial;
+        Actions.OnApplyFloorMaterial -= ApplyMaterial;
     }
     #endregion
 
+    /// <summary>
+    /// Applies a texture to the floor renderer and sets a physics material to the collider 
+    /// </summary>
     private void ApplyMaterial(PhysicMaterial material, Texture texture)
     {
         GetComponent<Collider>().material = material;

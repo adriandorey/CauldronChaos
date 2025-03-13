@@ -34,15 +34,15 @@ public class InputManager : MonoBehaviour
     public static Action OnRecipeBookInputs;
 
     #region Input Actions
-    private PlayerInput playerControls;
-    private InputAction InteractInputAction;
-    private InputAction PickupInputAction;
-    private InputAction StirCAction;
-    private InputAction StirCCAction;
-    private InputAction MoveInputAction;
-    private InputAction PauseInputAction;
-    private InputAction NextPageInputAction;
-    private InputAction PreviousPageInputAction;
+    private PlayerInput _playerControls;
+    private InputAction _interactInputAction;
+    private InputAction _pickupInputAction;
+    private InputAction _stirCAction;
+    private InputAction _stirCcAction;
+    private InputAction _moveInputAction;
+    private InputAction _pauseInputAction;
+    private InputAction _nextPageInputAction;
+    private InputAction _previousPageInputAction;
     #endregion
 
 
@@ -82,28 +82,29 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
-        playerControls = GetComponent<PlayerInput>();
+        _playerControls = GetComponent<PlayerInput>();
 
-        MoveInputAction = playerControls.actions.FindAction("Move");
-        PauseInputAction = playerControls.actions.FindAction("Pause");
-        NextPageInputAction = playerControls.actions.FindAction("Next Page");
-        PreviousPageInputAction = playerControls.actions.FindAction("Previous Page");
-        InteractInputAction = playerControls.actions.FindAction("Interact");
-        PickupInputAction = playerControls.actions.FindAction("Pickup");
-        StirCAction = playerControls.actions.FindAction("StirClockwise");
-        StirCCAction = playerControls.actions.FindAction("StirCounterClockwise");
+        _moveInputAction = _playerControls.actions.FindAction("Move");
+        _pauseInputAction = _playerControls.actions.FindAction("Pause");
+        _nextPageInputAction = _playerControls.actions.FindAction("Next Page");
+        _previousPageInputAction = _playerControls.actions.FindAction("Previous Page");
+        _interactInputAction = _playerControls.actions.FindAction("Interact");
+        _pickupInputAction = _playerControls.actions.FindAction("Pickup");
+        _stirCAction = _playerControls.actions.FindAction("StirClockwise");
+        _stirCcAction = _playerControls.actions.FindAction("StirCounterClockwise");
         
 
-        PreviousPageInputAction.Disable();
-        NextPageInputAction.Disable();
+        _previousPageInputAction.Disable();
+        _nextPageInputAction.Disable();
         HideInteractionPickup();
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
     private void OnEnable()
     {
-        Actions.OnEndDay += TurnOffInteraction;
-        Actions.OnStartDay += TurnOnInteraction;
+        // Actions.OnEndDay += TurnOffInteraction;
+        // Actions.OnStartDay += TurnOnInteraction;
+        // Actions.OnTutorialDay += TurnOnInteraction;
         OnInteract += ShowInteraction;
         OnPickup += ShowPickup;
         OnStir += ShowStir;
@@ -114,8 +115,9 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Actions.OnEndDay -= TurnOffInteraction;
-        Actions.OnStartDay -= TurnOnInteraction;
+        // Actions.OnEndDay -= TurnOffInteraction;
+        // Actions.OnStartDay -= TurnOnInteraction;
+        // Actions.OnTutorialDay -= TurnOffInteraction;
         OnInteract -= ShowInteraction;
         OnPickup -= ShowPickup;
         OnStir -= ShowStir;
@@ -126,8 +128,9 @@ public class InputManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Actions.OnEndDay -= TurnOffInteraction;
-        Actions.OnStartDay -= TurnOnInteraction;
+        // Actions.OnEndDay -= TurnOffInteraction;
+        // Actions.OnStartDay -= TurnOnInteraction;
+        // Actions.OnTutorialDay -= TurnOffInteraction;
         OnInteract -= ShowInteraction;
         OnPickup -= ShowPickup;
         OnStir -= ShowStir;
@@ -188,15 +191,15 @@ public class InputManager : MonoBehaviour
     }
 
 
-    internal void TurnOffInteraction()
-    {
-        playerControls.SwitchCurrentActionMap("UI");
-    }
-
-    internal void TurnOnInteraction()
-    {
-        playerControls.SwitchCurrentActionMap("Player");
-    }
+    // internal void TurnOffInteraction()
+    // {
+    //     _playerControls.SwitchCurrentActionMap("UI");
+    // }
+    //
+    // internal void TurnOnInteraction()
+    // {
+    //     _playerControls.SwitchCurrentActionMap("Player");
+    // }
     #endregion
 
     #region Above Player Interaction
@@ -205,9 +208,9 @@ public class InputManager : MonoBehaviour
         abovePlayerInteraction.enabled = true;
 
         if(IsControllerConnected())
-            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = _interactInputAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = _interactInputAction.GetBindingDisplayString(0);
     }
 
     private void ShowPickup()
@@ -215,18 +218,18 @@ public class InputManager : MonoBehaviour
         abovePlayerInteraction.enabled = true;
 
         if (IsControllerConnected())
-            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = _pickupInputAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = _pickupInputAction.GetBindingDisplayString(0);
     }
 
     private void ShowStir()
     {
         abovePlayerInteraction.enabled = true;
         if (IsControllerConnected())
-            abovePlayerInteractionText.text = StirCCAction.GetBindingDisplayString(1) + " / " + StirCAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = _stirCcAction.GetBindingDisplayString(1) + " / " + _stirCAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = StirCCAction.GetBindingDisplayString(0) + " / " + StirCAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = _stirCcAction.GetBindingDisplayString(0) + " / " + _stirCAction.GetBindingDisplayString(0);
     }
 
     private void HideInteractionPickup()
@@ -244,17 +247,17 @@ public class InputManager : MonoBehaviour
 
     private void GameplayInputs()
     {
-        MoveInputAction.Enable();
-        PauseInputAction.Enable();
-        NextPageInputAction.Disable();
-        PreviousPageInputAction.Disable();
+        _moveInputAction.Enable();
+        _pauseInputAction.Enable();
+        _nextPageInputAction.Disable();
+        _previousPageInputAction.Disable();
     }
 
     private void RecipeBookInputs()
     {
-        MoveInputAction.Disable();
-        PauseInputAction.Disable();
-        NextPageInputAction.Enable();
-        PreviousPageInputAction.Enable();
+        _moveInputAction.Disable();
+        _pauseInputAction.Disable();
+        _nextPageInputAction.Enable();
+        _previousPageInputAction.Enable();
     }
 }

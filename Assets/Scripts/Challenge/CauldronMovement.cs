@@ -7,23 +7,23 @@ public class CauldronMovement : MonoBehaviour
 {
     // Agent Variables
     [Header("Movement Settings")]
+    [SerializeField] private float cauldronMinDistance = 1f; // Minimum distance from other cauldron
+    [SerializeField] private float wanderRadius = 8f; // wander radius used to pick random point
+    [SerializeField] private float minMovementTime = 3f; // minimum time to move
+    [SerializeField] private float maxMovementTime = 10f; // maximum time to move
     private NavMeshAgent _agent;
     private float _movementTime;
     private Vector3 _currentDestination;
-    private bool _isMoving = false;
+    private bool _isMoving;
     private CustomTimer _movementTimer;
-    [SerializeField] private float minDistance;
 
     // Model Transform for movement
+    [Header("Lift Animation Settings")]
     [SerializeField] private Transform cauldronModel;
-
-    [SerializeField] private float wanderRadius = 5f;
-    [SerializeField] private float minMovementTime = 5f;
-    [SerializeField] private float maxMovementTime = 20f;
-    [SerializeField] private float liftAmount = 0.1f;
-    private Vector3 _startingPos;
+    [SerializeField] private float liftAmount = 0.4f;
+    private Vector3 _startingPos; // saves starting position of the cauldron model
     private Coroutine _movement;
-    private GameObject _otherCauldron;
+    private GameObject _otherCauldron; // saves a reference to the other cauldron in the scene
 
     private void Start()
     {
@@ -42,7 +42,7 @@ public class CauldronMovement : MonoBehaviour
         }
     }
 
-    // These are used to call the functions for turning the cauldrons on and off.
+    // These are used to call the functions for turning the cauldrons on and off. On Destroy is only as a back-up just in case on disable doesn't do what it should.
     #region OnEnable / OnDisable / OnDestroy Events
     private void OnEnable()
     {
@@ -68,6 +68,7 @@ public class CauldronMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // if the cauldron isn't moving don't do anything else.
         if (!_isMoving) return;
         
         if (_movementTimer.UpdateTimer())
@@ -105,7 +106,7 @@ public class CauldronMovement : MonoBehaviour
             yield return null;
         }
 
-        // Start the timer again
+        // Lower the cauldron and start the timer again
         cauldronModel.DOLocalMove(_startingPos, 0.5f);
         _movementTime = Random.Range(minMovementTime, maxMovementTime);
         _movementTimer = new CustomTimer(_movementTime, false);
@@ -113,22 +114,19 @@ public class CauldronMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Pick a new destination for the cauldron to move.
+    /// Pick a new destination for the cauldron to move
     /// </summary>
     private void PickNewDestination()
     {
         _currentDestination = RandomNavSphere(transform.position, wanderRadius);
-        _agent.SetDestination(_currentDestination);
+        _agent.SetDestination(_currentDestination); // Sets new destination for agent
     }
 
     // Check if the cauldron is far from other cauldrons
     private bool IsFarFromOtherCauldrons()
     {
-        return !(Vector3.Distance(_otherCauldron.transform.position, transform.position) < minDistance);
+        return !(Vector3.Distance(_otherCauldron.transform.position, transform.position) < cauldronMinDistance);
     }
-
-
-
 
     // Get a random position on the navmesh
     private Vector3 RandomNavSphere(Vector3 origin, float distance)
@@ -142,7 +140,6 @@ public class CauldronMovement : MonoBehaviour
         }
         return origin; // If no valid point found, stay put
     }
-
 
     // Check if the cauldron has reached the target
     private bool ReachedTarget()

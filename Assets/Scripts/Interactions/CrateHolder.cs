@@ -50,6 +50,13 @@ public class CrateHolder : Interactable
 
         var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
         playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
+
+        if (crateType == CrateType.Mushroom && GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.PickUpMushroom)
+            TutorialManager.PickedUpMushroom = true;
+        
+        if(crateType == CrateType.Bottle &&  GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.PickUpPotionBottle)
+            TutorialManager.PickedUpPotionBottle = true;
+
     }
 
     // Function that handles the interaction between the goblin and the crate

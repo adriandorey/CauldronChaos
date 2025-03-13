@@ -51,19 +51,19 @@ public class DayManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnResetValues += ResetValues;
-        Actions.OnDayLoad += StartDayCountdown;
+        Actions.OnStartDay += StartDayTimer;
     }
 
     private void OnDisable()
     {
         Actions.OnResetValues -= ResetValues;
-        Actions.OnDayLoad -= StartDayCountdown;
+        Actions.OnStartDay -= StartDayTimer;
     }
 
     private void OnDestroy()
     {
         Actions.OnResetValues -= ResetValues;
-        Actions.OnDayLoad -= StartDayCountdown;
+        Actions.OnStartDay -= StartDayTimer;
     }
 
     #endregion
@@ -87,7 +87,7 @@ public class DayManager : MonoBehaviour
         SetDigitalClock();
     }
 
-    private void StartDay()
+    private void StartDayTimer()
     {
         _gameplayTimerStarted = true;
         _gameplayTimer.StartTimer();
@@ -116,9 +116,9 @@ public class DayManager : MonoBehaviour
 
     private void SetDigitalClock()
     {
-        var elapsedTime = _gameplayTimer.elapsedTime;
-        var minutes = Mathf.FloorToInt(elapsedTime / 60);
-        var seconds = Mathf.FloorToInt(elapsedTime % 60);
+        var remainingTime = _gameplayTimer.GetRemainingTime();
+        var minutes = Mathf.FloorToInt(remainingTime / 60);
+        var seconds = Mathf.FloorToInt(remainingTime % 60);
         clockText.text = $"{minutes:00}:{seconds:00}";
     }
 
@@ -136,7 +136,7 @@ public class DayManager : MonoBehaviour
         }
     }
 
-    private void StartDayCountdown()
+    internal void ShowStartDayPanel()
     {
         Debug.Log("Day Countdown Started");
         if (_currentDay % 2 == 0)
@@ -156,13 +156,20 @@ public class DayManager : MonoBehaviour
 
     private IEnumerator Wait()
     {
-        yield return new WaitForSeconds(5f);
-        
+        yield return new WaitForSeconds(1);
         yield return WaitForAnyKeyPress();
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, startDaySfx, true);
         dayStartOverlay.SetActive(false);
-        Actions.OnStartDay?.Invoke();
-        StartDay();
+       
+        if (_currentDay == 1)
+        {
+           Actions.OnTutorialDay?.Invoke();
+        }
+        else
+        {
+            Actions.OnStartDay?.Invoke();
+            StartDayTimer();
+        }
     }
 
 

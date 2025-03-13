@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private bool _isInWindZone;
     private Vector3 _windDirection;
     private WindyDay _windArea;
-    private WindyDay.WindDirection _windDir;
+    private WindDirection _windDir;
 
     private Vector3 _spawnPosition;
     private Quaternion _spawnRotation;
@@ -64,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         InputManager.MoveAction += GetMove;
         Actions.OnIceDay += ToggleIceMode;
         Actions.OnStartDay += EnableMovement;
+        Actions.OnTutorialDay += EnableMovement;
         Actions.OnEndDay += DisableMovement;
         Actions.OnResetValues += ResetPosition;
     }
@@ -73,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
+        Actions.OnTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;
@@ -82,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
+        Actions.OnTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;
@@ -115,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
         if (!_canMove) return;
         
         if(_isInWindZone)
-            _playerRb.AddForce(_windDirection * _windArea.strength);
+            _playerRb.AddForce(_windArea.AddWindResistance());
 
         if (!_isOnIce)
             NormalMovement();
@@ -256,32 +260,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("WindArea"))
-        {
-            _isInWindZone = true;
-            _windArea = other.GetComponent<WindyDay>();
-            _windDir = _windArea.windDirect;
-            _windDirection = _windArea.direction;
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if(_windArea != null)
-        {
-            if(_windArea.windDirect != _windDir)
-            {
-                _windDirection = _windArea.direction;
-            }
-        }
+        if (!other.CompareTag("WindArea")) return;
+        
+        _isInWindZone = true;
+        _windArea = other.GetComponent<WindyDay>();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("WindArea"))
-        {
-            _isInWindZone = false;
-            _windArea = null;
-        }
+        if (!other.CompareTag("WindArea")) return;
+        
+        _isInWindZone = false;
+        _windArea = null;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -13,6 +14,7 @@ public class UiManager : MonoBehaviour
 
     [Header("Ui Canvas")]
     [SerializeField] private GameObject mainMenuPanelUI;
+
     [SerializeField] private GameObject gameplayPanelUI;
     [SerializeField] private GameObject introPanelUI;
     [SerializeField] private GameObject levelSelectPanelUI;
@@ -23,20 +25,20 @@ public class UiManager : MonoBehaviour
 
     [Header("How To Play")]
     [SerializeField] private Image howToPlayBg;
+
     [SerializeField] private Button howToPlayBack;
-    
-    [Header("Loading Screen")]
-    [SerializeField] private Canvas loadingScreen;
-    [SerializeField] private Slider loadingBar;
-    [SerializeField] private TextMeshProUGUI loadingText;
-    [SerializeField] private float fakeProgressSpeed = 0.2f;
-    private Animator _fadeAnimator;
-    
+
+    [Header("End Of Day Animation")]
+    [SerializeField] private Animator endOfDayAnim;
+
+    [SerializeField] private Animation endOfDayClip;
+    [SerializeField] private Animator playerAnimator;
+
     private Dictionary<GameState, (GameObject panel, Action action)> _uiElements;
 
     // Callback function to be invoked after fade animation completes
     private Action _fadeCallback;
-    
+
     private void Awake()
     {
         // initialize panel dictionary
@@ -52,11 +54,6 @@ public class UiManager : MonoBehaviour
         };
     }
 
-    // private void Start()
-    // {
-    //     _fadeAnimator = GetComponent<Animator>();
-    //     _fadeAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-    // }
 
     #region OnEnable / OnDisable / OnDestroy Events
 
@@ -106,7 +103,7 @@ public class UiManager : MonoBehaviour
 
     private void MainMenu()
     {
-        InputManager.Instance.TurnOnInteraction();
+        // InputManager.Instance.TurnOnInteraction();
         MenuVirtualCamera.TurnCameraBrainOn?.Invoke();
         Actions.OnSetUiLocation(Page.MainMenu);
         Time.timeScale = 1;
@@ -126,6 +123,8 @@ public class UiManager : MonoBehaviour
 
     private void LevelSelect()
     {
+        playerAnimator.SetBool("EOD", false);
+        endOfDayAnim.SetBool("EOD", false);
         Actions.UpdateLevelButtons();
         Time.timeScale = 1;
 
@@ -139,21 +138,6 @@ public class UiManager : MonoBehaviour
         Actions.OnSetUiLocation(Page.Intro);
     }
 
-    private void Loading(bool isLoadingIntoDay)
-    {
-        loadingScreen.enabled = true;
-        loadingText.text = "Loading...";
-
-        if (isLoadingIntoDay)
-        {
-            Actions.OnActivateHowToPlay?.Invoke(true);
-            fakeProgressSpeed = 0.2f;
-        }
-        else
-        {
-            fakeProgressSpeed = 0.6f;
-        }
-    }
 
     private void Gameplay()
     {
@@ -165,6 +149,8 @@ public class UiManager : MonoBehaviour
     private void EndOfDay()
     {
         Actions.OnSetUiLocation(Page.EndOfDay);
+        playerAnimator.SetBool("EOD", true);
+        endOfDayAnim.SetBool("EOD", true);
     }
 
     private void Pause()

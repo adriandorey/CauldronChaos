@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StirClockwise 1
   m_EditorClassIdentifier: 
   action: 2
-  stepName: Stir_C_1
+  stepName: Stir_C
   stirSprite: {fileID: 21300000, guid: 3b02d64a6455a2d4eb068176b2de017d, type: 3}
   isClockwise: 1
   stirAmount: 1

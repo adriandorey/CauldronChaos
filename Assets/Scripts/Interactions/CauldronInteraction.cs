@@ -30,6 +30,9 @@ public class CauldronInteraction : MonoBehaviour
     private bool _canInteract;
     private int _potionIndex;
 
+    [Header("Potion Visual Counter")]
+    [SerializeField] private GameObject[] visualCounter;
+
     [Header("Cauldron Fill")]
     [SerializeField] private Transform cauldronFill;
     private Color _cauldronFillDefaultColor;
@@ -121,11 +124,29 @@ public class CauldronInteraction : MonoBehaviour
         // Play a sound here
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, addIngredientSounds.PickAudioClip(), true);
 
+        if (GameManager.Instance.IsInTutorialMode)
+        {
+            TutorialSteps();
+        }
+        
+        
         // Check if it's the first step in the recipe or not
         if (_curStepIndex == 0)
             StartNewRecipe();
         else
             AdvanceToNextStep();
+    }
+
+    private void TutorialSteps()
+    {
+        switch (TutorialManager.CurrentStep)
+        {
+            case TutorialStep.InsertIngredient:  if (_currentStep == "Mushroom") TutorialManager.InsertCorrectIngredient = true;
+                break;
+            case TutorialStep.FillPotionBottle:  if(_currentStep == "Bottle_Potion")  TutorialManager.FilledPotionBottle = true;
+                break;
+            default: TutorialManager.MadeIncorrectMove = true; break;
+        }
     }
 
     private void Stir()
@@ -147,6 +168,7 @@ public class CauldronInteraction : MonoBehaviour
     // Handles the incorrect step
     private void HandleIncorrectStep()
     {
+        TutorialManager.MadeIncorrectMove = true;
         // Play a sound here
         //AudioManager.Instance.sfxManager.playSFX()
         if (_ingredientGo != null)
@@ -297,6 +319,11 @@ public class CauldronInteraction : MonoBehaviour
             return;
         }
 
+        if (GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.StirCauldron)
+        {
+            if (_currentStep == "Stir_C") TutorialManager.StirredCauldronCorrectly = true;
+        }
+
         _curStepIndex++;
 
         // Set the next step
@@ -366,6 +393,7 @@ public class CauldronInteraction : MonoBehaviour
         //Debug.Log("Potion Counted " + potionIndex);
         if (_potionIndex < 2) // Ensure we don't reset too soon
         {
+            visualCounter[_potionIndex].SetActive(false);
             _potionIndex++;
             cauldronFill.DOLocalMove(cauldronFill.localPosition - new Vector3(0, 0.11f, 0), 0.8f);
         }
@@ -394,6 +422,10 @@ public class CauldronInteraction : MonoBehaviour
     // Resets all cauldron values
     private void ResetValues()
     {
+        foreach (var circle in visualCounter)
+        {
+            circle.SetActive(true);
+        }
         _cauldronFillMaterial.color = _cauldronFillDefaultColor;
         _possibleRecipes.Clear();
         _possibleNextSteps.Clear();
@@ -415,7 +447,7 @@ public class CauldronInteraction : MonoBehaviour
             spoon.DOLocalRotate(new Vector3(0, 360, 16), spoonRotationSpeed, RotateMode.FastBeyond360);
             if (_lastStep == "Stir_C") return;
             
-            _currentStep = "Stir_C_1";
+            _currentStep = "Stir_C";
             Stir();
         }
     }
@@ -426,9 +458,10 @@ public class CauldronInteraction : MonoBehaviour
         if (input.performed)
         {
             if (!_canInteract) return;
-
-            _currentStep = "Stir_CC_1";
             spoon.DOLocalRotate(new Vector3(0, -360, 16), spoonRotationSpeed, RotateMode.FastBeyond360);
+            if (_lastStep == "Stir_CC") return;
+            
+            _currentStep = "Stir_CC";
             Stir();
         }
     }

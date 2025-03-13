@@ -22,7 +22,7 @@ public class LevelSelect : MonoBehaviour
         Actions.UpdateLevelButtons += UpdateButtons;
         Actions.OnSetUnlockedDays += SetUnlockedDays;
         Actions.OnSetScore += SetScore;
-        Actions.OnSaveDeleted += ResetButtonLabels;
+        Actions.OnDeleteSaveFile += ResetButtonLabels;
     }
 
     private void OnDisable()
@@ -30,7 +30,7 @@ public class LevelSelect : MonoBehaviour
         Actions.UpdateLevelButtons -= UpdateButtons;
         Actions.OnSetUnlockedDays -= SetUnlockedDays;
         Actions.OnSetScore -= SetScore;
-        Actions.OnSaveDeleted -= ResetButtonLabels;
+        Actions.OnDeleteSaveFile -= ResetButtonLabels;
     }
 
     private void OnDestroy()
@@ -38,7 +38,7 @@ public class LevelSelect : MonoBehaviour
         Actions.UpdateLevelButtons -= UpdateButtons;
         Actions.OnSetUnlockedDays -= SetUnlockedDays;
         Actions.OnSetScore -= SetScore;
-        Actions.OnSaveDeleted -= ResetButtonLabels;
+        Actions.OnDeleteSaveFile -= ResetButtonLabels;
     }
     #endregion
     
