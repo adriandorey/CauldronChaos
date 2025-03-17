@@ -18,7 +18,7 @@ public class PickupBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        if(pickupUIHolder != null)
+        if (pickupUIHolder != null)
             pickupUIHolder.enabled = false;
     }
 
@@ -56,7 +56,7 @@ public class PickupBehaviour : MonoBehaviour
             //player is holding something
             if (heldObject != null)
             {
-               DropItem();
+                DropItem();
                 return;
             }
 
@@ -64,6 +64,22 @@ public class PickupBehaviour : MonoBehaviour
             Interactable container = interactionVolume.GetContainer();
             if (container != null)
             {
+                if (GameManager.Instance.IsInTutorialMode)
+                {
+                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
+                    {
+                        if (TutorialManager.CurrentStep < TutorialStep.PickUpMushroom)
+                            return;
+                    }
+
+                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
+                    {
+                        if (TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle)
+                            return;
+                    }
+
+                }
+
                 container.Interact(this);
                 playerAnimator.SetTrigger("Pickup");
             }
@@ -132,13 +148,13 @@ public class PickupBehaviour : MonoBehaviour
 
     private void RemoveItem()
     {
-        if(pickupHolder.childCount > 0)
+        if (pickupHolder.childCount > 0)
         {
-            foreach(Transform child in pickupHolder)
+            foreach (Transform child in pickupHolder)
             {
                 Destroy(child.gameObject);
             }
-            
+
             playerAnimator.SetTrigger("Drop");
         }
     }

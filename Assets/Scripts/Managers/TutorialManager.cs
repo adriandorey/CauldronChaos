@@ -90,6 +90,9 @@ public class TutorialManager : MonoBehaviour
     {
         Debug.Log("Starting Tutorial");
         queueManager.SpawnSpecificCustomer();
+
+        // Add pop up first customer has arrived colour text for recipe book
+        // add pop up to bottom corner where item appears until they interact with the thing. Purple cloud thing.
     }
 
     private void CheckStepOneCompletion()
@@ -149,6 +152,7 @@ public class TutorialManager : MonoBehaviour
         {
             // Spawn two customers to show that one cauldron can give multiple potions
             case 1:
+                // add pop up to show multiple potions.
                 StartCoroutine(SpawnTwoCustomers());
                 _tutorialPartCount++;
                 break;
