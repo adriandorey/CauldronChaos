@@ -10,7 +10,9 @@ public enum SFX_Type
     ItemInteraction,
     UISounds,
     GoblinSounds,
-    ConstantSounds
+    ConstantSounds,
+    EnvironmentAmbiance,
+    EnvironmentStingers
 }
 
 [System.Serializable]

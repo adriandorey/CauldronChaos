@@ -12,8 +12,8 @@ public class AudioManager : MonoBehaviour
 {
     [Header("Audio Managers")]
     public SFXManager sfxManager;
-
     public MusicManager musicManager;
+    public EnvironmentSFXManager environmentManager;
 
     [Header("Audio Mixers")]
     [SerializeField] private AudioMixer masterMixer;
