@@ -140,7 +140,13 @@ public class DayManager : MonoBehaviour
     {
         Debug.Log("Day Countdown Started");
         if (_currentDay % 2 == 0)
+        {
             Actions.OnStartChallenge?.Invoke(_currentDay / 2);
+        }
+        else
+        {
+            AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+        }
 
         if (_currentDay > 6)
             Actions.OnStartGoblin?.Invoke(false);

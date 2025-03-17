@@ -47,7 +47,7 @@ public class EnvironmentSFXManager : MonoBehaviour
                 break;
 
             case EnvironmentSound.regular:
-                stingersCoroutine = StartCoroutine(PlayStingersRandomly());
+                //stingersCoroutine = StartCoroutine(PlayStingersRandomly());
                 break;
 
             default:

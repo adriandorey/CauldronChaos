@@ -90,6 +90,16 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Settings)
             _previousState = gameState;
 
+        if (state != GameState.Gameplay)
+        {
+            AudioManager.instance.environmentManager.EndEnvironmentSFX();
+        }
+
+        if (state != GameState.Pause)
+        {
+            AudioManager.instance.musicManager.musicSource.pitch = 1f;
+        }
+
         gameState = state;
 
         if (_stateActions.TryGetValue(state, out Action action))

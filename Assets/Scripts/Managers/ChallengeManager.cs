@@ -61,6 +61,31 @@ public class ChallengeManager : MonoBehaviour
         if (_challengeActions.TryGetValue(challenge, out var action))
         {
             Debug.Log("Challenge Started: " + challenge);
+
+            //play the environmental audio for correct challenge
+            switch (challenge)
+            {
+                case 1:
+                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.icy);
+                    break;
+
+                case 2:
+                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+                    break;
+
+                case 3:
+                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+                    break;
+
+                case 4:
+                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.windy);
+                    break;
+
+                case 5:
+                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+                    break;
+            }
+            
             action.Invoke();
         }
         else
