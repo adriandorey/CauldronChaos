@@ -261,9 +261,13 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("WindArea")) return;
-        
+
+        Debug.Log("Windy zone entered");
+
         _isInWindZone = true;
         _windArea = other.GetComponent<WindyDay>();
+
+        AudioManager.instance.environmentManager.PlayStinger();
     }
 
     private void OnTriggerExit(Collider other)
