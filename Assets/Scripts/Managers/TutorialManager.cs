@@ -76,14 +76,13 @@ public class TutorialManager : MonoBehaviour
                 return;
             }
 
-            // Log the values right before checking the condition
-                Debug.Log($"Checking condition: {_customersServed} == {_customersSpawned}");
-                if (_customersServed == _customersSpawned)
-                {
-                    Debug.Log("Next part of tutorial should happen");
-                    ResetFlags();
-                    NextPartOfTutorial();
-                }
+            // Check if the customers served is equal to customers spawned
+            if (_customersServed == _customersSpawned)
+            {
+                Debug.Log("Next part of tutorial should happen");
+                ResetFlags();
+                NextPartOfTutorial();
+            }
         }
     }
 
@@ -112,7 +111,7 @@ public class TutorialManager : MonoBehaviour
                 if (PickedUpMushroom) NextStep("Step 3: Insert mushroom into cauldron");
                 break;
             case TutorialStep.InsertIngredient:
-                // highlight cauldron
+                // highlight a cauldron. This should also keep track of what cauldron the mushroom was put into
                 if (InsertCorrectIngredient) NextStep("Step 4: Stir the cauldron clockwise");
                 break;
             case TutorialStep.StirCauldron:
@@ -194,6 +193,7 @@ public class TutorialManager : MonoBehaviour
 
     private void RestartTutorial()
     {
+        // if the tutorial is restarted, it should also restart the cauldron that's been used if there is one.
         if(_tutorialPartCount != 1) return;
         CurrentStep = TutorialStep.HighlightRecipeBook;
         Debug.Log("You made a mistake! Restarting tutorial.");

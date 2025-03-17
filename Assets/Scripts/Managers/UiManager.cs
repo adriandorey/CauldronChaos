@@ -25,13 +25,10 @@ public class UiManager : MonoBehaviour
 
     [Header("How To Play")]
     [SerializeField] private Image howToPlayBg;
-
     [SerializeField] private Button howToPlayBack;
 
     [Header("End Of Day Animation")]
     [SerializeField] private Animator endOfDayAnim;
-
-    [SerializeField] private Animation endOfDayClip;
     [SerializeField] private Animator playerAnimator;
 
     private Dictionary<GameState, (GameObject panel, Action action)> _uiElements;
