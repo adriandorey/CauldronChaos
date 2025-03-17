@@ -476,6 +476,12 @@ public class CauldronInteraction : MonoBehaviour
                 _canInteract = false;
             else
             {
+                if(GameManager.Instance.IsInTutorialMode)
+                {
+                    if (TutorialManager.CurrentStep < TutorialStep.StirCauldron)
+                        return;
+                }
+
                 _canInteract = true;
                 InputManager.OnStir?.Invoke();
             }

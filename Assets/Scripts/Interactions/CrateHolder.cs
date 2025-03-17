@@ -45,18 +45,29 @@ public class CrateHolder : Interactable
             return;
         }
 
+        if(GameManager.Instance.IsInTutorialMode)
+        {
+            if(crateType == CrateType.Mushroom)
+            {
+                if (TutorialManager.CurrentStep < TutorialStep.PickUpMushroom)
+                    return;
+                else
+                    TutorialManager.PickedUpMushroom = true;
+            }
+
+            if(crateType == CrateType.Bottle)
+            {
+                if (TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle)
+                    return;
+                else
+                    TutorialManager.PickedUpPotionBottle = true;
+            }
+        }
 
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
 
         var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
         playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
-
-        if (crateType == CrateType.Mushroom && GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.PickUpMushroom)
-            TutorialManager.PickedUpMushroom = true;
-        
-        if(crateType == CrateType.Bottle &&  GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.PickUpPotionBottle)
-            TutorialManager.PickedUpPotionBottle = true;
-
     }
 
     // Function that handles the interaction between the goblin and the crate
