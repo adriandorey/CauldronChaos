@@ -29,6 +29,7 @@ public class RecipeBookUI : MonoBehaviour
     [SerializeField] private RecipeUI recipeUiLeft;
     [SerializeField] private RecipeUI recipeUiRight;
 
+
     private void Start()
     {
         previousPageSprite = previousPage.GetComponent<Image>().sprite;
@@ -68,7 +69,7 @@ public class RecipeBookUI : MonoBehaviour
 
     private void SetRecipes()
     {
-        if(FirstSelect.IsControllerControlling)
+        if (FirstSelect.IsControllerControlling)
         {
             previousPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.PreviousPageInputAction.GetBindingDisplayString(0));
             nextPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.NextPageInputAction.GetBindingDisplayString(0));
@@ -128,23 +129,55 @@ public class RecipeBookUI : MonoBehaviour
 
         for (int i = 0; i < recipeUI.recipeStepUI.Length; i++)
         {
+
             if (i < totalSteps)
             {
                 recipeUI.recipeStepUI[i].SetActive(true);
                 TextMeshProUGUI stirText = recipeUI.recipeStepUI[i].GetComponentInChildren<TextMeshProUGUI>();
-
                 Sprite stepSprite;
 
                 if (_availableRecipes[recipeIndex].steps[i].action == RecipeStepSO.ActionType.AddIngredient)
                 {
+                    recipeUI.recipeStepIcon[recipeIndex].enabled = false;
                     stepSprite = _availableRecipes[recipeIndex].steps[i].ingredientSprite;
+                    recipeUI.recipeStepIcon[recipeIndex].enabled = false;
                     stirText.enabled = false;
+
                 }
                 else
                 {
                     stepSprite = _availableRecipes[recipeIndex].steps[i].stirSprite;
-                    stirText.enabled = true;
-                    stirText.text = $"{_availableRecipes[recipeIndex].steps[i].stirAmount}";
+
+                    if (FirstSelect.IsControllerControlling)
+                    {
+                        stirText.enabled = false;
+                        recipeUI.recipeStepIcon[recipeIndex].enabled = true;
+
+                        if (_availableRecipes[recipeIndex].steps[i].stepName == "Stir_C")
+                        {
+                            recipeUI.recipeStepIcon[recipeIndex].sprite = PickIcon(InputManager.Instance.StirCAction.GetBindingDisplayString(1));
+                        }
+                        else
+                        {
+                            recipeUI.recipeStepIcon[recipeIndex].sprite = PickIcon(InputManager.Instance.StirCcAction.GetBindingDisplayString(1));
+                        }
+                    }
+                    else
+                    {
+                        recipeUI.recipeStepIcon[recipeIndex].enabled = false;
+                        stirText.enabled = true;
+
+                        if (_availableRecipes[recipeIndex].steps[i].stepName == "Stir_C")
+                        {
+                            stirText.text = InputManager.Instance.StirCAction.GetBindingDisplayString(0);
+                        }
+                        else
+                        {
+                            stirText.text = InputManager.Instance.StirCcAction.GetBindingDisplayString(0);
+                        }
+
+                    }
+
                 }
 
                 var stepImage = recipeUI.recipeStepUI[i].GetComponent<Image>();
@@ -183,7 +216,7 @@ public class RecipeBookUI : MonoBehaviour
 
     public void ButtonNavigation(bool isNext)
     {
-        if(isNext)
+        if (isNext)
         {
             if ((_pageNumber + 1) * 2 < _availableRecipes.Length)
             {
@@ -242,5 +275,6 @@ public class RecipeUI
     public Image potionIcon;
     public TextMeshProUGUI potionPrice;
     public GameObject[] recipeStepUI;
+    public Image[] recipeStepIcon;
 }
 
