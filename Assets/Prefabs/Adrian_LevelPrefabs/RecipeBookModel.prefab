@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7576510418696572373}
   - component: {fileID: 1919421321849253072}
   m_Layer: 6
-  m_Name: RecipeBook
+  m_Name: RecipeBookModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

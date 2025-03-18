@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 1464665781557800265}
   - component: {fileID: 6680081007002141119}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -971,7 +971,7 @@ GameObject:
   - component: {fileID: 2456614116396769994}
   - component: {fileID: 8874856152633861915}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1408,7 +1408,7 @@ GameObject:
   - component: {fileID: 1414513953303444802}
   - component: {fileID: 2262811632076244173}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1543,7 +1543,7 @@ GameObject:
   - component: {fileID: 1973839512845902000}
   - component: {fileID: 6068483651316507334}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1830,7 +1830,7 @@ GameObject:
   - component: {fileID: 902871192842851062}
   - component: {fileID: 8964926997335806402}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2379,7 +2379,7 @@ GameObject:
   - component: {fileID: 7212647530443415440}
   - component: {fileID: 8339021673033229821}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2562,7 +2562,7 @@ GameObject:
   - component: {fileID: 5374664134107423274}
   - component: {fileID: 8230731499598864738}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2697,7 +2697,7 @@ GameObject:
   - component: {fileID: 95684552444721302}
   - component: {fileID: 7645703255411843421}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2832,7 +2832,7 @@ GameObject:
   - component: {fileID: 8028831727784601993}
   - component: {fileID: 2033905850485114640}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3252,7 +3252,7 @@ GameObject:
   - component: {fileID: 286304669221183957}
   - component: {fileID: 1808672903993609801}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3949,7 +3949,7 @@ GameObject:
   - component: {fileID: 4060303033208598774}
   - component: {fileID: 7393094897112010315}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5140,7 +5140,7 @@ GameObject:
   - component: {fileID: 4624864097593260201}
   - component: {fileID: 4601303719731347577}
   m_Layer: 0
-  m_Name: Text_Control
+  m_Name: Text_Control_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5656,6 +5656,54 @@ MonoBehaviour:
   recipeUiRightObj: {fileID: 3855539660366807955}
   previousPage: {fileID: 6552983113663042259}
   nextPage: {fileID: 281914543025872782}
+  recipeUiLeft:
+    recipeName: {fileID: 2887793582090919376}
+    potionIcon: {fileID: 6609530871745945418}
+    potionPrice: {fileID: 1793268911152994056}
+    recipeVisuals:
+    - mainObject: {fileID: 4384049950554709815}
+      stirIcon: {fileID: 5326881903976818878}
+      stirButtonText: {fileID: 8230731499598864738}
+    - mainObject: {fileID: 3816807579693593282}
+      stirIcon: {fileID: 3452040007236212996}
+      stirButtonText: {fileID: 6680081007002141119}
+    - mainObject: {fileID: 9112475612270753015}
+      stirIcon: {fileID: 7170281664013631882}
+      stirButtonText: {fileID: 8964926997335806402}
+    - mainObject: {fileID: 4109282302351931203}
+      stirIcon: {fileID: 1571855332905023030}
+      stirButtonText: {fileID: 7393094897112010315}
+    - mainObject: {fileID: 475520456937432344}
+      stirIcon: {fileID: 2193858916993349613}
+      stirButtonText: {fileID: 8339021673033229821}
+    - mainObject: {fileID: 5061103810412839526}
+      stirIcon: {fileID: 8314605880304739595}
+      stirButtonText: {fileID: 1808672903993609801}
+  recipeUiRight:
+    recipeName: {fileID: 8863688474429434227}
+    potionIcon: {fileID: 5069031371357788343}
+    potionPrice: {fileID: 3441332826653032847}
+    recipeVisuals:
+    - mainObject: {fileID: 2825075396719861979}
+      stirIcon: {fileID: 3889864570426320561}
+      stirButtonText: {fileID: 7645703255411843421}
+    - mainObject: {fileID: 971675093016463396}
+      stirIcon: {fileID: 1736107375311329874}
+      stirButtonText: {fileID: 6068483651316507334}
+    - mainObject: {fileID: 5780313363272186206}
+      stirIcon: {fileID: 750620982854755936}
+      stirButtonText: {fileID: 8874856152633861915}
+    - mainObject: {fileID: 921366656834166481}
+      stirIcon: {fileID: 5099170600045452892}
+      stirButtonText: {fileID: 2033905850485114640}
+    - mainObject: {fileID: 2122444057507197386}
+      stirIcon: {fileID: 4290472892415419910}
+      stirButtonText: {fileID: 4601303719731347577}
+    - mainObject: {fileID: 2323359789845158708}
+      stirIcon: {fileID: 2476847094669739525}
+      stirButtonText: {fileID: 2262811632076244173}
+  clockSprite: {fileID: 21300000, guid: 3b02d64a6455a2d4eb068176b2de017d, type: 3}
+  counterClockSprite: {fileID: 21300000, guid: 9e0e82dc67d65c04e94f625c6b06582b, type: 3}
   xboxIcons:
     buttonSouth: {fileID: 21300000, guid: f609c9b3b1675f947a865ec558b5ad90, type: 3}
     buttonNorth: {fileID: 21300000, guid: 17fd7d74524d4cc4ea612a100880d012, type: 3}
@@ -5696,42 +5744,6 @@ MonoBehaviour:
     rightStick: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
     leftStickPress: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
     rightStickPress: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
-  recipeUiLeft:
-    recipeName: {fileID: 2887793582090919376}
-    potionIcon: {fileID: 6609530871745945418}
-    potionPrice: {fileID: 1793268911152994056}
-    recipeStepUI:
-    - {fileID: 4384049950554709815}
-    - {fileID: 3816807579693593282}
-    - {fileID: 9112475612270753015}
-    - {fileID: 4109282302351931203}
-    - {fileID: 475520456937432344}
-    - {fileID: 5061103810412839526}
-    recipeStepIcon:
-    - {fileID: 5326881903976818878}
-    - {fileID: 3452040007236212996}
-    - {fileID: 7170281664013631882}
-    - {fileID: 1571855332905023030}
-    - {fileID: 2193858916993349613}
-    - {fileID: 8314605880304739595}
-  recipeUiRight:
-    recipeName: {fileID: 8863688474429434227}
-    potionIcon: {fileID: 5069031371357788343}
-    potionPrice: {fileID: 3441332826653032847}
-    recipeStepUI:
-    - {fileID: 2825075396719861979}
-    - {fileID: 971675093016463396}
-    - {fileID: 5780313363272186206}
-    - {fileID: 921366656834166481}
-    - {fileID: 2122444057507197386}
-    - {fileID: 2323359789845158708}
-    recipeStepIcon:
-    - {fileID: 3889864570426320561}
-    - {fileID: 1736107375311329874}
-    - {fileID: 750620982854755936}
-    - {fileID: 5099170600045452892}
-    - {fileID: 4290472892415419910}
-    - {fileID: 2476847094669739525}
 --- !u!1 &9112475612270753015
 GameObject:
   m_ObjectHideFlags: 0
