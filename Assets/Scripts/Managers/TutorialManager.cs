@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public enum TutorialStep
@@ -34,7 +36,20 @@ public class TutorialManager : MonoBehaviour
     private int _customersSpawned;
     private int _customersServed;
     
+    [SerializeField] private GameObject tutorialPopup;
+    [SerializeField] private TextMeshProUGUI tutorialText;
 
+    [Header("Tutorial Text")]
+    [TextArea]
+    [SerializeField] private string partOneText;
+    [TextArea]
+    [SerializeField] private string partTwoText;
+
+
+    private void Start()
+    {
+        tutorialPopup.SetActive(false);
+    }
 
     #region Enable / Disable / Destroy
 
@@ -91,8 +106,7 @@ public class TutorialManager : MonoBehaviour
         Debug.Log("Starting Tutorial");
         queueManager.SpawnSpecificCustomer();
 
-        // Add pop up first customer has arrived colour text for recipe book
-        // add pop up to bottom corner where item appears until they interact with the thing. Purple cloud thing.
+        StartCoroutine(WaitForCustomer(partOneText));
     }
 
     private void CheckStepOneCompletion()
@@ -107,7 +121,11 @@ public class TutorialManager : MonoBehaviour
         {
             case TutorialStep.HighlightRecipeBook:
                 // Highlight book
-                if (InteractedWithBook) NextStep("Step 2: Pick Up Mushroom");
+                if (InteractedWithBook)
+                {
+                    tutorialPopup.SetActive(false);
+                    NextStep("Step 2: Pick Up Mushroom");
+                }
                 break;
             case TutorialStep.PickUpMushroom:
                 // Highlight crate
@@ -152,13 +170,14 @@ public class TutorialManager : MonoBehaviour
         {
             // Spawn two customers to show that one cauldron can give multiple potions
             case 1:
-                // add pop up to show multiple potions.
+                
                 StartCoroutine(SpawnTwoCustomers());
                 _tutorialPartCount++;
                 break;
             // This will be unguided the player needs to complete it themselves. - We need something to tell them this?
             case 2:
                 queueManager.SpawnSpecificCustomer();
+                tutorialPopup.SetActive(false);
                 _customersSpawned++;
                 _tutorialPartCount++;
                 break;
@@ -173,7 +192,16 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-
+    // This is used to wait for the customer to get in queue then to show the pop up.
+    private IEnumerator WaitForCustomer(string insertText)
+    {
+        yield return new WaitForSeconds(5f);
+        tutorialPopup.SetActive(true);
+        
+        tutorialText.text = insertText;
+    }
+    
+    // Spawns Two Customers with a pause between the two so they're not spawned on each other.
     private IEnumerator SpawnTwoCustomers()
     {
         queueManager.SpawnSpecificCustomer();
@@ -185,11 +213,15 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         CurrentStep = TutorialStep.PickUpPotionBottle;
+        tutorialText.text =  partTwoText;
+        tutorialPopup.SetActive(true);
     }
 
+    // Waits 5 seconds after the last tutorial part is completed, then opens the store and starts the timer.
+    // Also disables the Tutorial Manager.
     private IEnumerator StartDay()
     {
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(5);
         Actions.OnStartDay?.Invoke();
         enabled = false;
     }
@@ -199,8 +231,8 @@ public class TutorialManager : MonoBehaviour
     {
         // if the tutorial is restarted, it should also restart the cauldron that's been used if there is one.
         if(_tutorialPartCount != 1) return;
+        StartCoroutine(WaitForCustomer("You made a mistake!\nTry Again!"));
         CurrentStep = TutorialStep.HighlightRecipeBook;
-        Debug.Log("You made a mistake! Restarting tutorial.");
         ResetFlags();
     }
 
@@ -221,5 +253,6 @@ public class TutorialManager : MonoBehaviour
         FilledPotionBottle = false;
         ServedPotion = false;
         MadeIncorrectMove = false;
+        tutorialPopup.SetActive(false);
     }
 }

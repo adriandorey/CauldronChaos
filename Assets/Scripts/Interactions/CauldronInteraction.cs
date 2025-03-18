@@ -145,7 +145,7 @@ public class CauldronInteraction : MonoBehaviour
                 break;
             case TutorialStep.FillPotionBottle:  if(_currentStep == "Bottle_Potion")  TutorialManager.FilledPotionBottle = true;
                 break;
-            default: TutorialManager.MadeIncorrectMove = true; break;
+            default: HandleIncorrectStep(); break;
         }
     }
 
@@ -483,7 +483,7 @@ public class CauldronInteraction : MonoBehaviour
                 }
 
                 _canInteract = true;
-                InputManager.OnStir?.Invoke();
+                Actions.OnShowStir?.Invoke();
             }
 
         }
@@ -495,7 +495,7 @@ public class CauldronInteraction : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             _canInteract = false;
-            InputManager.OnHide?.Invoke();
+            Actions.OnHideUI?.Invoke();
         }
     }
 }

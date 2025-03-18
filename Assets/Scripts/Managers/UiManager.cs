@@ -82,7 +82,7 @@ public class UiManager : MonoBehaviour
 
     private void UpdateUIForGameState(GameState state)
     {
-        Debug.Log("Setting gamestate for " + state);
+        // Debug.Log("Setting gamestate for " + state);
 
         foreach (var uiElement in _uiElements.Values)
         {

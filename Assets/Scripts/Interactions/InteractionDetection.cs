@@ -19,11 +19,11 @@ public class InteractionDetection : MonoBehaviour
 
             if (interactable.IsContainer())
             {
-                InputManager.OnPickup?.Invoke();
+                Actions.OnShowPickup?.Invoke();
             }
             else
             {
-                InputManager.OnInteract?.Invoke();
+                Actions.OnShowInteraction?.Invoke();
             }
         }
     }
@@ -40,7 +40,7 @@ public class InteractionDetection : MonoBehaviour
             interactables.Remove(interactable);
 
             if (interactables.Count == 0)
-                InputManager.OnHide?.Invoke();
+                Actions.OnHideUI?.Invoke();
         }
     }
 

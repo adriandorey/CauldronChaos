@@ -11048,8 +11048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windDirect: 0
-  strength: 5
-  direction: {x: 0, y: 0, z: 0}
+  strength: 8
   windows:
   - {fileID: 480223765}
   - {fileID: 480223764}

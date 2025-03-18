@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5299028066473166349}
   - component: {fileID: 3892394900921617361}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Circle 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 389837835895213167}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.014, y: 0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12005750fab148740bdbefafe05a2dc7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 05103f3067c644642aa8af4024be0732, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 848544226180747870}
   - component: {fileID: 1698351066911815133}
   - component: {fileID: 3143820256570925506}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 5672755786491921061}
   - component: {fileID: 2353753502297967272}
   - component: {fileID: 8222872330306017181}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: IngredientEndZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3274230586630052886}
   - component: {fileID: 1038735958864635697}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Stir
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6289847035199299730}
   - component: {fileID: 6391177040410721172}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: PotionFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +356,7 @@ GameObject:
   - component: {fileID: 80016241788307924}
   - component: {fileID: 68611658671651956}
   - component: {fileID: 1078611641304228769}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: CauldronTrigger
   m_TagString: Cauldron
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1715695863955178589}
   - component: {fileID: 66847425298522328}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Circle 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +448,7 @@ Transform:
   m_GameObject: {fileID: 2620717438358109770}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.014, y: 0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -495,7 +495,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12005750fab148740bdbefafe05a2dc7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 05103f3067c644642aa8af4024be0732, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -516,7 +516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1263653897819538270}
   - component: {fileID: 2355451675625078802}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: IncorrectStep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -565,7 +565,7 @@ GameObject:
   - component: {fileID: 4175822155246736988}
   - component: {fileID: 7987518720466273988}
   - component: {fileID: 8033394736698248445}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Cauldron
   m_TagString: Cauldron
   m_Icon: {fileID: 0}
@@ -661,11 +661,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 685c37436174fc94aab51eca9cff2e9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistance: 0
-  cauldronModel: {fileID: 1284849389141246093}
+  cauldronMinDistance: 1
   wanderRadius: 8
   minMovementTime: 3
   maxMovementTime: 10
+  cauldronModel: {fileID: 1284849389141246093}
   liftAmount: 0.4
 --- !u!195 &7987518720466273988
 NavMeshAgent:
@@ -721,7 +721,7 @@ GameObject:
   - component: {fileID: 8398806761146628550}
   - component: {fileID: 3573839753763587431}
   - component: {fileID: 3441860958824201081}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: CauldronPoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -832,7 +832,7 @@ GameObject:
   - component: {fileID: 1284849389141246093}
   - component: {fileID: 4763364220805116274}
   - component: {fileID: 3221904393584103392}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: CauldronModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -916,7 +916,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3643019974489394099}
   - component: {fileID: 2229680116212076389}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: AddIngredient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -965,7 +965,7 @@ GameObject:
   - component: {fileID: 2321375640987557513}
   - component: {fileID: 3924313962475404541}
   - component: {fileID: 2305281056739717735}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1048,7 +1048,7 @@ GameObject:
   - component: {fileID: 7903852435587969304}
   - component: {fileID: 2368144188668533519}
   - component: {fileID: 6583230757831369852}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: CauldronLiquid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1129,7 +1129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8134134735128569906}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: SFXLibraryHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1165,7 +1165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7473578370440417376}
   - component: {fileID: 365235146948645820}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Circle 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1181,7 +1181,7 @@ Transform:
   m_GameObject: {fileID: 7147402233806199137}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.014, y: 0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1228,7 +1228,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12005750fab148740bdbefafe05a2dc7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 05103f3067c644642aa8af4024be0732, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1248,7 +1248,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8901120777319129939}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: StirStick
   m_TagString: Untagged
   m_Icon: {fileID: 0}

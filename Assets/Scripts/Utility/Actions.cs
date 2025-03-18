@@ -8,7 +8,6 @@ public static class Actions
     public static Action OnToggleRecipeBook;
 
     // Shop Actions
-
     #region Shop Actions
 
     /// <summary> Starts tutorial Day  </summary>
@@ -36,7 +35,6 @@ public static class Actions
     public static Action<GameState> OnChangeUi; // used for UI changes
 
     // Gameplay Actions
-
     #region Gameplay Actions
 
     /// <summary> Updates the Level Select buttons</summary>
@@ -54,7 +52,6 @@ public static class Actions
     #endregion
 
     // Save Manager Actions
-
     #region Save Manager Actions
 
     /// <summary> Tells listeners if a save exists or not </summary>
@@ -68,20 +65,23 @@ public static class Actions
 
     #endregion
 
-    // Actions for First Select
-
+    // Actions for First Select / Above Player UI
     #region First Select Actions
 
-    /// <summary> </summary>
+    /// <summary> Selects the Recipe Button </summary>
     public static Action<GameObject> OnSelectRecipeButton;
 
-    /// <summary> </summary>
+    /// <summary> Sets UI location for the first selection </summary>
     public static Action<Page> OnSetUiLocation;
+
+    public static Action OnShowInteraction;
+    public static Action OnShowStir;
+    public static Action OnShowPickup;
+    public static Action OnHideUI;
 
     #endregion
 
     // Actions for Menu
-
     #region Menu Actions
 
     /// <summary> Used to open settings </summary>
@@ -99,7 +99,6 @@ public static class Actions
     #endregion
 
     // Challenge Actions
-
     #region Challenge Actions
 
     /// <summary> Used to start a challenge based on the day </summary>
