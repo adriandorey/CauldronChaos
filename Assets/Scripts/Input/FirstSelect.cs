@@ -31,9 +31,9 @@ public class FirstSelect : MonoBehaviour
     private Page _currentLocation;
     private Dictionary<Page, Action> _selectActions;
 
-    private bool _isKeyboardControlling;
+    public static bool IsKeyboardControlling;
+    public static bool IsControllerControlling;
     private bool _isMouseControlling;
-    private bool _isControllerControlling;
 
     private bool _isInRecipeBook;
     private GameObject _recipeBookButton;
@@ -71,7 +71,7 @@ public class FirstSelect : MonoBehaviour
             }
         }
 
-        _isControllerControlling = Gamepad.current != null;
+        IsControllerControlling = Gamepad.current != null;
         InputSystem.onDeviceChange += OnDeviceChange;
     }
 
@@ -116,7 +116,7 @@ public class FirstSelect : MonoBehaviour
         _isInRecipeBook = true;
         _recipeBookButton = button;
 
-        if (_isKeyboardControlling || _isControllerControlling)
+        if (IsKeyboardControlling || IsControllerControlling)
         {
             eventSystem.SetSelectedGameObject(null);
             eventSystem.SetSelectedGameObject(button, new BaseEventData(eventSystem));
@@ -149,12 +149,12 @@ public class FirstSelect : MonoBehaviour
 
     private void SetUiLocation(Page newLocation)
     {
-        Debug.Log($"Switching UI location: {_currentLocation} -> {newLocation}");
+        // Debug.Log($"Switching UI location: {_currentLocation} -> {newLocation}");
         _currentLocation = newLocation;
 
         OnRemoveSelection();
 
-        if (_isKeyboardControlling || _isControllerControlling)
+        if (IsKeyboardControlling || IsControllerControlling)
             if (_selectActions.ContainsKey(_currentLocation))
                 _selectActions[_currentLocation]();
     }
@@ -180,8 +180,8 @@ public class FirstSelect : MonoBehaviour
             //Debug.Log("Mouse is now navigating");
 
             _isMouseControlling = true;
-            _isKeyboardControlling = false;
-            _isControllerControlling = false;
+            IsKeyboardControlling = false;
+            IsControllerControlling = false;
 
             Cursor.lockState = CursorLockMode.None;
 
@@ -194,16 +194,16 @@ public class FirstSelect : MonoBehaviour
         if (Keyboard.current == null) return;
         var keyboard = Keyboard.current;
 
-        if (_isKeyboardControlling) return;
+        if (IsKeyboardControlling) return;
 
         if (keyboard?.anyKey.wasPressedThisFrame != true) return;
 
         Cursor.lockState = CursorLockMode.Locked;
 
         //Debug.Log("Keyboard is now navigating");
-        _isKeyboardControlling = true;
+        IsKeyboardControlling = true;
         _isMouseControlling = false;
-        _isControllerControlling = false;
+        IsControllerControlling = false;
 
         if (_isInRecipeBook)
         {
@@ -220,7 +220,7 @@ public class FirstSelect : MonoBehaviour
         if (Gamepad.current == null) return;
         var gamepad = Gamepad.current;
 
-        if (_isControllerControlling) return;
+        if (IsControllerControlling) return;
 
         // Only switch if the controller is actively used
         if (!gamepad.buttonSouth.wasPressedThisFrame &&
@@ -234,9 +234,9 @@ public class FirstSelect : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         // Debug.Log("Controller is now navigating");
-        _isControllerControlling = true;
+        IsControllerControlling = true;
         _isMouseControlling = false;
-        _isKeyboardControlling = false;
+        IsKeyboardControlling = false;
 
         if (_selectActions.ContainsKey(_currentLocation))
             _selectActions[_currentLocation]();
@@ -249,7 +249,7 @@ public class FirstSelect : MonoBehaviour
             switch (change)
             {
                 case InputDeviceChange.Removed:
-                    _isControllerControlling = false;
+                    IsControllerControlling = false;
                     OnRemoveSelection();
                     break;
             }

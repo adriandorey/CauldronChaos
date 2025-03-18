@@ -7,7 +7,10 @@ public class BookInteraction : Interactable
     //Function that broadcasts the action to toggle the recipe book being on
     public override void Interact()
     {
-        Debug.Log("BookInteraction");
+        //Debug.Log("BookInteraction");
+        if (GameManager.Instance.IsInTutorialMode)
+            TutorialManager.InteractedWithBook = true;
+
         Actions.OnToggleRecipeBook?.Invoke();
     }
 

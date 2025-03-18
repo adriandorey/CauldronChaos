@@ -107,6 +107,12 @@ public class CauldronInteraction : MonoBehaviour
         _ingredientGo = ingredientObject;
 
         // Set the current step to the ingredient's step
+
+        if(_currentStep != null)
+        {
+            _lastStep = _currentStep;
+        }
+
         _currentStep = null;
         _currentStep = ingredientHolder.recipeIngredient.stepName;
 
@@ -139,13 +145,15 @@ public class CauldronInteraction : MonoBehaviour
 
     private void TutorialSteps()
     {
+        if (TutorialManager.tutorialPartCount != 1) return;
+
         switch (TutorialManager.CurrentStep)
         {
             case TutorialStep.InsertIngredient:  if (_currentStep == "Mushroom") TutorialManager.InsertCorrectIngredient = true;
                 break;
             case TutorialStep.FillPotionBottle:  if(_currentStep == "Bottle_Potion")  TutorialManager.FilledPotionBottle = true;
                 break;
-            default: TutorialManager.MadeIncorrectMove = true; break;
+            default: HandleIncorrectStep(); break;
         }
     }
 
@@ -379,6 +387,8 @@ public class CauldronInteraction : MonoBehaviour
 
         if(thrownPotion != null)
         {
+            thrownPotion.GetComponent<Collider>().enabled = true;
+
             Sequence throwSequence = DOTween.Sequence();
 
             // Scale and throw at the same time
@@ -483,7 +493,7 @@ public class CauldronInteraction : MonoBehaviour
                 }
 
                 _canInteract = true;
-                InputManager.OnStir?.Invoke();
+                Actions.OnShowStir?.Invoke();
             }
 
         }
@@ -495,7 +505,7 @@ public class CauldronInteraction : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             _canInteract = false;
-            InputManager.OnHide?.Invoke();
+            Actions.OnHideUI?.Invoke();
         }
     }
 }

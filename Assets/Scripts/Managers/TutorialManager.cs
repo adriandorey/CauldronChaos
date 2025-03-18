@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public enum TutorialStep
 {
@@ -30,11 +34,26 @@ public class TutorialManager : MonoBehaviour
     public static bool ServedPotion;
     public static bool MadeIncorrectMove;
 
-    private int _tutorialPartCount = 1;
+    public static int tutorialPartCount;
+
     private int _customersSpawned;
     private int _customersServed;
-    
 
+    [Header("Pop Up")]
+    [SerializeField] private GameObject tutorialPopup;
+    [SerializeField] private TextMeshProUGUI tutorialText;
+
+    [Header("Tutorial Text")]
+    [TextArea]
+    [SerializeField] private string partOneText;
+    [TextArea]
+    [SerializeField] private string partTwoText;
+
+
+    private void Start()
+    {
+        tutorialPopup.SetActive(false);
+    }
 
     #region Enable / Disable / Destroy
 
@@ -63,7 +82,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (GameManager.Instance.IsInTutorialMode)
         {
-            if (_tutorialPartCount == 1)
+            if (tutorialPartCount == 1)
             {
                 // if at any point they make an incorrect move, the tutorial will start over.
                 if (MadeIncorrectMove)
@@ -89,10 +108,9 @@ public class TutorialManager : MonoBehaviour
     private void StartTutorial()
     {
         Debug.Log("Starting Tutorial");
+        tutorialPartCount = 1;
         queueManager.SpawnSpecificCustomer();
-
-        // Add pop up first customer has arrived colour text for recipe book
-        // add pop up to bottom corner where item appears until they interact with the thing. Purple cloud thing.
+        _customersSpawned++;
     }
 
     private void CheckStepOneCompletion()
@@ -100,14 +118,20 @@ public class TutorialManager : MonoBehaviour
         if (ServedPotion && CurrentStep != TutorialStep.ServePotion)
         {
             queueManager.SpawnSpecificCustomer();
+            _customersSpawned++;
             ResetFlags();
             return;
         }
+
         switch (CurrentStep)
         {
             case TutorialStep.HighlightRecipeBook:
                 // Highlight book
-                if (InteractedWithBook) NextStep("Step 2: Pick Up Mushroom");
+                if (InteractedWithBook)
+                {
+                    tutorialPopup.SetActive(false);
+                    NextStep("Step 2: Pick Up Mushroom");
+                }
                 break;
             case TutorialStep.PickUpMushroom:
                 // Highlight crate
@@ -148,19 +172,20 @@ public class TutorialManager : MonoBehaviour
     {
         ResetFlags();
 
-        switch (_tutorialPartCount)
+        switch (tutorialPartCount)
         {
             // Spawn two customers to show that one cauldron can give multiple potions
             case 1:
-                // add pop up to show multiple potions.
+                
                 StartCoroutine(SpawnTwoCustomers());
-                _tutorialPartCount++;
+                tutorialPartCount++;
                 break;
             // This will be unguided the player needs to complete it themselves. - We need something to tell them this?
             case 2:
                 queueManager.SpawnSpecificCustomer();
+                tutorialPopup.SetActive(false);
                 _customersSpawned++;
-                _tutorialPartCount++;
+                tutorialPartCount++;
                 break;
             // Completing the previous ones will start the day.
             case 3:
@@ -173,7 +198,8 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-
+    
+    // Spawns Two Customers with a pause between the two so they're not spawned on each other.
     private IEnumerator SpawnTwoCustomers()
     {
         queueManager.SpawnSpecificCustomer();
@@ -187,9 +213,11 @@ public class TutorialManager : MonoBehaviour
         CurrentStep = TutorialStep.PickUpPotionBottle;
     }
 
+    // Waits 5 seconds after the last tutorial part is completed, then opens the store and starts the timer.
+    // Also disables the Tutorial Manager.
     private IEnumerator StartDay()
     {
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(5);
         Actions.OnStartDay?.Invoke();
         enabled = false;
     }
@@ -198,9 +226,12 @@ public class TutorialManager : MonoBehaviour
     private void RestartTutorial()
     {
         // if the tutorial is restarted, it should also restart the cauldron that's been used if there is one.
-        if(_tutorialPartCount != 1) return;
+        if(tutorialPartCount != 1) return;
+        
+        tutorialPopup.SetActive(true);
+        tutorialText.text = "You made a mistake!\nTry Again!";
+        
         CurrentStep = TutorialStep.HighlightRecipeBook;
-        Debug.Log("You made a mistake! Restarting tutorial.");
         ResetFlags();
     }
 
@@ -221,5 +252,23 @@ public class TutorialManager : MonoBehaviour
         FilledPotionBottle = false;
         ServedPotion = false;
         MadeIncorrectMove = false;
+        tutorialPopup.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Customer"))
+        {
+            if(tutorialPartCount == 1)
+            {
+                tutorialPopup.SetActive(true);
+                tutorialText.text = partOneText;
+            }
+            else if(tutorialPartCount == 2)
+            {
+                tutorialPopup.SetActive(true);
+                tutorialText.text = partTwoText;
+            }
+        }
     }
 }

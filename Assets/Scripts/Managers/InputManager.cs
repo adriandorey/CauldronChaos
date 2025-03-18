@@ -24,25 +24,19 @@ public class InputManager : MonoBehaviour
     public static Action<InputAction.CallbackContext> PreviousPageAction;
     #endregion
 
-    // actions for above player interaction
-    public static Action OnInteract;
-    public static Action OnPickup;
-    public static Action OnStir;
-    public static Action OnHide;
-
     public static Action OnGameplayInputs;
     public static Action OnRecipeBookInputs;
 
     #region Input Actions
     private PlayerInput _playerControls;
-    private InputAction _interactInputAction;
-    private InputAction _pickupInputAction;
-    private InputAction _stirCAction;
-    private InputAction _stirCcAction;
-    private InputAction _moveInputAction;
-    private InputAction _pauseInputAction;
-    private InputAction _nextPageInputAction;
-    private InputAction _previousPageInputAction;
+    internal InputAction InteractInputAction;
+    internal InputAction PickupInputAction;
+    internal InputAction StirCAction;
+    internal InputAction StirCcAction;
+    internal InputAction MoveInputAction;
+    internal InputAction PauseInputAction;
+    internal InputAction NextPageInputAction;
+    internal InputAction PreviousPageInputAction;
     #endregion
 
 
@@ -84,18 +78,18 @@ public class InputManager : MonoBehaviour
     {
         _playerControls = GetComponent<PlayerInput>();
 
-        _moveInputAction = _playerControls.actions.FindAction("Move");
-        _pauseInputAction = _playerControls.actions.FindAction("Pause");
-        _nextPageInputAction = _playerControls.actions.FindAction("Next Page");
-        _previousPageInputAction = _playerControls.actions.FindAction("Previous Page");
-        _interactInputAction = _playerControls.actions.FindAction("Interact");
-        _pickupInputAction = _playerControls.actions.FindAction("Pickup");
-        _stirCAction = _playerControls.actions.FindAction("StirClockwise");
-        _stirCcAction = _playerControls.actions.FindAction("StirCounterClockwise");
+        MoveInputAction = _playerControls.actions.FindAction("Move");
+        PauseInputAction = _playerControls.actions.FindAction("Pause");
+        NextPageInputAction = _playerControls.actions.FindAction("Next Page");
+        PreviousPageInputAction = _playerControls.actions.FindAction("Previous Page");
+        InteractInputAction = _playerControls.actions.FindAction("Interact");
+        PickupInputAction = _playerControls.actions.FindAction("Pickup");
+        StirCAction = _playerControls.actions.FindAction("StirClockwise");
+        StirCcAction = _playerControls.actions.FindAction("StirCounterClockwise");
         
 
-        _previousPageInputAction.Disable();
-        _nextPageInputAction.Disable();
+        PreviousPageInputAction.Disable();
+        NextPageInputAction.Disable();
         HideInteractionPickup();
     }
 
@@ -105,10 +99,6 @@ public class InputManager : MonoBehaviour
         // Actions.OnEndDay += TurnOffInteraction;
         // Actions.OnStartDay += TurnOnInteraction;
         // Actions.OnTutorialDay += TurnOnInteraction;
-        OnInteract += ShowInteraction;
-        OnPickup += ShowPickup;
-        OnStir += ShowStir;
-        OnHide+= HideInteractionPickup;
         OnRecipeBookInputs += RecipeBookInputs;
         OnGameplayInputs += GameplayInputs;
     }
@@ -118,10 +108,6 @@ public class InputManager : MonoBehaviour
         // Actions.OnEndDay -= TurnOffInteraction;
         // Actions.OnStartDay -= TurnOnInteraction;
         // Actions.OnTutorialDay -= TurnOffInteraction;
-        OnInteract -= ShowInteraction;
-        OnPickup -= ShowPickup;
-        OnStir -= ShowStir;
-        OnHide-= HideInteractionPickup;
         OnRecipeBookInputs -= RecipeBookInputs;
         OnGameplayInputs -= GameplayInputs;
     }
@@ -131,10 +117,6 @@ public class InputManager : MonoBehaviour
         // Actions.OnEndDay -= TurnOffInteraction;
         // Actions.OnStartDay -= TurnOnInteraction;
         // Actions.OnTutorialDay -= TurnOffInteraction;
-        OnInteract -= ShowInteraction;
-        OnPickup -= ShowPickup;
-        OnStir -= ShowStir;
-        OnHide -= HideInteractionPickup;
         OnRecipeBookInputs -= RecipeBookInputs;
         OnGameplayInputs -= GameplayInputs;
     }
@@ -208,9 +190,9 @@ public class InputManager : MonoBehaviour
         abovePlayerInteraction.enabled = true;
 
         if(IsControllerConnected())
-            abovePlayerInteractionText.text = _interactInputAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = _interactInputAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(0);
     }
 
     private void ShowPickup()
@@ -218,18 +200,18 @@ public class InputManager : MonoBehaviour
         abovePlayerInteraction.enabled = true;
 
         if (IsControllerConnected())
-            abovePlayerInteractionText.text = _pickupInputAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = _pickupInputAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(0);
     }
 
     private void ShowStir()
     {
         abovePlayerInteraction.enabled = true;
         if (IsControllerConnected())
-            abovePlayerInteractionText.text = _stirCcAction.GetBindingDisplayString(1) + " / " + _stirCAction.GetBindingDisplayString(1);
+            abovePlayerInteractionText.text = StirCcAction.GetBindingDisplayString(1) + " / " + StirCAction.GetBindingDisplayString(1);
         else
-            abovePlayerInteractionText.text = _stirCcAction.GetBindingDisplayString(0) + " / " + _stirCAction.GetBindingDisplayString(0);
+            abovePlayerInteractionText.text = StirCcAction.GetBindingDisplayString(0) + " / " + StirCAction.GetBindingDisplayString(0);
     }
 
     private void HideInteractionPickup()
@@ -247,17 +229,17 @@ public class InputManager : MonoBehaviour
 
     private void GameplayInputs()
     {
-        _moveInputAction.Enable();
-        _pauseInputAction.Enable();
-        _nextPageInputAction.Disable();
-        _previousPageInputAction.Disable();
+        MoveInputAction.Enable();
+        PauseInputAction.Enable();
+        NextPageInputAction.Disable();
+        PreviousPageInputAction.Disable();
     }
 
     private void RecipeBookInputs()
     {
-        _moveInputAction.Disable();
-        _pauseInputAction.Disable();
-        _nextPageInputAction.Enable();
-        _previousPageInputAction.Enable();
+        MoveInputAction.Disable();
+        PauseInputAction.Disable();
+        NextPageInputAction.Enable();
+        PreviousPageInputAction.Enable();
     }
 }

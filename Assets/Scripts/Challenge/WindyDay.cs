@@ -14,6 +14,7 @@ public class WindyDay : MonoBehaviour
 
     [Header("Wind Settings")]
     [SerializeField] private float strength = 5;
+    private float _currentStrength;
     private Vector3 _direction;
     private CustomTimer _windDirectionChange;
     private readonly float _windChangeTime = 30f;
@@ -57,6 +58,9 @@ public class WindyDay : MonoBehaviour
     // Starts the wind challenge. 
     private void StartWind()
     {
+        Debug.Log("Starting windy day");
+        _currentStrength = strength;
+        
         // Removes all the windows from their pane        
         foreach(var window in windows)
         {
@@ -69,7 +73,8 @@ public class WindyDay : MonoBehaviour
     // Stops the wind from changing direction
     private void StopWind()
     {
-        strength = 0;
+        Debug.Log("Stopping windy day");
+        _currentStrength = 0;
         _windDirectionChange.StopTimer();
         foreach (var window in windows)
         {
@@ -98,6 +103,6 @@ public class WindyDay : MonoBehaviour
     // Is called to add the wind resistance (force) to the rigidbody of the item/character
     internal Vector3 AddWindResistance()
     {
-        return _direction * strength;
+        return _direction * _currentStrength;
     }
 }

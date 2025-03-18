@@ -16,7 +16,7 @@ public class PickupDetection : MonoBehaviour
         {
             //Debug.Log("Pickup_Drop detected");
             pickupObjects.Add(pickup);
-            InputManager.OnPickup?.Invoke();
+            Actions.OnShowPickup?.Invoke();
         }
     }
 
@@ -33,7 +33,7 @@ public class PickupDetection : MonoBehaviour
             pickupObjects.Remove(pickup);
 
             if (pickupObjects.Count == 0)
-                InputManager.OnHide?.Invoke();
+                Actions.OnHideUI?.Invoke();
         }
     }
 
