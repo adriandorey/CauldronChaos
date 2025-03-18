@@ -2,6 +2,8 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.XInput;
 using UnityEngine.UI;
 
 public class RecipeBookUI : MonoBehaviour
@@ -15,8 +17,13 @@ public class RecipeBookUI : MonoBehaviour
     [Header("Page Buttons")]
     [SerializeField] private GameObject previousPage;
     [SerializeField] private GameObject nextPage;
+    private Sprite previousPageSprite;
+    private Sprite nextPageSprite;
 
     private int _pageNumber;
+
+    [SerializeField] private GamepadIcons xboxIcons;
+    [SerializeField] private GamepadIcons ps4Icons;
 
     // Recipe UI Components
     [SerializeField] private RecipeUI recipeUiLeft;
@@ -24,6 +31,9 @@ public class RecipeBookUI : MonoBehaviour
 
     private void Start()
     {
+        previousPageSprite = previousPage.GetComponent<Image>().sprite;
+        nextPageSprite = nextPage.GetComponent<Image>().sprite;
+
         _availableRecipes = recipeManager.FindAvailableRecipes();
 
         if (_pageNumber == 0)
@@ -58,6 +68,13 @@ public class RecipeBookUI : MonoBehaviour
 
     private void SetRecipes()
     {
+        if(FirstSelect.IsControllerControlling)
+        {
+            previousPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.PreviousPageInputAction.GetBindingDisplayString(0));
+            nextPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.NextPageInputAction.GetBindingDisplayString(0));
+        }
+
+
         ClearPage(); // Clear current UI elements
 
         int firstRecipeIndex = _pageNumber * 2; // First recipe on the current screen
@@ -190,6 +207,32 @@ public class RecipeBookUI : MonoBehaviour
         nextPage.SetActive((_pageNumber + 1) * 2 < _availableRecipes.Length);
     }
     #endregion
+
+    // Picks icon for controller 
+    private Sprite PickIcon(string displayString)
+    {
+        Sprite icon = null; // Ensure icon has a default value
+        var gamepad = Gamepad.current;
+
+        // if its an xbox controller it will pick from xbox icons
+        if (gamepad is XInputControllerWindows)
+        {
+            icon = xboxIcons.GetSprite(displayString);
+        }
+        // if an ps4 controller it will pick from xbox icons
+        else if (gamepad is DualShockGamepad)
+        {
+            icon = ps4Icons.GetSprite(displayString);
+        }
+        else
+        {
+            // if it's neither, it will default to xbox icons
+            //Debug.Log("Gamepad is not XInputController or DualShockGamepad");
+            icon = xboxIcons.GetSprite(displayString);
+        }
+
+        return icon;
+    }
 }
 
 [Serializable]

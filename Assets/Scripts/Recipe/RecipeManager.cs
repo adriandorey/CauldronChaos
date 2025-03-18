@@ -79,9 +79,6 @@ public class RecipeManager : MonoBehaviour
         }
         else
         {
-            if (GameManager.Instance.IsInTutorialMode)
-                TutorialManager.InteractedWithBook = true;
-                
             Time.timeScale = 0;
             recipeBookUi.SetActive(true);
             Actions.OnSetUiLocation(Page.RecipeBook);

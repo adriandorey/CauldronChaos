@@ -107,6 +107,12 @@ public class CauldronInteraction : MonoBehaviour
         _ingredientGo = ingredientObject;
 
         // Set the current step to the ingredient's step
+
+        if(_currentStep != null)
+        {
+            _lastStep = _currentStep;
+        }
+
         _currentStep = null;
         _currentStep = ingredientHolder.recipeIngredient.stepName;
 
@@ -139,6 +145,8 @@ public class CauldronInteraction : MonoBehaviour
 
     private void TutorialSteps()
     {
+        if (TutorialManager.tutorialPartCount != 1) return;
+
         switch (TutorialManager.CurrentStep)
         {
             case TutorialStep.InsertIngredient:  if (_currentStep == "Mushroom") TutorialManager.InsertCorrectIngredient = true;
@@ -379,6 +387,8 @@ public class CauldronInteraction : MonoBehaviour
 
         if(thrownPotion != null)
         {
+            thrownPotion.GetComponent<Collider>().enabled = true;
+
             Sequence throwSequence = DOTween.Sequence();
 
             // Scale and throw at the same time

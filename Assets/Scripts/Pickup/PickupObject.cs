@@ -94,6 +94,7 @@ public class PickupObject : MonoBehaviour
     public void AddToCauldron()
     {
         _addedToCauldron = true;
+        GetComponent<Collider>().enabled = false;
     }
 
     // Checks if it's in the wind zone and gets the wind component
