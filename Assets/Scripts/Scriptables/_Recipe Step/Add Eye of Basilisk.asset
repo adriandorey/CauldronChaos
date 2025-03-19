@@ -14,8 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 1
   stepName: Eye_of_Basilisk
-  stirSprite: {fileID: 0}
-  isClockwise: 0
-  stirAmount: 0
   ingredient: 3
-  ingredientSprite: {fileID: 21300000, guid: a17772c67bf42df4ba7722ae0944d7ee, type: 3}
+  stepSprite: {fileID: 21300000, guid: a17772c67bf42df4ba7722ae0944d7ee, type: 3}

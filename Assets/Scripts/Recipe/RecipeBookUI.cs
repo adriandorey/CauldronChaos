@@ -16,23 +16,33 @@ public class RecipeBookUI : MonoBehaviour
 
     [Header("Page Buttons")]
     [SerializeField] private GameObject previousPage;
+
     [SerializeField] private GameObject nextPage;
-    private Sprite previousPageSprite;
-    private Sprite nextPageSprite;
+    private Sprite _previousPageSprite;
+    private Sprite _nextPageSprite;
 
     private int _pageNumber;
 
-    [SerializeField] private GamepadIcons xboxIcons;
-    [SerializeField] private GamepadIcons ps4Icons;
-
     // Recipe UI Components
+    [Header("Recipe UI Components")]
     [SerializeField] private RecipeUI recipeUiLeft;
+
     [SerializeField] private RecipeUI recipeUiRight;
+
+    [Header("Stirring Sprites")]
+    [SerializeField] private Sprite clockSprite;
+
+    [SerializeField] private Sprite counterClockSprite;
+
+    [Header("Gamepad Icons")]
+    [SerializeField] private GamepadIcons xboxIcons;
+
+    [SerializeField] private GamepadIcons ps4Icons;
 
     private void Start()
     {
-        previousPageSprite = previousPage.GetComponent<Image>().sprite;
-        nextPageSprite = nextPage.GetComponent<Image>().sprite;
+        _previousPageSprite = previousPage.GetComponent<Image>().sprite;
+        _nextPageSprite = nextPage.GetComponent<Image>().sprite;
 
         _availableRecipes = recipeManager.FindAvailableRecipes();
 
@@ -46,6 +56,7 @@ public class RecipeBookUI : MonoBehaviour
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
+
     private void OnEnable()
     {
         InputManager.NextPageAction += NextPage;
@@ -63,22 +74,25 @@ public class RecipeBookUI : MonoBehaviour
         InputManager.NextPageAction -= NextPage;
         InputManager.PreviousPageAction -= PreviousPage;
     }
+
     #endregion
 
 
     private void SetRecipes()
     {
-        if(FirstSelect.IsControllerControlling)
+        if (FirstSelect.IsControllerControlling)
         {
-            previousPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.PreviousPageInputAction.GetBindingDisplayString(0));
-            nextPage.GetComponent<Image>().sprite = PickIcon(InputManager.Instance.NextPageInputAction.GetBindingDisplayString(0));
+            previousPage.GetComponent<Image>().sprite =
+                PickIcon(InputManager.Instance.PreviousPageInputAction.GetBindingDisplayString(0));
+            nextPage.GetComponent<Image>().sprite =
+                PickIcon(InputManager.Instance.NextPageInputAction.GetBindingDisplayString(0));
         }
 
 
         ClearPage(); // Clear current UI elements
 
-        int firstRecipeIndex = _pageNumber * 2; // First recipe on the current screen
-        int secondRecipeIndex = firstRecipeIndex + 1; // Second recipe on the current screen
+        var firstRecipeIndex = _pageNumber * 2; // First recipe on the current screen
+        var secondRecipeIndex = firstRecipeIndex + 1; // Second recipe on the current screen
 
         // Fill left page if a recipe exists
         if (firstRecipeIndex < _availableRecipes.Length)
@@ -122,45 +136,78 @@ public class RecipeBookUI : MonoBehaviour
         recipeUiLeftObj.SetActive(false);
     }
 
+    #region Ui Ingredient
+    
+    // Creates the Ingredients UI
     private void CreateIngredientUI(RecipeUI recipeUI, int recipeIndex)
     {
-        int totalSteps = _availableRecipes[recipeIndex].steps.Length;
+        var recipe = _availableRecipes[recipeIndex];
+        var totalSteps = recipe.steps.Length;
 
-        for (int i = 0; i < recipeUI.recipeStepUI.Length; i++)
+        for (var i = 0; i < recipeUI.recipeVisuals.Length; i++)
         {
-            if (i < totalSteps)
+            var visual = recipeUI.recipeVisuals[i];
+
+            if (i >= totalSteps)
             {
-                recipeUI.recipeStepUI[i].SetActive(true);
-                TextMeshProUGUI stirText = recipeUI.recipeStepUI[i].GetComponentInChildren<TextMeshProUGUI>();
+                visual.mainObject.SetActive(false);
+                continue;
+            }
 
-                Sprite stepSprite;
+            visual.mainObject.SetActive(true);
+            var step = recipe.steps[i];
+            var mainImage = visual.mainObject.GetComponent<Image>();
 
-                if (_availableRecipes[recipeIndex].steps[i].action == RecipeStepSO.ActionType.AddIngredient)
-                {
-                    stepSprite = _availableRecipes[recipeIndex].steps[i].ingredientSprite;
-                    stirText.enabled = false;
-                }
-                else
-                {
-                    stepSprite = _availableRecipes[recipeIndex].steps[i].stirSprite;
-                    stirText.enabled = true;
-                    stirText.text = $"{_availableRecipes[recipeIndex].steps[i].stirAmount}";
-                }
+            mainImage.sprite = step.stepSprite;
 
-                var stepImage = recipeUI.recipeStepUI[i].GetComponent<Image>();
-
-                stepImage.sprite = stepSprite;
-                stepImage.preserveAspect = true;
+            if (step.action == RecipeStepSO.ActionType.AddIngredient)
+            {
+                SetStirElements(visual, false, false);
             }
             else
             {
-                recipeUI.recipeStepUI[i].SetActive(false);
+                var isController = FirstSelect.IsControllerControlling;
+                SetStirElements(visual, isController, !isController);
+
+                if (step.stepName == "Stir_C")
+                {
+                    // mainImage.sprite = clockSprite;
+                    SetStirDisplay(visual, isController, InputManager.Instance.StirCAction);
+                }
+                else
+                {
+                    // mainImage.sprite = counterClockSprite;
+                    SetStirDisplay(visual, isController, InputManager.Instance.StirCcAction);
+                }
             }
         }
     }
 
-    #region Navigation
 
+    /// <summary> Enable or disable stir elements based on input mode </summary>
+    private void SetStirElements(RecipeVisuals visual, bool enableIcon, bool enableText)
+    {
+        visual.stirIcon.enabled = enableIcon;
+        visual.stirButtonText.enabled = enableText;
+    }
+
+    /// <summary> ets the appropriate stir icon or button text based on control mode. </summary>
+    private void SetStirDisplay(RecipeVisuals visual, bool isController, InputAction inputAction)
+    {
+        if (isController)
+        {
+            visual.stirIcon.sprite = PickIcon(inputAction.GetBindingDisplayString(1));
+            return;
+        }
+
+        visual.stirButtonText.text = inputAction.GetBindingDisplayString(0);
+    }
+    
+    #endregion
+
+
+    #region Recipe Book Navigation
+    // This is used for the controller next page navigation
     private void NextPage(InputAction.CallbackContext input)
     {
         if (!input.performed) return;
@@ -171,6 +218,7 @@ public class RecipeBookUI : MonoBehaviour
         }
     }
 
+    // This is used for the controller previous page navigation
     private void PreviousPage(InputAction.CallbackContext input)
     {
         if (!input.performed) return;
@@ -180,24 +228,23 @@ public class RecipeBookUI : MonoBehaviour
             SetRecipes();
         }
     }
-
+    
+    // This is used for the physical buttons on the book
     public void ButtonNavigation(bool isNext)
     {
-        if(isNext)
+        if (isNext)
         {
-            if ((_pageNumber + 1) * 2 < _availableRecipes.Length)
-            {
-                _pageNumber++;
-                SetRecipes();
-            }
+            if ((_pageNumber + 1) * 2 >= _availableRecipes.Length) return;
+            
+            _pageNumber++;
+            SetRecipes();
         }
         else
         {
-            if (_pageNumber > 0)
-            {
-                _pageNumber--;
-                SetRecipes();
-            }
+            if (_pageNumber <= 0) return;
+            
+            _pageNumber--;
+            SetRecipes();
         }
     }
 
@@ -206,6 +253,7 @@ public class RecipeBookUI : MonoBehaviour
         previousPage.SetActive(_pageNumber > 0);
         nextPage.SetActive((_pageNumber + 1) * 2 < _availableRecipes.Length);
     }
+
     #endregion
 
     // Picks icon for controller 
@@ -214,7 +262,7 @@ public class RecipeBookUI : MonoBehaviour
         Sprite icon = null; // Ensure icon has a default value
         var gamepad = Gamepad.current;
 
-        // if its an xbox controller it will pick from xbox icons
+        // if it's an xbox controller it will pick from xbox icons
         if (gamepad is XInputControllerWindows)
         {
             icon = xboxIcons.GetSprite(displayString);
@@ -241,6 +289,13 @@ public class RecipeUI
     public TextMeshProUGUI recipeName;
     public Image potionIcon;
     public TextMeshProUGUI potionPrice;
-    public GameObject[] recipeStepUI;
+    public RecipeVisuals[] recipeVisuals;
 }
 
+[Serializable]
+public struct RecipeVisuals
+{
+    public GameObject mainObject;
+    public Image stirIcon;
+    public TextMeshProUGUI stirButtonText;
+}

@@ -103,7 +103,7 @@ public class PickupBehaviour : MonoBehaviour
                     }
                     else if (heldObject.TryGetComponent(out PickupObject ingredientHolder))
                     {
-                        pickupUIHolder.sprite = ingredientHolder.recipeIngredient.ingredientSprite;
+                        pickupUIHolder.sprite = ingredientHolder.recipeIngredient.stepSprite;
                     }
 
                     //try to get interactable component of the held object
@@ -124,7 +124,7 @@ public class PickupBehaviour : MonoBehaviour
         heldObject = targetObject;
         pickupVolume.RemovePickupFromList(heldObject);
         pickupUIHolder.enabled = true;
-        pickupUIHolder.sprite = heldObject.GetComponent<PickupObject>().recipeIngredient.ingredientSprite;
+        pickupUIHolder.sprite = heldObject.GetComponent<PickupObject>().recipeIngredient.stepSprite;
         heldObject.PickUp(pickupHolder);
         isHoldingItem = true;
     }

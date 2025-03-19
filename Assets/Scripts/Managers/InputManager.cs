@@ -90,7 +90,6 @@ public class InputManager : MonoBehaviour
 
         PreviousPageInputAction.Disable();
         NextPageInputAction.Disable();
-        HideInteractionPickup();
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -184,48 +183,10 @@ public class InputManager : MonoBehaviour
     // }
     #endregion
 
-    #region Above Player Interaction
-    private void ShowInteraction()
-    {
-        abovePlayerInteraction.enabled = true;
-
-        if(IsControllerConnected())
-            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(1);
-        else
-            abovePlayerInteractionText.text = InteractInputAction.GetBindingDisplayString(0);
-    }
-
-    private void ShowPickup()
-    {
-        abovePlayerInteraction.enabled = true;
-
-        if (IsControllerConnected())
-            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(1);
-        else
-            abovePlayerInteractionText.text = PickupInputAction.GetBindingDisplayString(0);
-    }
-
-    private void ShowStir()
-    {
-        abovePlayerInteraction.enabled = true;
-        if (IsControllerConnected())
-            abovePlayerInteractionText.text = StirCcAction.GetBindingDisplayString(1) + " / " + StirCAction.GetBindingDisplayString(1);
-        else
-            abovePlayerInteractionText.text = StirCcAction.GetBindingDisplayString(0) + " / " + StirCAction.GetBindingDisplayString(0);
-    }
-
-    private void HideInteractionPickup()
-    {
-        abovePlayerInteraction.enabled = false;
-        abovePlayerInteractionText.text = "";
-    }
-
     private bool IsControllerConnected()
     {
         return Gamepad.all.Count > 0;
     }
-
-    #endregion
 
     private void GameplayInputs()
     {
