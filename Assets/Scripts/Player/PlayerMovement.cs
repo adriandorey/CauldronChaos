@@ -31,6 +31,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slowMultiplier = 0.5f;
     private bool _isInSlime;
 
+    [Header("SFX")]
+    [SerializeField] private SFXLibrary playerMovementSounds;
+    [SerializeField] private float timeBetweenSFX;
+    private float sfxTimer;
+
 
     // Wind Movement
     private bool _isInWindZone;
@@ -56,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
         {
             _canMove = true;
         }
+
+        sfxTimer = 0;
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -112,6 +119,9 @@ public class PlayerMovement : MonoBehaviour
                 moveSpeed = _defaultSpeed;
                 break;
         }
+
+        //increment timer for player movement SFX
+        sfxTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -158,11 +168,19 @@ public class PlayerMovement : MonoBehaviour
     private void GetMove(InputAction.CallbackContext input)
     {
         _moveDir = input.ReadValue<Vector2>();
+
     }
 
 
     private void NormalMovement()
     {
+        //plays move SFX if there is input && timer allows it
+        if (sfxTimer < 0f && _moveDir != Vector2.zero && Time.timeScale > 0f)
+        {
+            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, playerMovementSounds.PickAudioClip(), true);
+            sfxTimer = timeBetweenSFX;
+        }
+
         //translate Vector2 to Vector3
         var movement = new Vector3(_moveDir.x, 0, _moveDir.y);
 
@@ -191,6 +209,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void IceMovement()
     {
+        //plays move SFX if there is input && timer allows it
+        if (sfxTimer < 0f && _moveDir != Vector2.zero && Time.timeScale > 0f)
+        {
+            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, playerMovementSounds.PickAudioClip(), true);
+            sfxTimer = timeBetweenSFX;
+        }
+
         var targetVelocity = new Vector3(_moveDir.x, 0, _moveDir.y) * maxSpeed;
 
         // Allow rotation even if standing still
