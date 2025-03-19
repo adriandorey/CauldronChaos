@@ -5128,6 +5128,57 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!1 &7536493475685813287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3870889698761838904}
+  - component: {fileID: 6351307525904921933}
+  m_Layer: 0
+  m_Name: PageFlipSFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3870889698761838904
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7536493475685813287}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2240342482127368098}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6351307525904921933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7536493475685813287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953697c0e7782b748887310ece8ca880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: bc03f03cfab24934aa38f72b4d1dfe1a, type: 3}
+  - {fileID: 8300000, guid: 425b97f459042ae4eb2a4a17bf2f5fe4, type: 3}
 --- !u!1 &7615557880674547760
 GameObject:
   m_ObjectHideFlags: 0
@@ -5594,6 +5645,7 @@ RectTransform:
   - {fileID: 4905147795269669365}
   - {fileID: 3309571889497436543}
   - {fileID: 8583375878945965235}
+  - {fileID: 3870889698761838904}
   m_Father: {fileID: 2252328080268707936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5654,6 +5706,7 @@ MonoBehaviour:
   recipeManager: {fileID: 5635559856003141154}
   recipeUiLeftObj: {fileID: 8147066182497144317}
   recipeUiRightObj: {fileID: 3855539660366807955}
+  pageFlipSounds: {fileID: 6351307525904921933}
   previousPage: {fileID: 6552983113663042259}
   nextPage: {fileID: 281914543025872782}
   recipeUiLeft:
