@@ -8,7 +8,6 @@ public class ScoreManager : MonoBehaviour
     [Header("Gameplay UI")]
     [SerializeField] private Image quotaFill;
     [SerializeField] private GameObject coinImage;
-    //[SerializeField] private ParticleSystem coinParticles;
 
     [Header("EOD UI")]
     [SerializeField] private TextMeshProUGUI eodTitle;
@@ -65,15 +64,9 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScore(int regularScore)
     {
-            _score += regularScore;
-
-        //if(score > scorePerLevel[currentDay] && !coinParticles.isPlaying)
-        //{
-        //    coinParticles.Play();
-        //}
+        _score += regularScore;
 
         quotaFill.fillAmount = (float)_score / (float)scorePerLevel[_currentDay];
-        coinImage.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f, 1, 0.5f);
     }
 
     private void UpdateEodText()
@@ -115,5 +108,11 @@ public class ScoreManager : MonoBehaviour
         //coinParticles.Stop();
         quotaFill.fillAmount = 0;
         _score = 0;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other);
+        coinImage.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f, 1, 0.5f);
     }
 }
