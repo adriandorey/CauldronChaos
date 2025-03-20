@@ -12,6 +12,9 @@ public class RecipeBookUI : MonoBehaviour
     [SerializeField] private GameObject recipeUiLeftObj;
     [SerializeField] private GameObject recipeUiRightObj;
 
+    [Header("Recipe Book SFX")]
+    [SerializeField] private SFXLibrary pageFlipSounds;
+
     private RecipeSO[] _availableRecipes;
 
     [Header("Page Buttons")]
@@ -215,6 +218,7 @@ public class RecipeBookUI : MonoBehaviour
         {
             _pageNumber++;
             SetRecipes();
+            AudioManager.instance.sfxManager.PlayMenuSFX(pageFlipSounds.PickAudioClip());
         }
     }
 
@@ -226,6 +230,7 @@ public class RecipeBookUI : MonoBehaviour
         {
             _pageNumber--;
             SetRecipes();
+            AudioManager.instance.sfxManager.PlayMenuSFX(pageFlipSounds.PickAudioClip());
         }
     }
     
@@ -238,6 +243,7 @@ public class RecipeBookUI : MonoBehaviour
             
             _pageNumber++;
             SetRecipes();
+            AudioManager.instance.sfxManager.PlayMenuSFX(pageFlipSounds.PickAudioClip());
         }
         else
         {
@@ -245,6 +251,7 @@ public class RecipeBookUI : MonoBehaviour
             
             _pageNumber--;
             SetRecipes();
+            AudioManager.instance.sfxManager.PlayMenuSFX(pageFlipSounds.PickAudioClip());
         }
     }
 

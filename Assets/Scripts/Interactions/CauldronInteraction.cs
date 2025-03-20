@@ -178,7 +178,7 @@ public class CauldronInteraction : MonoBehaviour
     {
         TutorialManager.MadeIncorrectMove = true;
         // Play a sound here
-        //AudioManager.Instance.sfxManager.playSFX()
+        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, incorrectStepSounds.PickAudioClip(), true);
         if (_ingredientGo != null)
             _ingredientGo.GetComponent<Rigidbody>().isKinematic = true;
 
