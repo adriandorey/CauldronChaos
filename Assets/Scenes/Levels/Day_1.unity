@@ -3106,8 +3106,20 @@ MonoBehaviour:
   tutorialText: {fileID: 1925084197}
   partOneText: "Your first customer! \nThey ordered the Potion of Healing. \nCheck
     the <color=\"green\">Recipe Book</color>, then get brewing!"
-  partTwoText: "Success! \nThere are still <u>two more</u> Healing Potions worth
-    of brew in the cauldron. \nGo and sell those!"
+  partTwoText: "Success! \nThere are still <color=\"green\">two more</color> Healing
+    Potions worth of brew in the cauldron. \nGo and sell those!"
+  partThreeText: "Great Job! \nYou're ready to brew and serve on your own.\nUse the
+    <color=\"green\">Recipe Book</color> if needed\nGood Luck!"
+  highlightMaterial: {fileID: 2100000, guid: 96f348cc9ba01c245a0246415d593ca2, type: 2}
+  recipeBook: {fileID: 1741295247}
+  cauldrons:
+  - {fileID: 1150924414}
+  - {fileID: 2141153368}
+  crate: {fileID: 2129871066}
+  potionBottles:
+  - {fileID: 1517951590}
+  - {fileID: 1038149147}
+  servingCounter: {fileID: 2735336521705904681}
 --- !u!4 &107474870
 Transform:
   m_ObjectHideFlags: 0
@@ -31554,6 +31566,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1038149145}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1038149147 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2570846792823610062, guid: d8e2007384f8cac4c980521aa764f9b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1038149145}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1039686140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34993,6 +35011,11 @@ PrefabInstance:
       propertyPath: cauldronItems
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 995684122443078446, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: Sphere1
+      objectReference: {fileID: 0}
     - target: {fileID: 1353163748795567340, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -35043,6 +35066,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3143820256570925506, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3143820256570925506, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 50765cf57486748468d15aec9e3e7020, type: 2}
     - target: {fileID: 3441860958824201081, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
       propertyPath: m_Enabled
@@ -35058,10 +35091,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4785378461062796922, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: CauldronModel1
+      objectReference: {fileID: 0}
     - target: {fileID: 6467418012529647783, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
       propertyPath: m_IsTrigger
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8128138073164020201, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: StirStick1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7987518720466273988, guid: 7ce4f7651a1f047449c653277d1cc9ae, type: 3}
@@ -35072,6 +35115,12 @@ PrefabInstance:
 --- !u!4 &1150924413 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1353163748795567340, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 1150924412}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1150924414 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3221904393584103392, guid: 7ce4f7651a1f047449c653277d1cc9ae,
     type: 3}
   m_PrefabInstance: {fileID: 1150924412}
   m_PrefabAsset: {fileID: 0}
@@ -48215,6 +48264,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1517951588}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1517951590 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2570846792823610062, guid: d8e2007384f8cac4c980521aa764f9b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1517951588}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1518489143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54319,6 +54374,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 175706533285790763, guid: f6b6697b17fc67f448beba94357f060b,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 175706533285790763, guid: f6b6697b17fc67f448beba94357f060b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 96f348cc9ba01c245a0246415d593ca2, type: 2}
     - target: {fileID: 4348496950852010747, guid: f6b6697b17fc67f448beba94357f060b,
         type: 3}
       propertyPath: m_Name
@@ -54379,6 +54444,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6b6697b17fc67f448beba94357f060b, type: 3}
+--- !u!23 &1741295247 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 175706533285790763, guid: f6b6697b17fc67f448beba94357f060b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1741295246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1742362741
 GameObject:
   m_ObjectHideFlags: 0
@@ -65754,6 +65825,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2129871064}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &2129871066 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4138863850976659739, guid: 9eb55f9e564f8a844a683699062da67f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2129871064}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2130811594
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -66299,6 +66376,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1054551576}
     m_Modifications:
+    - target: {fileID: 995684122443078446, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: Sphere2
+      objectReference: {fileID: 0}
     - target: {fileID: 1353163748795567340, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -66364,6 +66446,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4785378461062796922, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: CauldronModel2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8128138073164020201, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: StirStick2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7987518720466273988, guid: 7ce4f7651a1f047449c653277d1cc9ae, type: 3}
     m_RemovedGameObjects: []
@@ -66373,6 +66465,12 @@ PrefabInstance:
 --- !u!4 &2141153367 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1353163748795567340, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 2141153366}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2141153368 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3221904393584103392, guid: 7ce4f7651a1f047449c653277d1cc9ae,
     type: 3}
   m_PrefabInstance: {fileID: 2141153366}
   m_PrefabAsset: {fileID: 0}
@@ -66563,6 +66661,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8bf7052047b969418f9861460a0b8cd, type: 3}
+--- !u!23 &2735336521705904681 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8972256908074009435, guid: e8bf7052047b969418f9861460a0b8cd,
+    type: 3}
+  m_PrefabInstance: {fileID: 2735336521705904680}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2735336521705904682 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1756704728737677199, guid: e8bf7052047b969418f9861460a0b8cd,

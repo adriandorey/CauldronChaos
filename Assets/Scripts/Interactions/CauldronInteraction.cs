@@ -52,6 +52,10 @@ public class CauldronInteraction : MonoBehaviour
     [SerializeField] private float spoonRotationSpeed = 0.6f;
     [SerializeField] private Transform spoon;
 
+    [Header("Model Renderers")]
+    [SerializeField] private Renderer modelRenderer;
+    [SerializeField] private Renderer stirStickRend;
+    
     //sound libraries and clips
     [Header("Sounds")]
     [SerializeField] private SFXLibrary addIngredientSounds;
@@ -143,17 +147,24 @@ public class CauldronInteraction : MonoBehaviour
             AdvanceToNextStep();
     }
 
+    // This handles the tutorial steps for adding ingredients.
+    // The stirring portion is in the advance to next step function
     private void TutorialSteps()
     {
-        if (TutorialManager.tutorialPartCount != 1) return;
+        if (TutorialManager.TutorialPartCount != 1) return;
 
-        switch (TutorialManager.CurrentStep)
+        if (TutorialManager.CurrentStep == TutorialStep.InsertIngredient)
         {
-            case TutorialStep.InsertIngredient:  if (_currentStep == "Mushroom") TutorialManager.InsertCorrectIngredient = true;
-                break;
-            case TutorialStep.FillPotionBottle:  if(_currentStep == "Bottle_Potion")  TutorialManager.FilledPotionBottle = true;
-                break;
-            default: HandleIncorrectStep(); break;
+            if (_currentStep == "Mushroom")
+            {
+                    TutorialManager.InsertCorrectIngredient = true;
+                    TutorialManager.LastCauldronUsed = modelRenderer;
+                    TutorialManager.StirStickToHighlight = stirStickRend;
+            }
+        }
+        else if (TutorialManager.CurrentStep == TutorialStep.FillPotionBottle &&  TutorialManager.LastCauldronUsed == modelRenderer)
+        {
+            TutorialManager.FilledPotionBottle = true;
         }
     }
 
@@ -327,9 +338,17 @@ public class CauldronInteraction : MonoBehaviour
             return;
         }
 
-        if (GameManager.Instance.IsInTutorialMode && TutorialManager.CurrentStep == TutorialStep.StirCauldron)
+        // Handles Tutorial Mode for the stirring portion
+        switch (GameManager.Instance.IsInTutorialMode  && TutorialManager.TutorialPartCount == 1)
         {
-            if (_currentStep == "Stir_C") TutorialManager.StirredCauldronCorrectly = true;
+            case true when TutorialManager.CurrentStep == TutorialStep.StirCauldron && TutorialManager.LastCauldronUsed == modelRenderer:
+            {
+                if (_currentStep == "Stir_C") TutorialManager.StirredCauldronCorrectly = true;
+                break;
+            }
+            case true when TutorialManager.LastCauldronUsed != modelRenderer:
+                HandleIncorrectStep();
+                break;
         }
 
         _curStepIndex++;

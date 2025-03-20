@@ -622,6 +622,8 @@ MonoBehaviour:
   throwDuration: 1
   spoonRotationSpeed: 0.6
   spoon: {fileID: 8901120777319129939}
+  modelRenderer: {fileID: 3221904393584103392}
+  stirStickRend: {fileID: 3143820256570925506}
   addIngredientSounds: {fileID: 2229680116212076389}
   finishPotionSounds: {fileID: 6391177040410721172}
   incorrectStepSounds: {fileID: 2355451675625078802}
