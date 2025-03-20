@@ -14,7 +14,7 @@ public class CustomerBehaviour : MonoBehaviour
 
     [Header("UI for Order")]
     [SerializeField] private GameObject orderUiPrefab;
-
+    [SerializeField] private ParticleSystem coin;
     private Image _orderIcon;
     private Transform _orderUiParent;
     private bool _hasShownOrder;
@@ -28,6 +28,7 @@ public class CustomerBehaviour : MonoBehaviour
     internal bool HasJoinedQueue;
 
     private GameObject _orderUiInstance;
+    
 
     private void Start()
     {
@@ -67,6 +68,7 @@ public class CustomerBehaviour : MonoBehaviour
     internal void OrderComplete()
     {
         Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
+        coin.Play();
     }
 
     #endregion

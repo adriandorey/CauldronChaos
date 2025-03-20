@@ -89,22 +89,26 @@ public class LevelManager : MonoBehaviour
         // Prevent the scene from activating immediately, even if it's fully loaded
         loadOperation.allowSceneActivation = false;
 
-        var fakeProgress = 0f;
 
-        while (fakeProgress < 1f)
+
+        if(sceneName.StartsWith("Day"))
         {
-            // Gradually increase the fake progress
-            fakeProgress += Time.unscaledDeltaTime * fakeProgressSpeed;
+            var fakeProgress = 0f;
+            while (fakeProgress < 1f)
+            {
+                // Gradually increase the fake progress
+                fakeProgress += Time.unscaledDeltaTime * fakeProgressSpeed;
 
-            // Ensure fake progress doesn't exceed the actual loading progress
-            var actualProgress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-            fakeProgress = Mathf.Min(fakeProgress, actualProgress);
+                // Ensure fake progress doesn't exceed the actual loading progress
+                var actualProgress = Mathf.Clamp01(loadOperation.progress / 0.9f);
+                fakeProgress = Mathf.Min(fakeProgress, actualProgress);
 
-            // Update the loading bar
-            loadingBar.value = fakeProgress;
+                // Update the loading bar
+                loadingBar.value = fakeProgress;
 
-            // Wait for the next frame
-            yield return null;
+                // Wait for the next frame
+                yield return null;
+            }
         }
 
         loadOperation.allowSceneActivation = true;

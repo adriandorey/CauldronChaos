@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections;
 
 
 public class FirstSelect : MonoBehaviour
@@ -136,13 +137,26 @@ public class FirstSelect : MonoBehaviour
         OnRemoveSelection();
         if (_isMouseControlling) return;
 
-        eventSystem.SetSelectedGameObject(button, new BaseEventData(eventSystem));
+        if(button == endOfDayFirstSelect)
+        {
+            StartCoroutine(WaitForEnd(button));
+        }
+        else
+        {
+            eventSystem.SetSelectedGameObject(button, new BaseEventData(eventSystem));
+        }
     }
 
     private void OnRemoveSelection()
     {
         _isInRecipeBook = false;
         eventSystem.SetSelectedGameObject(null);
+    }
+
+    private IEnumerator WaitForEnd(GameObject button)
+    {
+        yield return new WaitForSeconds(3);
+        eventSystem.SetSelectedGameObject(button, new BaseEventData(eventSystem));
     }
 
     #endregion
