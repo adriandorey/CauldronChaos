@@ -126,6 +126,8 @@ public class SaveManager : MonoBehaviour
                 if (score > dayData.bestScore)
                     dayData.bestScore = score;
 
+                // Day 0 will always be unlocked
+                gameData.days[0].isUnlocked = true;
                 // Unlock the next day if the current day is completed
                 if (unlockNext)
                     UnlockDay(day + 1);
@@ -143,7 +145,6 @@ public class SaveManager : MonoBehaviour
     {
         if (day >= gameData.days.Count) return;
         
-        gameData.days[0].isUnlocked = true;
         gameData.days[day].isUnlocked = true;
         Actions.OnSetUnlockedDays?.Invoke(GetUnlockedDaysCount());
     }

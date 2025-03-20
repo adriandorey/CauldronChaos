@@ -60,15 +60,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private Renderer crate;
     [SerializeField] private Renderer[] potionBottles;
     [SerializeField] private Renderer servingCounter;
-    
-    private Material _previousMaterial;
-    private Material _recipeBookMaterial;
-    private Material _stirStickMaterial;
-    private Material _potionBottleMaterial;
-    private Material _servingCounterMaterial;
-    private Material _cauldronMaterial;
-    private Material _crateMaterial;
-    
+
+    private bool _hasShownPopUp;
     private bool _isMaterialChanged = false;
     private Dictionary<Renderer, Material[]> _originalMaterials = new();
     
@@ -82,19 +75,19 @@ public class TutorialManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnTutorialDay += StartTutorial;
-        Actions.OnResetValues += ResetFlags;
+        Actions.OnResetValues += ResetAll;
     }
 
     private void OnDisable()
     {
         Actions.OnTutorialDay -= StartTutorial;
-        Actions.OnResetValues -= ResetFlags;
+        Actions.OnResetValues -= ResetAll;
     }
 
     private void OnDestroy()
     {
         Actions.OnTutorialDay -= StartTutorial;
-        Actions.OnResetValues -= ResetFlags;
+        Actions.OnResetValues -= ResetAll;
     }
 
     #endregion
@@ -284,8 +277,6 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-
-
     private void NextStep(string step)
     {
         CurrentStep++;
@@ -407,6 +398,15 @@ public class TutorialManager : MonoBehaviour
         RevertMaterial(recipeBook);
     }
 
+    private void ResetAll()
+    {
+        CurrentStep = TutorialStep.HighlightRecipeBook;
+        TutorialPartCount = 1;
+        ResetAllMaterials();
+        _hasShownPopUp = false;
+        ResetFlags();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(!GameManager.Instance.IsInTutorialMode) return;
@@ -420,9 +420,12 @@ public class TutorialManager : MonoBehaviour
                     tutorialText.text = partOneText;
                     break;
                 case 2:
+                    if (_hasShownPopUp) break;
+                    
                     tutorialPopup.SetActive(true);
                     StartCoroutine(ShowTutorialText(partTwoText));
                     tutorialText.text = partTwoText;
+                    _hasShownPopUp = true;
                     break;
                 case 3:
                     tutorialPopup.SetActive(true);

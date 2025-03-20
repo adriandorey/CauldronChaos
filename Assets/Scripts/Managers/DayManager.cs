@@ -23,6 +23,8 @@ public class DayManager : MonoBehaviour
     [Header("Digital Timer")]
     [SerializeField] private TextMeshProUGUI clockText;
 
+    [SerializeField] private GameObject digitalText;
+
     private int _currentDay;
 
     [Header("Day Start Overlay")]
@@ -111,7 +113,7 @@ public class DayManager : MonoBehaviour
 
         // Apply rotation directly without animation
         timerHand.rotation = Quaternion.Euler(0, 0, rotationAngle);
-        PulseHand();
+        Pulse();
     }
 
     private void SetDigitalClock()
@@ -122,19 +124,24 @@ public class DayManager : MonoBehaviour
         clockText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    private void PulseHand()
+    private void Pulse()
     {
         var remainingSeconds = Mathf.FloorToInt(_gameplayTimer.GetRemainingTime());
-        if (remainingSeconds < 10) return;
+
+        if (remainingSeconds > 60) return;
+        
+        // pulse every 15 seconds before 30s, then every 5 seconds afterwards
+        var pulseInterval = remainingSeconds > 30 ? 15 : 5;
 
         // Check if it's time to pulse and ensure it doesn't repeat in the same second
-        if (remainingSeconds <= 60 && remainingSeconds % 15 == 0 &&
-            !Mathf.Approximately(_lastPulseTime, remainingSeconds))
-        {
-            _lastPulseTime = remainingSeconds; // Update last pulse time
-            timerHand.DOScale(1.2f, 0.2f).SetLoops(2, LoopType.Yoyo);
-        }
+        if (remainingSeconds % pulseInterval != 0 || Mathf.Approximately(_lastPulseTime, remainingSeconds)) return;
+        
+        _lastPulseTime = remainingSeconds; // update last pulse time
+        timerHand.DOScale(1.2f, 0.2f).SetLoops(2, LoopType.Yoyo);
+        digitalText.transform.DOScale(1.2f,0.2f).SetLoops(2, LoopType.Yoyo);
     }
+    
+    
 
     internal void ShowStartDayPanel()
     {
