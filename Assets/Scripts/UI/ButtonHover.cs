@@ -15,6 +15,7 @@ public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _thisButton = _button.GetComponent<Button>();
         if (_thisButton == null)
             Debug.LogError("Button component missing on " + gameObject.name);
+        
     }
 
 
@@ -65,6 +66,7 @@ public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             _button.transform.SetAsLastSibling();
 
         _button.transform.DOScale(1.3f, 0.2f).SetUpdate(true).SetEase(Ease.OutBack);
+        
     }
 
     public void OnDeselect(BaseEventData eventData)
@@ -88,5 +90,10 @@ public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _button.transform.DOKill();
         // Ensure independent updates and smoother scaling.
         _button.transform.DOScale(1f, 0.2f).SetUpdate(true).SetEase(Ease.OutBack);
+        
+        if (EventSystem.current.currentSelectedGameObject == _button)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }

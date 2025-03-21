@@ -58,6 +58,7 @@ public class FirstSelect : MonoBehaviour
             { Page.HowToPlay, () => SetFirstSelected(howToPlayFirstSelect) },
             { Page.DebugInput, () => SetFirstSelected(debugInputFirstSelect) },
             { Page.DebugToggle, () => SetFirstSelected(debugToggleSelect) },
+            { Page.Pause, () => SetFirstSelected(pauseFirstSelect)},
         };
     }
 
@@ -74,6 +75,7 @@ public class FirstSelect : MonoBehaviour
 
         IsControllerControlling = Gamepad.current != null;
         InputSystem.onDeviceChange += OnDeviceChange;
+        
     }
 
     private void Update()
@@ -169,8 +171,10 @@ public class FirstSelect : MonoBehaviour
         OnRemoveSelection();
 
         if (IsKeyboardControlling || IsControllerControlling)
+        {
             if (_selectActions.ContainsKey(_currentLocation))
                 _selectActions[_currentLocation]();
+        }
     }
 
     private void ResetRecipeButton()

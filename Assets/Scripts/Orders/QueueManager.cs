@@ -90,9 +90,7 @@ public class QueueManager : MonoBehaviour
 
     #endregion
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary> Starts the Customer Queue, timer and spawns customer </summary>
     private void StartCustomerQueue()
     {
         _startCustomers = true;
@@ -133,12 +131,11 @@ public class QueueManager : MonoBehaviour
 
     private void FinishOrder(CustomerBehaviour servingCustomer)
     {
+        RemoveCustomer(servingCustomer.gameObject);
         servingCustomer.OrderComplete();
 
         //playing SFX for potion sale
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
-
-        RemoveCustomer(servingCustomer.gameObject);
 
         if (GameManager.Instance.IsInTutorialMode)
         {

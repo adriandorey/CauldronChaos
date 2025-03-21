@@ -8568,6 +8568,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLocation: 0
   settingsManager: {fileID: 8259654593687155785}
+  buttonSelect: {fileID: 8130399631827071257}
   mainMenuPanelUI: {fileID: 2630196236207211068}
   gameplayPanelUI: {fileID: 7602155856343570783}
   introPanelUI: {fileID: 6258992448093577789}

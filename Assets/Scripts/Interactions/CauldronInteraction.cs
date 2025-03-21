@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -10,23 +11,18 @@ public class CauldronInteraction : MonoBehaviour
     // Reference to the RecipeManager script
     private RecipeManager _recipeManager;
 
-    // Holds all the recipes that can be crafted in this Cauldron
-    private RecipeSO[] _craftableRecipes;
-    // List of possible recipes
-    private List<RecipeSO> _possibleRecipes = new();
-    private string _nextStep;
-    private string _currentStep;
-    // List of possible next steps
-    private List<string> _possibleNextSteps = new();
-    private string _lastStep;
+    private RecipeSO[] _availRecipes; // holds all recipes that can be crafted in this cauldron
+    private List<RecipeSO> _possibleRecipes = new(); // list of possible recipes
+    private string _currentStep; // holds current step
+    private string _lastStep; // holds last step done - used to make sure we can stir multiple times
 
     // Particles for incorrect step
-    private VisualEffect _incorrectStep;
+    private VisualEffect _veIncorrectStep;
 
     // Recipe variables
     private RecipeSO _recipe;
-    private GameObject _ingredientGo;
-    private int _curStepIndex;
+    private GameObject _ingredientAdded;
+    private int _stepIndex;
     private bool _canInteract;
     private int _potionIndex;
 
@@ -49,8 +45,8 @@ public class CauldronInteraction : MonoBehaviour
 
     [Header("Spoon Rotation")]
     [Tooltip("Lower the number the slower it goes")]
-    [SerializeField] private float spoonRotationSpeed = 0.6f;
-    [SerializeField] private Transform spoon;
+    [SerializeField] private float stickRotationSpeed = 0.6f;
+    [SerializeField] private Transform stirStick;
 
     [Header("Model Renderers")]
     [SerializeField] private Renderer modelRenderer;
@@ -75,11 +71,11 @@ public class CauldronInteraction : MonoBehaviour
         _cauldronFillDefaultColor = _cauldronFillMaterial.color;
 
         // Get the incorrect step particles
-        _incorrectStep = GetComponentInChildren<VisualEffect>();
+        _veIncorrectStep = GetComponentInChildren<VisualEffect>();
 
-        // Get the RecipeManager script & set the craftable recipes
+        // Get the RecipeManager script & set the craft-able recipes
         _recipeManager = FindObjectOfType<RecipeManager>();
-        _craftableRecipes = _recipeManager.FindAvailableRecipes();
+        _availRecipes = _recipeManager.FindAvailableRecipes();
         _player = FindObjectOfType<PickupBehaviour>();
     }
 
@@ -104,274 +100,230 @@ public class CauldronInteraction : MonoBehaviour
     }
     #endregion
 
-    #region Recipe Steps
-    public void AddIngredient(PickupObject ingredientHolder, GameObject ingredientObject)
+    #region Add Ingredients / Stir
+    public void AddIngredient(GameObject ingredientObject)
     {
         // Set the ingredient to the current ingredient
-        _ingredientGo = ingredientObject;
+        _ingredientAdded = ingredientObject;
+        var ingredientStep = _ingredientAdded.GetComponent<PickupObject>().recipeIngredient.stepName;
 
-        // Set the current step to the ingredient's step
-
+        // if the current step is something, set the last step to it.
         if(_currentStep != null)
         {
             _lastStep = _currentStep;
         }
 
+        // if the current step is something set it to the last step
         _currentStep = null;
-        _currentStep = ingredientHolder.recipeIngredient.stepName;
+        _currentStep = ingredientStep;
+        _lastStep = _currentStep;
 
         // grabs the ingredient from the _recipes step that's holding it.
         var ingredientSequence = DOTween.Sequence();
 
-        if (_ingredientGo != null)
+        if (_ingredientAdded != null)
         {
             transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
-            ingredientSequence.Append(_ingredientGo.transform.DOLocalJump(ingredientInsertPoint.position, 1f, 1, 0.5f).SetEase(Ease.InOutSine))
-                         .Join(_ingredientGo.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InOutSine))
+            ingredientSequence.Append(_ingredientAdded.transform.DOLocalJump(ingredientInsertPoint.position, 1f, 1, 0.5f).SetEase(Ease.InOutSine))
+                         .Join(_ingredientAdded.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InOutSine))
                          .OnComplete(SetInactive); // Call SetInactive after both tweens finish
         }
 
         // Play a sound here
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, addIngredientSounds.PickAudioClip(), true);
 
-        if (GameManager.Instance.IsInTutorialMode)
-        {
-            TutorialSteps();
-        }
-        
-        
-        // Check if it's the first step in the recipe or not
-        if (_curStepIndex == 0)
-            StartNewRecipe();
-        else
-            AdvanceToNextStep();
+        CheckRecipeProgress();
     }
-
-    // This handles the tutorial steps for adding ingredients.
-    // The stirring portion is in the advance to next step function
-    private void TutorialSteps()
+    
+    /// <summary> Sets Object inactive once it goes into the cauldron unless it's a bottle </summary>
+    private void SetInactive()
     {
-        if (TutorialManager.TutorialPartCount != 1) return;
-
-        if (TutorialManager.CurrentStep == TutorialStep.InsertIngredient)
-        {
-            if (_currentStep == "Mushroom")
-            {
-                    TutorialManager.InsertCorrectIngredient = true;
-                    TutorialManager.LastCauldronUsed = modelRenderer;
-                    TutorialManager.StirStickToHighlight = stirStickRend;
-            }
-        }
-        else if (TutorialManager.CurrentStep == TutorialStep.FillPotionBottle &&  TutorialManager.LastCauldronUsed == modelRenderer)
-        {
-            TutorialManager.FilledPotionBottle = true;
-        }
+        if (_currentStep == "Bottle_Potion") return;
+        if (_ingredientAdded == null) return;
+        
+        DOTween.Kill(_ingredientAdded.transform);
+        Destroy(_ingredientAdded);
     }
 
-    private void Stir()
+    private void StirClockwise(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if(!_canInteract) return;
+
+            stirStick.DOLocalRotate(new Vector3(0, 360, 16), stickRotationSpeed, RotateMode.FastBeyond360);
+            Stir("Stir_C");
+        }
+    }
+    
+    private void StirCounterClockwise(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if(!_canInteract) return;
+
+            stirStick.DOLocalRotate(new Vector3(0, -360, 16), stickRotationSpeed, RotateMode.FastBeyond360);
+            Stir("Stir_CC");
+        }
+    }
+    
+    private void Stir(string direction)
     {
         //play stirring sound
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, stirSounds.PickAudioClip(), false);
 
-        // If the recipe is null, find the possible recipes
-        if (_recipe == null)
-        {
-            FindPossibleRecipes();
-            return;
-        }
+       if(_lastStep == direction) return;
+       
+       _currentStep = direction;
+       _lastStep = direction;
 
-        // If the recipe is not null, advance to the next step
-        AdvanceToNextStep();
+       CheckRecipeProgress();
     }
+    
+    #endregion
 
-    // Handles the incorrect step
-    private void HandleIncorrectStep()
+    
+    #region Recipe Progress
+
+    private void CheckRecipeProgress()
     {
-        TutorialManager.MadeIncorrectMove = true;
-        // Play a sound here
-        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, incorrectStepSounds.PickAudioClip(), true);
-        if (_ingredientGo != null)
-            _ingredientGo.GetComponent<Rigidbody>().isKinematic = true;
-
-        _incorrectStep.Play();
-        ResetValues();
+        if (GameManager.Instance.IsInTutorialMode)
+            CheckTutorialSteps();
+        
+        if(_recipe == null)
+            FindPossibleRecipes();
+        else
+            AdvanceToNextStep();
     }
-
-    // Find the possible recipes based on the current step
+    
     private void FindPossibleRecipes()
     {
-        List<RecipeSO> filterRecipes = new();
-        _possibleNextSteps.Clear();
+        List<RecipeSO> filteredRecipes = new();
 
-        // Loop through all possible recipes
-        foreach (var recipes in _possibleRecipes)
+        // Determine the list to search through
+        List<RecipeSO> searchList = _stepIndex == 0 ? _availRecipes.ToList() : new List<RecipeSO>(_possibleRecipes);
+
+        // Iterate through the search list and find matching recipes
+        foreach (var recipe in searchList)
         {
-            // Ensure the current step index is within the bounds of the recipe steps
-            if (_curStepIndex >= recipes.steps.Length)
-                continue;
-
-            // Check if the current step matches the recipe step
-            if (recipes.steps[_curStepIndex].stepName == _currentStep)
+            if (recipe.steps[_stepIndex].stepName == _currentStep)
             {
-                filterRecipes.Add(recipes);
+                filteredRecipes.Add(recipe);
+            }
+        }
+        
+        _possibleRecipes.Clear(); // Clear before modifying
+        _possibleRecipes.AddRange(filteredRecipes); // Add the stored recipes safely
+        
+        switch (_possibleRecipes.Count)
+        {
+            case 0: // If no possible recipes were found, handle incorrect step
+                HandleIncorrectStep();
+                return;
+            case 1: // if one recipe was found check if its on its last step
+            {
+                _recipe = _possibleRecipes[0];
+                Debug.Log($"New Recipe Started: {_recipe.recipeName}");
 
-                // Ensure next step exists
-                if (_curStepIndex + 1 < recipes.steps.Length)
+                if (CheckForLastStep(_recipe))
                 {
-                    _nextStep = recipes.steps[_curStepIndex + 1].stepName;
-                    _possibleNextSteps.Add(_nextStep);
-                }
-                else
-                {
-                    _nextStep = null;
-                }
-
-                // Check if it's the final step
-                if (recipes.steps[_curStepIndex].stepName == "Bottle_Potion")
-                {
-                    _recipe = recipes;
                     CompletePotion();
                     return;
                 }
+                break;
             }
         }
 
-        _possibleRecipes = filterRecipes;
-
-        if (_possibleRecipes.Count == 0)
-        {
-            HandleIncorrectStep();
-            return;
-        }
-
-        _curStepIndex++;
-
-        // if there's only one possible recipe, set it as the recipe
-        if (_possibleRecipes.Count == 1)
-        {
-            _recipe = _possibleRecipes[0];
-
-            if (_curStepIndex < _recipe.steps.Length)
-            {
-                _nextStep = _recipe.steps[_curStepIndex].stepName;
-            }
-        }
+        _stepIndex++;
     }
 
-    // Start a new recipe based on the current step
-    private void StartNewRecipe()
-    {
-        _possibleRecipes.Clear();
-        _possibleNextSteps.Clear();
-
-        //cauldronFillMaterial.color = ingredientGO.GetComponent<PickupObject>().ingredientColor;
-        _cauldronFillMaterial.color = Color.Lerp(_cauldronFillMaterial.color, _ingredientGo.GetComponent<PickupObject>().ingredientColor, 3f);
-
-        // Loop through all possible recipes
-        foreach (RecipeSO recipe in _craftableRecipes)
-        {
-            if (recipe.steps.Length > 0 && recipe.steps[0].stepName == _currentStep)
-            {
-                _possibleRecipes.Add(recipe);
-                if (recipe.steps.Length > 1)
-                    _possibleNextSteps.Add(recipe.steps[1].stepName);
-            }
-        }
-
-        // If no possible recipes were found, handle the incorrect step
-        if (_possibleRecipes.Count == 0)
-        {
-            HandleIncorrectStep();
-            return;
-        }
-
-        _curStepIndex = 1; // Move to next step
-
-        // if there's only one possible recipe, set it as the recipe
-        if (_possibleRecipes.Count == 1)
-        {
-            _recipe = _possibleRecipes[0];
-
-            if (_recipe.steps.Length > 1)
-            {
-                _nextStep = _recipe.steps[_curStepIndex].stepName;
-            }
-
-            if (_recipe.steps[0].stepName == "Bottle_Potion")
-            {
-                CompletePotion();
-            }
-        }
-    }
-
-    // Advance to the next step in the recipe
     private void AdvanceToNextStep()
     {
-        // If the recipe is null, find the possible recipes
-        if (_recipe == null)
-        {
-            FindPossibleRecipes();
-            return;
-        }
-
-        // Ensure the current step index is within the bounds of the recipe steps
-        if (_curStepIndex >= _recipe.steps.Length)
-        {
-            HandleIncorrectStep();
-            return;
-        }
-
-        //Debug.Log($"Current Step: {currentStep}, Expected Step: {recipe.steps[curStepIndex].stepName}");
-
         // If an unexpected ingredient is added, trigger incorrect step handling
-        if (_recipe.steps[_curStepIndex].stepName != _currentStep)
+        if (_recipe.steps[_stepIndex].stepName != _currentStep)
         {
-            //Debug.LogError($"Incorrect step detected! Current: {currentStep}, Expected: {recipe.steps[curStepIndex].stepName}");
+            // Debug.Log($"Incorrect step detected!");
             HandleIncorrectStep();
             return;
         }
 
         // Check if it's the final step
-        if (_recipe.steps[_curStepIndex].stepName == "Bottle_Potion")
+        if (CheckForLastStep(_recipe))
         {
             CompletePotion();
             return;
         }
 
-        // Handles Tutorial Mode for the stirring portion
-        switch (GameManager.Instance.IsInTutorialMode  && TutorialManager.TutorialPartCount == 1)
+        _stepIndex++;
+    }
+
+    private void CheckTutorialSteps()
+    {
+        if (TutorialManager.TutorialPartCount != 1) return;
+
+        // This will check what step the tutorial is on only in part one
+        switch (TutorialManager.CurrentStep)
         {
-            case true when TutorialManager.CurrentStep == TutorialStep.StirCauldron && TutorialManager.LastCauldronUsed == modelRenderer:
-            {
-                if (_currentStep == "Stir_C") TutorialManager.StirredCauldronCorrectly = true;
+            case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
+                TutorialManager.InsertCorrectIngredient = true;
+                TutorialManager.LastCauldronUsed = modelRenderer;
+                TutorialManager.StirStickToHighlight = stirStickRend;
                 break;
-            }
-            case true when TutorialManager.LastCauldronUsed != modelRenderer:
+            case TutorialStep.FillPotionBottle when TutorialManager.LastCauldronUsed == modelRenderer:
+                TutorialManager.FilledPotionBottle = true;
+                break;
+            case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed == modelRenderer && _currentStep == "Stir_C":
+                TutorialManager.StirredCauldronCorrectly = true;
+                break;
+            case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed != modelRenderer:
                 HandleIncorrectStep();
                 break;
         }
-
-        _curStepIndex++;
-
-        // Set the next step
-        if (_curStepIndex < _recipe.steps.Length)
-        {
-            _nextStep = _recipe.steps[_curStepIndex].stepName;
-            //Debug.Log($"Next expected step: {nextStep}");
-        }
     }
+
+    private void HandleIncorrectStep()
+    {
+        // If its in tutorial mode it will show they've made an incorrect move
+        if (GameManager.Instance.IsInTutorialMode)
+            TutorialManager.MadeIncorrectMove = true;
+        
+        // audio manager will play sfx
+        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, incorrectStepSounds.PickAudioClip(), true);
+        
+        // if the item added exists it will be turned kinematic
+        if(_ingredientAdded != null)
+            _ingredientAdded.GetComponent<Rigidbody>().isKinematic = false;
+        
+        // plays the incorrect step visual effect then resets values
+        _veIncorrectStep.Play();
+        ResetValues();
+    }
+
+    private bool CheckForLastStep(RecipeSO recipe)
+    {
+        // if the recipe step isn't Bottle_Potion, it's not the last step
+        if(recipe.steps[_stepIndex].stepName != "Bottle_Potion") return false;
+        
+        // if the recipe isn't set yet, set it to this recipe
+        if(_recipe == null)
+            _recipe = recipe;
+        
+        return true;
+    }
+    
     #endregion
 
+  
     #region Potion Completion
     // Complete the potion and throw it
     private void CompletePotion()
     {
-        if (_ingredientGo == null) return;
+        if (_ingredientAdded == null) return;
 
-        _ingredientGo.GetComponent<Rigidbody>().isKinematic = false;
-        _ingredientGo.GetComponent<PotionOutput>().enabled = true;
-        _ingredientGo.GetComponent<PotionOutput>().potionInside = _recipe;
-        _ingredientGo.transform.SetParent(null);
+        _ingredientAdded.GetComponent<Rigidbody>().isKinematic = false;
+        _ingredientAdded.GetComponent<PotionOutput>().enabled = true;
+        _ingredientAdded.GetComponent<PotionOutput>().potionInside = _recipe;
+        _ingredientAdded.transform.SetParent(null);
 
         // Instantiate the completed potion prefab
         StartCoroutine(ThrowPotion());
@@ -379,41 +331,36 @@ public class CauldronInteraction : MonoBehaviour
 
     private IEnumerator ThrowPotion()
     {
-        GameObject thrownPotion;
-        thrownPotion = _ingredientGo;
-        _ingredientGo = null;
+        // Remove the ingredient added and change it into a thrown potion - this is needed
+        // without it, if you make an incorrect potion while the potion is midair, it will
+        // destroy itself
+        var thrownPotion = _ingredientAdded;
+        _ingredientAdded = null;
 
         yield return new WaitForSeconds(0.3f);
         
-        
         if(thrownPotion.TryGetComponent<PotionOutput>(out var potionOutput))
             potionOutput.SetPotionColor();
-        else
-            Debug.LogError("PotionOutput script not found on the potion");
 
         // Play a sound here
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, finishPotionSounds.PickAudioClip(), true);
 
         // throw the potion from the cauldron in a random direction
-        Vector3 startPosition = ingredientInsertPoint.position;
-        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f)).normalized;
-        Vector3 targetPosition = startPosition + randomDirection * throwStrength;
+        var startPosition = ingredientInsertPoint.position;
+        var randomDirection = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f)).normalized;
+        var targetPosition = startPosition + randomDirection * throwStrength;
 
         if (_recipe.recipeName != "Potion of Hydration")
             CountPotions();
         else
             ResetValues();
 
-        if(thrownPotion != null)
-        {
-            thrownPotion.GetComponent<Collider>().enabled = true;
+        thrownPotion.GetComponent<Collider>().enabled = true;
 
-            Sequence throwSequence = DOTween.Sequence();
-
-            // Scale and throw at the same time
-            throwSequence.Append(thrownPotion.transform.DOScale(new Vector3(1f, 1f, 1f), 1f).SetEase(Ease.InOutSine))
+        var throwSequence = DOTween.Sequence();
+        // Scale and throw at the same time
+        throwSequence.Append(thrownPotion.transform.DOScale(new Vector3(1f, 1f, 1f), 1f).SetEase(Ease.InOutSine))
                          .Join(thrownPotion.transform.DOLocalJump(targetPosition, throwHeight, 1, throwDuration));
-        }
     }
 
     // Count the potions and reset the values
@@ -431,17 +378,6 @@ public class CauldronInteraction : MonoBehaviour
     }
     #endregion
 
-    private void SetInactive()
-    {
-        if (_currentStep == "Bottle_Potion") return;
-
-        if (_ingredientGo != null)
-        {
-            DOTween.Kill(_ingredientGo.transform);
-            Destroy(_ingredientGo);
-        }
-    }
-
     internal void GoblinInteraction()
     {
         _recipe = null;
@@ -457,74 +393,36 @@ public class CauldronInteraction : MonoBehaviour
         }
         _cauldronFillMaterial.color = _cauldronFillDefaultColor;
         _possibleRecipes.Clear();
-        _possibleNextSteps.Clear();
         _potionIndex = 0;
-        _curStepIndex = 0;
+        _stepIndex = 0;
         _recipe = null;
-        _nextStep = null;
         cauldronFill.DOLocalMove(_cauldronStartingPosition, 0.5f);
     }
-
-    #region Stirring
-    // Stir the cauldron clockwise
-    private void StirClockwise(InputAction.CallbackContext input)
-    {
-        if (input.performed)
-        {
-            if (!_canInteract) return;
-
-            spoon.DOLocalRotate(new Vector3(0, 360, 16), spoonRotationSpeed, RotateMode.FastBeyond360);
-            if (_lastStep == "Stir_C") return;
-            
-            _currentStep = "Stir_C";
-            Stir();
-        }
-    }
-
-    // Stir the cauldron counter-clockwise
-    private void StirCounterClockwise(InputAction.CallbackContext input)
-    {
-        if (input.performed)
-        {
-            if (!_canInteract) return;
-            spoon.DOLocalRotate(new Vector3(0, -360, 16), spoonRotationSpeed, RotateMode.FastBeyond360);
-            if (_lastStep == "Stir_CC") return;
-            
-            _currentStep = "Stir_CC";
-            Stir();
-        }
-    }
-    #endregion
 
     // using this to check if the player is in range to stir the cauldron
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (!other.gameObject.CompareTag("Player")) return;
+        if (_player.isHoldingItem)
+            _canInteract = false;
+        else
         {
-            if (_player.isHoldingItem)
-                _canInteract = false;
-            else
+            if(GameManager.Instance.IsInTutorialMode)
             {
-                if(GameManager.Instance.IsInTutorialMode)
-                {
-                    if (TutorialManager.CurrentStep < TutorialStep.StirCauldron)
-                        return;
-                }
-
-                _canInteract = true;
-                Actions.OnShowStir?.Invoke();
+                if (TutorialManager.CurrentStep < TutorialStep.StirCauldron)
+                    return;
             }
 
+            _canInteract = true;
+            Actions.OnShowStir?.Invoke();
         }
     }
 
     // using this to check if the player has left the range to stir the cauldron
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            _canInteract = false;
-            Actions.OnHideUI?.Invoke();
-        }
+        if (!other.gameObject.CompareTag("Player")) return;
+        _canInteract = false;
+        Actions.OnHideUI?.Invoke();
     }
 }

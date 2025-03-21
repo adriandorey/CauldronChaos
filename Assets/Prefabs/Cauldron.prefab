@@ -620,8 +620,8 @@ MonoBehaviour:
   throwStrength: 2
   throwHeight: 2
   throwDuration: 1
-  spoonRotationSpeed: 0.6
-  spoon: {fileID: 8901120777319129939}
+  stickRotationSpeed: 0.6
+  stirStick: {fileID: 8901120777319129939}
   modelRenderer: {fileID: 3221904393584103392}
   stirStickRend: {fileID: 3143820256570925506}
   addIngredientSounds: {fileID: 2229680116212076389}

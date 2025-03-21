@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
@@ -19,10 +20,9 @@ public class RecipeBookUI : MonoBehaviour
 
     [Header("Page Buttons")]
     [SerializeField] private GameObject previousPage;
-
     [SerializeField] private GameObject nextPage;
-    private Sprite _previousPageSprite;
-    private Sprite _nextPageSprite;
+    [SerializeField] private RecipeNavigation previousPageNav;
+    [SerializeField] private RecipeNavigation nextPageNav;
 
     private int _pageNumber;
 
@@ -44,9 +44,6 @@ public class RecipeBookUI : MonoBehaviour
 
     private void Start()
     {
-        _previousPageSprite = previousPage.GetComponent<Image>().sprite;
-        _nextPageSprite = nextPage.GetComponent<Image>().sprite;
-
         _availableRecipes = recipeManager.FindAvailableRecipes();
 
         if (_pageNumber == 0)
@@ -83,13 +80,10 @@ public class RecipeBookUI : MonoBehaviour
 
     private void SetRecipes()
     {
-        if (FirstSelect.IsControllerControlling)
-        {
-            previousPage.GetComponent<Image>().sprite =
-                PickIcon(InputManager.Instance.PreviousPageInputAction.GetBindingDisplayString(0));
-            nextPage.GetComponent<Image>().sprite =
-                PickIcon(InputManager.Instance.NextPageInputAction.GetBindingDisplayString(0));
-        }
+        var isController = FirstSelect.IsControllerControlling;
+        
+        SetNavElements(nextPageNav, isController, InputManager.Instance.NextPageInputAction);
+        SetNavElements(previousPageNav, isController, InputManager.Instance.PreviousPageInputAction);
 
 
         ClearPage(); // Clear current UI elements
@@ -210,6 +204,31 @@ public class RecipeBookUI : MonoBehaviour
 
 
     #region Recipe Book Navigation
+
+    private void SetNavElements(RecipeNavigation recipeNav, bool enableIcon, InputAction inputAction)
+    {
+        recipeNav.buttonIcon.enabled = enableIcon;
+        recipeNav.buttonText.enabled = !enableIcon;
+        
+        Debug.Log(inputAction);
+        SetNavDisplay(recipeNav, enableIcon, inputAction);
+    }
+
+    private void SetNavDisplay(RecipeNavigation recipeNav, bool isController, InputAction inputAction)
+    {
+        if (isController)
+        {
+            recipeNav.buttonIcon.sprite = PickIcon(inputAction.GetBindingDisplayString(1));
+            // Debug.Log($"Setting icon for: {inputAction.GetBindingDisplayString(1)}");
+        }
+        else
+        {
+            recipeNav.buttonText.text = inputAction.GetBindingDisplayString(0);
+        }
+    }
+
+    
+    
     // This is used for the controller next page navigation
     private void NextPage(InputAction.CallbackContext input)
     {
@@ -269,20 +288,23 @@ public class RecipeBookUI : MonoBehaviour
         Sprite icon = null; // Ensure icon has a default value
         var gamepad = Gamepad.current;
 
+        // Debug.Log($"Looking for icon for: {displayString}");
+        
         // if it's an xbox controller it will pick from xbox icons
         if (gamepad is XInputControllerWindows)
         {
             icon = xboxIcons.GetSprite(displayString);
+            // Debug.Log($"Using Xbox Icons: {icon}");
         }
         // if an ps4 controller it will pick from xbox icons
         else if (gamepad is DualShockGamepad)
         {
             icon = ps4Icons.GetSprite(displayString);
+            // Debug.Log($"Using PS4 Icons: {icon}");
         }
         else
         {
-            // if it's neither, it will default to xbox icons
-            //Debug.Log("Gamepad is not XInputController or DualShockGamepad");
+            // Debug.Log("No recognized gamepad found, defaulting to Xbox Icons.");
             icon = xboxIcons.GetSprite(displayString);
         }
 
@@ -305,4 +327,11 @@ public struct RecipeVisuals
     public GameObject mainObject;
     public Image stirIcon;
     public TextMeshProUGUI stirButtonText;
+}
+
+[Serializable]
+public struct RecipeNavigation
+{
+    public Image buttonIcon;
+    public TextMeshProUGUI buttonText;
 }
