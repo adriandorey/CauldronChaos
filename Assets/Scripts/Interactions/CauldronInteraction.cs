@@ -149,10 +149,11 @@ public class CauldronInteraction : MonoBehaviour
     {
         if (context.performed)
         {
+            // if you can't interact with the cauldron, do nothing.
             if(!_canInteract) return;
 
-            stirStick.DOLocalRotate(new Vector3(0, 360, 16), stickRotationSpeed, RotateMode.FastBeyond360);
-            Stir("Stir_C");
+            // stir the cauldron 360 degrees            
+            Stir("Stir_C", 360f);
         }
     }
     
@@ -160,15 +161,20 @@ public class CauldronInteraction : MonoBehaviour
     {
         if (context.performed)
         {
+            // if you can't interact with the cauldron, do nothing.
             if(!_canInteract) return;
 
-            stirStick.DOLocalRotate(new Vector3(0, -360, 16), stickRotationSpeed, RotateMode.FastBeyond360);
-            Stir("Stir_CC");
+            // stir the cauldron -360 degrees  
+            Stir("Stir_CC", -360f);
         }
     }
     
-    private void Stir(string direction)
+    /// <summary> Stirs the cauldron and decides if it should continue to next step based on last step </summary>
+    private void Stir(string direction, float rotationAngle)
     {
+        // rotate the stir stick around the cauldron
+        stirStick.DOLocalRotate(new Vector3(0, rotationAngle, 16), stickRotationSpeed, RotateMode.FastBeyond360);
+        
         //play stirring sound
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, stirSounds.PickAudioClip(), false);
 
@@ -200,7 +206,8 @@ public class CauldronInteraction : MonoBehaviour
     {
         List<RecipeSO> filteredRecipes = new();
 
-        // Determine the list to search through
+        // Determine the list to search through based on the current step index
+        // If we are at the first step use _availRecipes as to list to search through if not, use _possible recipes
         List<RecipeSO> searchList = _stepIndex == 0 ? _availRecipes.ToList() : new List<RecipeSO>(_possibleRecipes);
 
         // Iterate through the search list and find matching recipes
@@ -220,11 +227,12 @@ public class CauldronInteraction : MonoBehaviour
             case 0: // If no possible recipes were found, handle incorrect step
                 HandleIncorrectStep();
                 return;
-            case 1: // if one recipe was found check if its on its last step
+            case 1: // if one recipe was found check if it's on its last step
             {
                 _recipe = _possibleRecipes[0];
                 Debug.Log($"New Recipe Started: {_recipe.recipeName}");
 
+                // if its the last step escape this function
                 if (CheckForLastStep(_recipe))
                 {
                     CompletePotion();
@@ -234,6 +242,7 @@ public class CauldronInteraction : MonoBehaviour
             }
         }
 
+        // increase the step index
         _stepIndex++;
     }
 
@@ -264,17 +273,21 @@ public class CauldronInteraction : MonoBehaviour
         // This will check what step the tutorial is on only in part one
         switch (TutorialManager.CurrentStep)
         {
+            // checks to see if the ingredient inserted was a mushroom
             case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
-                TutorialManager.InsertCorrectIngredient = true;
-                TutorialManager.LastCauldronUsed = modelRenderer;
-                TutorialManager.StirStickToHighlight = stirStickRend;
+                TutorialManager.InsertCorrectIngredient = true; // tells tutorial manager correct move was made
+                TutorialManager.LastCauldronUsed = modelRenderer; // tells tutorial manager which cauldron to highlight based on where they inserted the mushroom
+                TutorialManager.StirStickToHighlight = stirStickRend; // tells the tutorial manager to highlight which stir stick
                 break;
-            case TutorialStep.FillPotionBottle when TutorialManager.LastCauldronUsed == modelRenderer:
-                TutorialManager.FilledPotionBottle = true;
+            // checks to see if filled bottle if the last cauldron was used
+            case TutorialStep.FillPotionBottle when TutorialManager.LastCauldronUsed == modelRenderer: 
+                TutorialManager.FilledPotionBottle = true; // tells tutorial manager correct move was made
                 break;
+            // checks to see if the last cauldron was used and if they stirred in the right direction
             case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed == modelRenderer && _currentStep == "Stir_C":
-                TutorialManager.StirredCauldronCorrectly = true;
+                TutorialManager.StirredCauldronCorrectly = true; // tells tutorial manager correct move was made
                 break;
+            // This tells the tutorial manager the wrong cauldron was stirred.
             case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed != modelRenderer:
                 HandleIncorrectStep();
                 break;

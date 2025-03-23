@@ -83,6 +83,7 @@ public class DayManager : MonoBehaviour
 
             //playing end of day SFX
             AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, endDaySfx, true);
+            return;
         }
 
         SetTimerRotation();
