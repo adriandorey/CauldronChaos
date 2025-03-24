@@ -79,7 +79,7 @@ public class PickupObject : MonoBehaviour
 
         //removing target position & parent
         _targetPos = null;
-        transform.parent = null;
+        transform.SetParent(GameObject.Find("DroppedObjects").transform, true);
 
         //playing SFX
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ItemInteraction, dropSFX, true);

@@ -232,7 +232,7 @@ public class CauldronInteraction : MonoBehaviour
                 _recipe = _possibleRecipes[0];
                 Debug.Log($"New Recipe Started: {_recipe.recipeName}");
 
-                // if its the last step escape this function
+                // if it's the last step escape this function
                 if (CheckForLastStep(_recipe))
                 {
                     CompletePotion();
@@ -279,7 +279,7 @@ public class CauldronInteraction : MonoBehaviour
                 TutorialManager.LastCauldronUsed = modelRenderer; // tells tutorial manager which cauldron to highlight based on where they inserted the mushroom
                 TutorialManager.StirStickToHighlight = stirStickRend; // tells the tutorial manager to highlight which stir stick
                 break;
-            // checks to see if filled bottle if the last cauldron was used
+            // checks to see if filled bottle is the last cauldron was used
             case TutorialStep.FillPotionBottle when TutorialManager.LastCauldronUsed == modelRenderer: 
                 TutorialManager.FilledPotionBottle = true; // tells tutorial manager correct move was made
                 break;
@@ -363,6 +363,9 @@ public class CauldronInteraction : MonoBehaviour
         var randomDirection = new Vector3(Random.Range(-1f, 1f), 1, Random.Range(-1f, 1f)).normalized;
         var targetPosition = startPosition + randomDirection * throwStrength;
 
+        if(_recipe == null)
+            yield break;
+        
         if (_recipe.recipeName != "Potion of Hydration")
             CountPotions();
         else
