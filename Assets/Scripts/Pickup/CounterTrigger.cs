@@ -10,7 +10,7 @@ public class CounterTrigger : MonoBehaviour
     [SerializeField] private bool isCorner;
 
     //Method called on collider entering the trigger volume
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         //Debug.Log("Object added to counter");
         if(!other.gameObject.CompareTag("Ingredient")) return;

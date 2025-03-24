@@ -20,6 +20,7 @@ public class GoblinAI : MonoBehaviour
 
     [Tooltip("Chance of throwing items on the floor")]
     [SerializeField] private float chanceOfItems = 0.4f;
+    private float _throwDistanceThreshold = 0.5f; // Allow throwing if within this distance
 
     [Tooltip("Chance of throwing items from crates or shelves")]
     [SerializeField] private float chanceOfCrates = 0.3f;
@@ -132,8 +133,6 @@ public class GoblinAI : MonoBehaviour
 
         // if the goblin isn't active return
         if (!_isGoblinActive) return;
-
-        // Need to do something here to check to see if the item the goblin needs has been picked up or moved.
 
         // Check below the character to see if they've stepped in a slime trail
         if (Physics.Raycast(transform.position, Vector3.down, 1f, slime))
@@ -280,6 +279,9 @@ public class GoblinAI : MonoBehaviour
     // Throwing items on the floor
     private IEnumerator ThrowItemsOffFloor()
     {
+        // Set the item to null before going into the loop
+        _itemToThrow = null;
+        
         while (true) // Keep trying until a valid item is found and thrown
         {
             FindFloorItems(); // Refresh the list of available items
@@ -287,26 +289,19 @@ public class GoblinAI : MonoBehaviour
             if (_ingredients.Count == 0) yield break; // No items left, exit
 
             // Pick a random item
-            _itemToThrow = _ingredients[Random.Range(0, _ingredients.Count)];
+            if(_itemToThrow == null)
+                _itemToThrow = _ingredients[Random.Range(0, _ingredients.Count)];
 
             // Validate the item
-            if (!IsItemValid(_itemToThrow))
-            {
-                yield return null; // Wait and retry next frame
-                continue;
-            }
-
-            Vector3 lastKnownPosition = _itemToThrow.transform.position;
+            if (!IsItemValid(_itemToThrow)) continue;
 
             // Set goblin destination
+            var lastKnownPosition = _itemToThrow.transform.position;
             agent.SetDestination(lastKnownPosition);
             AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); // Start movement sound
 
-            while (!ReachedTarget())
+            while (!ReachedThrowingItem())
             {
-                // Refresh items in case something changed
-                FindFloorItems();
-
                 // If the item is no longer valid, restart the loop
                 if (!IsItemValid(_itemToThrow))
                 {
@@ -316,7 +311,7 @@ public class GoblinAI : MonoBehaviour
                 }
 
                 // Update destination if the item moved
-                if (_itemToThrow.transform.position != lastKnownPosition)
+                if (_itemToThrow != null && _itemToThrow.transform.position != lastKnownPosition)
                 {
                     lastKnownPosition = _itemToThrow.transform.position;
                     agent.SetDestination(lastKnownPosition);
@@ -326,7 +321,7 @@ public class GoblinAI : MonoBehaviour
             }
 
             // If the goblin reached the item, throw it
-            if (IsItemValid(_itemToThrow) && ReachedTarget())
+            if (IsItemValid(_itemToThrow) && ReachedThrowingItem())
             {
                 AudioManager.instance.sfxManager.StopConstantSFX();
 
@@ -348,7 +343,7 @@ public class GoblinAI : MonoBehaviour
         var amount = Random.Range(1, 4);
 
         AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); //start movement sound
-        while (!ReachedTarget())
+        while (!ReachedCrate())
         {
             yield return null;
         }
@@ -373,7 +368,7 @@ public class GoblinAI : MonoBehaviour
         agent.SetDestination(cauldron.transform.position);
         AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); //start movement sound
 
-        while (!ReachedTarget())
+        while (!ReachedCrate())
         {
             yield return null;
         }
@@ -400,7 +395,7 @@ public class GoblinAI : MonoBehaviour
             agent.SetDestination(lastKnownPosition);
             AudioManager.instance.sfxManager.StartConstantSFX(goblinMovement); // Start movement sound
 
-            while (!ReachedTarget())
+            while (!ReachedCrate())
             {
                 yield return null; // Wait for the next frame
 
@@ -421,7 +416,7 @@ public class GoblinAI : MonoBehaviour
             }
 
             // If the goblin successfully reached the target, scare them
-            if (_customerToScare != null && ReachedTarget())
+            if (_customerToScare != null && ReachedCrate())
             {
                 AudioManager.instance.sfxManager.StopConstantSFX();
 
@@ -442,7 +437,7 @@ public class GoblinAI : MonoBehaviour
     {
         PickNewDestination();
 
-        while (!ReachedTarget())
+        while (!ReachedCrate())
         {
             yield return null;
         }
@@ -512,11 +507,16 @@ public class GoblinAI : MonoBehaviour
 
 
     /// <summary> Check if the agent has reached the target </summary>
-    // Check if the cauldron has reached the target
-    private bool ReachedTarget()
+    private bool ReachedCrate()
     {
         return !agent.pathPending &&
                agent.remainingDistance <= agent.stoppingDistance &&
                (!agent.hasPath || agent.velocity.sqrMagnitude == 0f);
+    }
+
+    private bool ReachedThrowingItem()
+    {
+        var distance = Vector3.Distance(transform.position, _itemToThrow.transform.position);
+        return distance <= agent.stoppingDistance || distance <= _throwDistanceThreshold;
     }
 }
