@@ -85,7 +85,7 @@ public class CrateHolder : Interactable
         var randomSpread = Random.insideUnitCircle * 1.5f;
         
         // calculate final throw direction, forward + spread
-        var throwTarget = goblin.position + forwardDirection * 2 + new Vector3(randomSpread.x, 0, randomSpread.y);
+        var throwTarget = goblin.position + forwardDirection + new Vector3(randomSpread.x, 0, randomSpread.y);
         
         var ingredientSequence = DOTween.Sequence();
 
