@@ -10,17 +10,21 @@ public class CounterTrigger : MonoBehaviour
     [SerializeField] private bool isCorner;
 
     //Method called on collider entering the trigger volume
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Object added to counter");
         if(!other.gameObject.CompareTag("Ingredient")) return;
         
-        if (_pickup == null && !isCorner)
+        if (!isCorner)
         {
-            _pickup = other.gameObject.GetComponent<PickupObject>();
-            _pickup.transform.position = transform.position;
-            return;
-            
+            if(_pickup == null)
+            {
+                _pickup = other.gameObject.GetComponent<PickupObject>();
+                _pickup.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                _pickup.GetComponent<Rigidbody>().isKinematic = true;
+                _pickup.transform.position = transform.position;
+                return;
+            }
         }
             
         var ejectDirection = -transform.forward * ejectPower;
@@ -31,7 +35,10 @@ public class CounterTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if(!other.gameObject.CompareTag("Ingredient")) return;
-        if(other == _pickup.GetComponent<Collider>())
+        if(other.gameObject == _pickup)
+        {
+            _pickup.GetComponent<Rigidbody>().isKinematic = false;
             _pickup = null;
+        }
     }
 }

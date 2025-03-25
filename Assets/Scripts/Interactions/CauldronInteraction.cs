@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -24,15 +25,17 @@ public class CauldronInteraction : MonoBehaviour
     private GameObject _ingredientAdded;
     private int _stepIndex;
     private bool _canInteract;
-    private int _potionIndex;
+    private int _potionIndex = 3;
 
     [Header("Potion Visual Counter")]
     [SerializeField] private GameObject[] visualCounter;
 
     [Header("Cauldron Fill")]
     [SerializeField] private Transform cauldronFill;
+    [SerializeField] private TextMeshProUGUI cauldronCount;
+    private MaterialPropertyBlock _propBlock;
+    private MeshRenderer _cauldronFillMesh;
     private Color _cauldronFillDefaultColor;
-    private Material _cauldronFillMaterial;
     private Vector3 _cauldronStartingPosition;
 
     [Header("Potion Insert Spot")]
@@ -67,8 +70,10 @@ public class CauldronInteraction : MonoBehaviour
         // Set the starting position of the cauldron
         _cauldronStartingPosition = cauldronFill.transform.localPosition;
 
-        _cauldronFillMaterial = cauldronFill.GetComponent<MeshRenderer>().material;
-        _cauldronFillDefaultColor = _cauldronFillMaterial.color;
+        // Get default color of the cauldron material
+        _cauldronFillMesh = cauldronFill.GetComponent<MeshRenderer>();
+
+        _propBlock = new MaterialPropertyBlock();
 
         // Get the incorrect step particles
         _veIncorrectStep = GetComponentInChildren<VisualEffect>();
@@ -128,6 +133,11 @@ public class CauldronInteraction : MonoBehaviour
                          .Join(_ingredientAdded.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InOutSine))
                          .OnComplete(SetInactive); // Call SetInactive after both tweens finish
         }
+
+
+        if (_currentStep != "Bottle_Potion")
+            SetCauldronColour(_currentStep);
+
 
         // Play a sound here
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, addIngredientSounds.PickAudioClip(), true);
@@ -296,6 +306,9 @@ public class CauldronInteraction : MonoBehaviour
 
     private void HandleIncorrectStep()
     {
+        _propBlock = new MaterialPropertyBlock();
+        _cauldronFillMesh.SetPropertyBlock(_propBlock);
+
         // If its in tutorial mode it will show they've made an incorrect move
         if (GameManager.Instance.IsInTutorialMode)
             TutorialManager.MadeIncorrectMove = true;
@@ -383,16 +396,31 @@ public class CauldronInteraction : MonoBehaviour
     private void CountPotions()
     {
         //Debug.Log("Potion Counted " + potionIndex);
-        if (_potionIndex < 2) // Ensure we don't reset too soon
-        {
-            visualCounter[_potionIndex].SetActive(false);
-            _potionIndex++;
+            //visualCounter[_potionIndex].SetActive(false);
+            _potionIndex--;
+            cauldronCount.text = $"{_potionIndex}";
             cauldronFill.DOLocalMove(cauldronFill.localPosition - new Vector3(0, 0.11f, 0), 0.8f);
-        }
-        else
+
+        if(_potionIndex == 0)
             ResetValues();
     }
     #endregion
+
+    private void SetCauldronColour(string ingredient)
+    {
+        
+        _cauldronFillMesh.GetPropertyBlock(_propBlock);
+        switch (ingredient)
+        {
+            case "Eye_of_Basilisk": _propBlock.SetInt("_EyeBool", 1); break;
+            case "Mandrake_Root": _propBlock.SetInt("_MandrakeBool", 1); break;
+            case "Mushroom": _propBlock.SetInt("_MushroomBool", 1); break;
+            case "Rabbit_Foot": _propBlock.SetInt("_FootBool", 1); break;
+            case "Troll_Bone": _propBlock.SetInt("_BoneBool", 1); break;
+        }
+        _cauldronFillMesh.SetPropertyBlock(_propBlock);
+    }
+
 
     internal void GoblinInteraction()
     {
@@ -403,13 +431,17 @@ public class CauldronInteraction : MonoBehaviour
     // Resets all cauldron values
     private void ResetValues()
     {
-        foreach (var circle in visualCounter)
-        {
-            circle.SetActive(true);
-        }
-        _cauldronFillMaterial.color = _cauldronFillDefaultColor;
+        _propBlock = new MaterialPropertyBlock();
+        _cauldronFillMesh.SetPropertyBlock(_propBlock);
+
+        //foreach (var circle in visualCounter)
+        //{
+        //    circle.SetActive(true);
+        //}
+        _cauldronFillMesh.material.color = _cauldronFillDefaultColor;
         _possibleRecipes.Clear();
-        _potionIndex = 0;
+        _potionIndex = 3;
+        cauldronCount.text = $"{ _potionIndex}";
         _stepIndex = 0;
         _recipe = null;
         cauldronFill.DOLocalMove(_cauldronStartingPosition, 0.5f);

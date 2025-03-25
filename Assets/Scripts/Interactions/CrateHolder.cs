@@ -7,6 +7,7 @@ public class CrateHolder : Interactable
     public enum CrateType { Bottle, Mushroom, RabbitFoot, EyeOfBasilisk, Mandrake, TrollBone };
     public CrateType crateType;
     private Vector3 _originalScale;
+    [SerializeField] private ParticleSystem particles;
 
 
     public void Start()
@@ -65,7 +66,10 @@ public class CrateHolder : Interactable
         }
 
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
-
+       
+        if (particles != null)
+            particles.Play();
+        
         var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
         playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
     }
@@ -79,6 +83,9 @@ public class CrateHolder : Interactable
         // Instantiate ingredient & makes it small
         var ingredient = Instantiate(ingredientPrefab, goblin.position, Quaternion.identity);
         ingredient.transform.localScale = Vector3.zero;
+
+        if(particles != null)
+            particles.Play();
         
         // Picks a random position for the item to "be thrown to"
         var forwardDirection = transform.forward;
