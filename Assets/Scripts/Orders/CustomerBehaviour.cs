@@ -28,6 +28,13 @@ public class CustomerBehaviour : MonoBehaviour
     internal bool HasJoinedQueue;
 
     private GameObject _orderUiInstance;
+
+    [Header("SFX")]
+    [SerializeField] private AudioClip sfxOrderIn;
+    [SerializeField] private SFXLibrary sfxCustomerWalk;
+    [SerializeField] private float customerStepTime = 0.3f;
+    private float stepTimer = 0f;
+    private bool isWalking = false;
     
 
     private void Start()
@@ -40,6 +47,18 @@ public class CustomerBehaviour : MonoBehaviour
     {
         if (!_leavingQueue)
             MoveToTarget();
+
+        if (!isWalking) return; //clause statement to stop logic below if not walking
+
+        if (stepTimer <= 0f)
+        {
+            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, sfxCustomerWalk.PickAudioClip(), true);
+            stepTimer = customerStepTime / animator.speed;
+        }
+        else
+        {
+            stepTimer -= Time.deltaTime;
+        }
     }
 
     #region Order Events
@@ -58,6 +77,8 @@ public class CustomerBehaviour : MonoBehaviour
         var child = _orderUiInstance.transform.GetChild(0);
         _orderIcon = child.GetComponent<Image>();
         _orderIcon.sprite = RequestedOrder.potionIcon;
+
+        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, sfxOrderIn, true);
     }
 
     internal RecipeSO HasOrder()
@@ -78,6 +99,7 @@ public class CustomerBehaviour : MonoBehaviour
     internal void SetTarget(Vector3 position)
     {
         animator.SetBool("isWalking", true);
+        isWalking = true;
         _targetPosition = position;
         _leavingQueue = false;
     }
@@ -95,6 +117,7 @@ public class CustomerBehaviour : MonoBehaviour
         if (Vector3.Distance(transform.position, _targetPosition) > 0.1f)
         {
             animator.SetBool("isWalking", true);
+            isWalking = true;
             transform.position = Vector3.MoveTowards(transform.position, _targetPosition, moveSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Euler(0, 270, 0);
         }
@@ -103,6 +126,7 @@ public class CustomerBehaviour : MonoBehaviour
             transform.rotation = Quaternion.identity;
             HasJoinedQueue = true;
             animator.SetBool("isWalking", false);
+            isWalking = false;
 
             if (!_hasShownOrder)
             {
@@ -115,6 +139,7 @@ public class CustomerBehaviour : MonoBehaviour
     private IEnumerator LeaveAndExit(Vector3 exitPosition, System.Action onExitComplete)
     {
         animator.SetBool("isWalking", true);
+        isWalking = true;
 
         const float stepDistance = 1.2f; // Distance to step back
         var backwardStep = transform.position - transform.forward * stepDistance; // Step back 1 unit

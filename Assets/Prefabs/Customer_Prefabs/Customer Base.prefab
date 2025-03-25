@@ -5038,6 +5038,58 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &5975774166687843816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1057436368561243326}
+  - component: {fileID: 5613780721377749614}
+  m_Layer: 0
+  m_Name: WalkingSFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1057436368561243326
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975774166687843816}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2079494219999610102}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5613780721377749614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5975774166687843816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953697c0e7782b748887310ece8ca880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: fabcc8a6696122449a65c61c2d096f67, type: 3}
+  - {fileID: 8300000, guid: 330268776f86a5a49b52e459bb5be293, type: 3}
+  - {fileID: 8300000, guid: a55f02b094eeebc4bbb834b150e7451c, type: 3}
+  - {fileID: 8300000, guid: 48ed1c1ba251bbe4881fcd7351765891, type: 3}
+  - {fileID: 8300000, guid: 770108db318ee984488010a6a81b3565, type: 3}
+  - {fileID: 8300000, guid: 6054ce9a868dac34082114c2cde4d5b8, type: 3}
+  - {fileID: 8300000, guid: c98f8519eaa862f4cb2f35efc4639884, type: 3}
 --- !u!1 &6356803835694476596
 GameObject:
   m_ObjectHideFlags: 0
@@ -5073,6 +5125,7 @@ Transform:
   m_Children:
   - {fileID: 2831266018371219887}
   - {fileID: 5395508729411979116}
+  - {fileID: 1057436368561243326}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6242979879473526914
@@ -5094,6 +5147,9 @@ MonoBehaviour:
   coin: {fileID: 1738945206456837713}
   moveSpeed: 3
   animator: {fileID: 5184939874115157038}
+  sfxOrderIn: {fileID: 8300000, guid: 4aa87d943f0ee714e9f015932315fb0a, type: 3}
+  sfxCustomerWalk: {fileID: 5613780721377749614}
+  customerStepTime: 0.3
 --- !u!95 &5184939874115157038
 Animator:
   serializedVersion: 5
