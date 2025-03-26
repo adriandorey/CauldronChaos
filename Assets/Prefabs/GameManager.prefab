@@ -6798,16 +6798,26 @@ MonoBehaviour:
   dayStartOverlay: {fileID: 4741392036497951600}
   panelExplanation: {fileID: 995177306874361535}
   dayExplanation:
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Today's your first day running the shop on your own! Fulfill potion orders for
+    the customers. Check the recipe book if you need reminders of recipes!
+  - Oh no! A spilled potion turned the floor into slippery ice! No time to clean;
+    you have potions to make!
+  - A new ingredient! The mandrake root is sentient plant that screams when it is
+    uprooted. Check the recipe book for new recipes!
+  - Gah! The cauldrons absorbed a Potion of Sentience and now they're floating around!
+    You have to chase them if you want to brew anything...
+  - A new ingredient! Basilisk eyes are from a large, deadly, snow dwelling lizard
+    with eight legs. Check the recipe book for new recipes!
+  - How did this happen?! The Goblin got out of his cage! You could have sworn you
+    locked it. Too bad goblin control is a town away...
+  - A new ingredient! Rabbit feet, while normally mundane, have major reactions with
+    other magical ingredients. Check the recipe book for new recipes!
+  - "Brrr! A wind storm blew your windows open! Now you have to deal with strong
+    gusts blowing you and your ingredients around\u2026"
+  - A new ingredient! Troll bones exhibit strong regenerative properties even after
+    the troll has died. Check the recipe book for new recipes!
+  - "Yuck! Master\u2019s snail in-laws stopped by to give you a hug, and now you\u2019re
+    covered in their sticky slime. Right as you open up shop too\u2026"
   startDaySfx: {fileID: 8300000, guid: da32e896bb83a1a4a922b1eb83cb258d, type: 3}
   endDaySfx: {fileID: 8300000, guid: 232f504a7739c1f429065a8f60337c66, type: 3}
 --- !u!1 &3278787302276337074
@@ -13504,7 +13514,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6971208047623907001}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009353858, y: 0.6239927, z: 0.0074701784, w: 0.7813386}
+  m_LocalRotation: {x: -0.009353886, y: 0.6239927, z: 0.0074701924, w: 0.7813386}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17951,7 +17961,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8788826478654998836}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0093538575, y: 0.62399256, z: 0.007470176, w: 0.78133863}
+  m_LocalRotation: {x: -0.009353886, y: 0.6239927, z: 0.0074701924, w: 0.7813386}
   m_LocalPosition: {x: -2.5189395, y: 6.974099, z: -9.164787}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
