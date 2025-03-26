@@ -1525,7 +1525,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &29491308056809156
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1542,10 +1542,10 @@ RectTransform:
   - {fileID: 3884966827628916012}
   m_Father: {fileID: 8262958379393924166}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -460}
+  m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1414864496935187393
 MonoBehaviour:
@@ -14188,7 +14188,7 @@ MonoBehaviour:
   deleteFileConfirmation: {fileID: 3986307730218903153}
   gameData:
     isValidSave: 0
-    abovePlayerUI: 0
+    abovePlayerUI: 1
     days:
     - dayNumber: 0
       isUnlocked: 0
@@ -14220,6 +14220,7 @@ MonoBehaviour:
     - dayNumber: 0
       isUnlocked: 0
       bestScore: 0
+  graphicsManager: {fileID: 3099039569652916702}
 --- !u!1 &7422492546630485716
 GameObject:
   m_ObjectHideFlags: 0
@@ -16596,7 +16597,6 @@ MonoBehaviour:
   - {fileID: 4259540722455261107}
   - {fileID: 6024680277287584609}
   - {fileID: 2790556890894859939}
-  - {fileID: 0}
   imageWidth: 700
 --- !u!1 &8321556056649575797
 GameObject:
@@ -17496,8 +17496,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resolutionDropdown: {fileID: 8918734097536470623}
-  abovePlayerUI: {fileID: 5703602454971961260}
+  abovePlayerUI: {fileID: 2230909618043232968}
   abovePlayerUIToggle: {fileID: 6934053753829716004}
+  saveManager: {fileID: 8855562208961013376}
 --- !u!1 &8706464969544278623
 GameObject:
   m_ObjectHideFlags: 0
@@ -17553,8 +17554,8 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 4594589224791578211}
-    m_SelectOnDown: {fileID: 2849021414837748408}
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 2
@@ -17588,7 +17589,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3099039569652916702}
         m_TargetAssemblyTypeName: GraphicsManager, Assembly-CSharp
-        m_MethodName: SetAbovePlayerUI
+        m_MethodName: ToggleAbovePlayerUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21556,7 +21557,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 1414864496935187393}
+      objectReference: {fileID: 7481266570945978471}
     - target: {fileID: 3366724433988752219, guid: 1327686e05810384086a86b37347ca59,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
@@ -26528,7 +26529,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
-      objectReference: {fileID: 1414864496935187393}
+      objectReference: {fileID: 1122954512147194070}
     - target: {fileID: 3366724433988752219, guid: 1327686e05810384086a86b37347ca59,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnLeft
@@ -31000,6 +31001,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2230909618043232968 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8561464181300842281, guid: ced472106d5717446a58a4a8ad5dbb10,
+    type: 3}
+  m_PrefabInstance: {fileID: 7504587103847771617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2621568381981161612 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5495527033757963629, guid: ced472106d5717446a58a4a8ad5dbb10,
@@ -31021,12 +31028,6 @@ Transform:
 --- !u!95 &4699405746955213485 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2959430745793443660, guid: ced472106d5717446a58a4a8ad5dbb10,
-    type: 3}
-  m_PrefabInstance: {fileID: 7504587103847771617}
-  m_PrefabAsset: {fileID: 0}
---- !u!223 &5703602454971961260 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 2811057619986588237, guid: ced472106d5717446a58a4a8ad5dbb10,
     type: 3}
   m_PrefabInstance: {fileID: 7504587103847771617}
   m_PrefabAsset: {fileID: 0}

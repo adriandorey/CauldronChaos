@@ -242,7 +242,7 @@ public class CauldronInteraction : MonoBehaviour
             case 1: // if one recipe was found check if it's on its last step
                 {
                     _recipe = _possibleRecipes[0];
-                    Debug.Log($"New Recipe Started: {_recipe.recipeName}");
+                    // Debug.Log($"New Recipe Started: {_recipe.recipeName}");
 
                     // if it's the last step escape this function
                     if (CheckForLastStep(_recipe))
@@ -448,7 +448,7 @@ public class CauldronInteraction : MonoBehaviour
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
 
         // Resets cauldron fill level back to the top
-        Debug.Log("Reset Values");
+        // Debug.Log("Reset Values");
         cauldronFill.DOKill();
         cauldronFill.DOLocalMove(_cauldronStartingPosition, 0.5f);
 

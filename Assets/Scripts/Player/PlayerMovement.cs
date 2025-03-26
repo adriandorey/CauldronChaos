@@ -141,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResetPosition()
     {
+        _playerAnimation.SetBool("isMoving", false);
         transform.localPosition = _spawnPosition;
         transform.rotation = _spawnRotation;
         _canMove = false;
@@ -172,7 +173,6 @@ public class PlayerMovement : MonoBehaviour
     private void GetMove(InputAction.CallbackContext input)
     {
         _moveDir = input.ReadValue<Vector2>();
-
     }
 
 

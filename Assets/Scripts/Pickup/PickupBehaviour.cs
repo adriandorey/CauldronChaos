@@ -122,6 +122,7 @@ public class PickupBehaviour : MonoBehaviour
     {
         //Debug.Log("In set held object");
         heldObject = targetObject;
+        playerAnimator.SetTrigger("Pickup");
         pickupVolume.RemovePickupFromList(heldObject);
         pickupUIHolder.enabled = true;
         pickupUIHolder.sprite = heldObject.GetComponent<PickupObject>().recipeIngredient.stepSprite;
@@ -147,15 +148,15 @@ public class PickupBehaviour : MonoBehaviour
     }
 
     private void RemoveItem()
-    {
+    { 
+        playerAnimator.SetTrigger("Drop");
+        
         if (pickupHolder.childCount > 0)
         {
             foreach (Transform child in pickupHolder)
             {
                 Destroy(child.gameObject);
             }
-
-            playerAnimator.SetTrigger("Drop");
         }
     }
 

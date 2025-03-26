@@ -60,7 +60,7 @@ public class ChallengeManager : MonoBehaviour
 
         if (_challengeActions.TryGetValue(challenge, out var action))
         {
-            Debug.Log("Challenge Started: " + challenge);
+            // Debug.Log("Challenge Started: " + challenge);
 
             //play the environmental audio for correct challenge
             switch (challenge)
