@@ -112,11 +112,9 @@ public class CrateHolder : Interactable
         return null;
     }
     
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
-    }
-
-   
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
+    //}
 }

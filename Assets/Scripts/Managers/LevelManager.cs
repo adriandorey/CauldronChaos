@@ -21,7 +21,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("Event System")]
     [SerializeField] private EventSystem eventSystem;
-    
+
     private DayManager _dayManager;
 
     // Callback function to be invoked after fade animation completes
@@ -58,11 +58,11 @@ public class LevelManager : MonoBehaviour
         {
             // subscribe to the scene loaded event
             SceneManager.sceneLoaded += OnSceneLoaded;
-            
+
             // Notify listeners that the game is loading
             Actions.OnStateChange("Loading");
 
-        
+
             loadingScreen.enabled = true;
             loadingText.text = "Loading...";
 
@@ -90,25 +90,21 @@ public class LevelManager : MonoBehaviour
         loadOperation.allowSceneActivation = false;
 
 
-
-        if(sceneName.StartsWith("Day"))
+        var fakeProgress = 0f;
+        while (fakeProgress < 1f)
         {
-            var fakeProgress = 0f;
-            while (fakeProgress < 1f)
-            {
-                // Gradually increase the fake progress
-                fakeProgress += Time.unscaledDeltaTime * fakeProgressSpeed;
+            // Gradually increase the fake progress
+            fakeProgress += Time.unscaledDeltaTime * fakeProgressSpeed;
 
-                // Ensure fake progress doesn't exceed the actual loading progress
-                var actualProgress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-                fakeProgress = Mathf.Min(fakeProgress, actualProgress);
+            // Ensure fake progress doesn't exceed the actual loading progress
+            var actualProgress = Mathf.Clamp01(loadOperation.progress / 0.9f);
+            fakeProgress = Mathf.Min(fakeProgress, actualProgress);
 
-                // Update the loading bar
-                loadingBar.value = fakeProgress;
+            // Update the loading bar
+            loadingBar.value = fakeProgress;
 
-                // Wait for the next frame
-                yield return null;
-            }
+            // Wait for the next frame
+            yield return null;
         }
 
         loadOperation.allowSceneActivation = true;
@@ -152,31 +148,33 @@ public class LevelManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        
-        StartCoroutine(WaitForPressThenFade(SceneManager.GetActiveScene()));
+
+        if (scene.name == "MainMenu" || scene.name == "LevelSelect")
+        {
+            Actions.OnStateChange(scene.name == "MainMenu" ? "MainMenu" : "LevelSelect");
+            loadingScreen.enabled = false; // Only disable after input
+            Fade("FadeIn"); // Now fade into the scene
+
+            Actions.OnDeactivateHowToPlay?.Invoke();
+            return;
+        }
+
+        StartCoroutine(WaitForPressThenFade());
     }
-    
-    private IEnumerator WaitForPressThenFade(Scene currentScene)
+
+    private IEnumerator WaitForPressThenFade()
     {
         loadingText.text = "Press Any Key To Continue";
-    
+
         yield return WaitForAnyKeyPress(); // Wait until the player presses a key
 
         loadingScreen.enabled = false; // Only disable after input
         Fade("FadeIn"); // Now fade into the scene
-       
-        if (currentScene.name.StartsWith("Day"))
-        {
-            Actions.OnDeactivateHowToPlay?.Invoke();
-            Actions.OnStateChange("Gameplay");
-            _dayManager.ShowStartDayPanel();
-            // InputManager.Instance.TurnOnInteraction();
-        }
 
-        if (currentScene.name == "MainMenu" || currentScene.name == "LevelSelect")
-        {
-            Actions.OnStateChange(currentScene.name == "MainMenu" ? "MainMenu" : "LevelSelect");
-        }
+        Actions.OnDeactivateHowToPlay?.Invoke();
+        Actions.OnStateChange("Gameplay");
+        _dayManager.ShowStartDayPanel();
+        // InputManager.Instance.TurnOnInteraction();
     }
 
 

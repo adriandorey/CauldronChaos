@@ -15908,6 +15908,30 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8c0b0db2a1367d44ae87ccc798481a4, type: 3}
+--- !u!1 &479313717 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3531544353829104843, guid: b8c0b0db2a1367d44ae87ccc798481a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 479313716}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &479313718 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2698406768403699963, guid: b8c0b0db2a1367d44ae87ccc798481a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 479313716}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &479313719 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3966104877217223288, guid: b8c0b0db2a1367d44ae87ccc798481a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 479313716}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &479313720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6180129047730660430, guid: b8c0b0db2a1367d44ae87ccc798481a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 479313716}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &480223762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19774,6 +19798,10 @@ MonoBehaviour:
   - {fileID: 2038864257}
   - {fileID: 32318844}
   - {fileID: 32318843}
+  windLeftParticles: {fileID: 479313719}
+  windRightParticles: {fileID: 479313720}
+  windUpParticles: {fileID: 479313718}
+  windDownParticles: {fileID: 479313717}
 --- !u!65 &602841881
 BoxCollider:
   m_ObjectHideFlags: 0

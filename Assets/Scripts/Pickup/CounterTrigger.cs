@@ -13,29 +13,29 @@ public class CounterTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Object added to counter");
-        if(!other.gameObject.CompareTag("Ingredient")) return;
-        
-        if (!isCorner)
+        if (!other.gameObject.CompareTag("Ingredient")) return;
+
+        if (isCorner)
         {
-            if(_pickup == null)
-            {
-                _pickup = other.gameObject.GetComponent<PickupObject>();
-                _pickup.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                _pickup.GetComponent<Rigidbody>().isKinematic = true;
-                _pickup.transform.position = transform.position;
-                return;
-            }
+            var ejectDirection = -transform.forward * ejectPower;
+            other.transform.DOJump(transform.position + ejectDirection, jumpPower, 1, duration).SetEase(Ease.OutQuad);
+            return;
         }
-            
-        var ejectDirection = -transform.forward * ejectPower;
-        other.transform.DOJump(transform.position + ejectDirection, jumpPower, 1, duration).SetEase(Ease.OutQuad);
+
+        if (_pickup == null)
+        {
+            _pickup = other.gameObject.GetComponent<PickupObject>();
+            _pickup.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            _pickup.GetComponent<Rigidbody>().isKinematic = true;
+            _pickup.transform.position = transform.position;
+        }
     }
 
     //Method called on collider leaving the trigger volume
     private void OnTriggerExit(Collider other)
     {
-        if(!other.gameObject.CompareTag("Ingredient")) return;
-        if(other.gameObject == _pickup)
+        if (!other.gameObject.CompareTag("Ingredient")) return;
+        if (other.gameObject == _pickup)
         {
             _pickup.GetComponent<Rigidbody>().isKinematic = false;
             _pickup = null;

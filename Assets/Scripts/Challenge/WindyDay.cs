@@ -20,10 +20,24 @@ public class WindyDay : MonoBehaviour
     private readonly float _windChangeTime = 30f;
     [SerializeField] private GameObject[] windows;
 
+    [Header("Wind Particles")]
+    [SerializeField] private GameObject windLeftParticles;
+    [SerializeField] private GameObject windRightParticles;
+    [SerializeField] private GameObject windUpParticles;
+    [SerializeField] private GameObject windDownParticles;
+
 
     private void Awake()
     {
         _windDirectionChange = new CustomTimer(_windChangeTime, false);
+    }
+
+    private void Start()
+    {
+        windUpParticles.SetActive(false);
+        windDownParticles.SetActive(false);
+        windLeftParticles.SetActive(false);
+        windRightParticles.SetActive(false);
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -90,10 +104,22 @@ public class WindyDay : MonoBehaviour
         // Depending on which direction, it will change the transform of the force
         switch (windDirect)
         {
-            case WindDirection.GoingLeft: _direction = -transform.right; break;
-            case WindDirection.GoingRight: _direction = transform.right; break;
-            case WindDirection.TowardsScreen: _direction = -transform.forward; break;
-            case WindDirection.AwayFromScreen: _direction = transform.forward; break;
+            case WindDirection.GoingLeft: 
+                _direction = -transform.right;
+                SetParticleSystem(windLeftParticles);
+                break;
+            case WindDirection.GoingRight: 
+                _direction = transform.right;
+                SetParticleSystem(windRightParticles);
+                break;
+            case WindDirection.TowardsScreen: 
+                _direction = -transform.forward;
+                SetParticleSystem(windDownParticles);
+                break;
+            case WindDirection.AwayFromScreen: 
+                _direction = transform.forward;
+                SetParticleSystem(windUpParticles);
+                break;
         }
         Debug.Log("Wind Direction Changed to: " + windDirect);
 
@@ -104,5 +130,15 @@ public class WindyDay : MonoBehaviour
     internal Vector3 AddWindResistance()
     {
         return _direction * _currentStrength;
+    }
+
+    private void SetParticleSystem(GameObject newSystem)
+    {
+        windUpParticles.SetActive(false);
+        windDownParticles.SetActive(false);
+        windLeftParticles.SetActive(false);
+        windRightParticles.SetActive(false);
+
+        newSystem.SetActive(true);
     }
 }
