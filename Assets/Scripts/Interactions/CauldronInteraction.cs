@@ -404,10 +404,10 @@ public class CauldronInteraction : MonoBehaviour
     {
         //Debug.Log("Potion Counted " + potionIndex);
         //visualCounter[_potionIndex].SetActive(false);
+        cauldronFill.DOLocalMove(cauldronFill.localPosition - new Vector3(0, 0.11f, 0), 0.8f);
         _potionIndex--;
         cauldronCount.text = $"{_potionIndex}";
-        Debug.Log("Count Potions");
-        cauldronFill.DOLocalMove(cauldronFill.localPosition - new Vector3(0, 0.11f, 0), 0.8f);
+        //Debug.Log("Count Potions");
 
         if (_potionIndex == 0)
             ResetValues();
@@ -442,14 +442,16 @@ public class CauldronInteraction : MonoBehaviour
     // Resets all cauldron values
     private void ResetValues()
     {
-        // Resets cauldron fill level back to the top
-        Debug.Log("Reset Values");
-        cauldronFill.DOLocalMove(_cauldronStartingPosition, 0.5f);
-
         // Creates a new property block for the material and sets it to empty
         _propBlock = new MaterialPropertyBlock();
         _propBlock.SetInt("_IsCauldronEmpty", 1);
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
+
+        // Resets cauldron fill level back to the top
+        Debug.Log("Reset Values");
+        cauldronFill.DOKill();
+        cauldronFill.DOLocalMove(_cauldronStartingPosition, 0.5f);
+
 
         //foreach (var circle in visualCounter)
         //{
