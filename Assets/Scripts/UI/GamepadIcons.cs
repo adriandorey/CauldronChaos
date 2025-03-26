@@ -38,8 +38,8 @@ public struct GamepadIcons
             case "select": case "Share": return selectButton;
             case "leftTrigger": case "LT": case "L2": return leftTrigger;
             case "rightTrigger": case "RT": case "R2": return rightTrigger;
-            case "leftShoulder": case "leftBumper": case "L1": return leftShoulder;
-            case "rightShoulder": case "rightBumper": case "R1": return rightShoulder;
+            case "leftShoulder": case "leftBumper": case "L1": case "LB": return leftShoulder;
+            case "rightShoulder": case "rightBumper": case "R1": case "RB": return rightShoulder;
             case "dpad": return dpad;
             case "dpad/up": return dpadUp;
             case "dpad/down": return dpadDown;

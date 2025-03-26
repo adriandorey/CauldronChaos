@@ -63,6 +63,8 @@ public class InteractionDetection : MonoBehaviour
     //Function that searched through the interactables and returns the first crate
     public Interactable GetContainer()
     {
+        if(interactables.Count == 0) return null;
+        
         //loop through interactables list
         for (int i = 0; i < interactables.Count; i++)
         {

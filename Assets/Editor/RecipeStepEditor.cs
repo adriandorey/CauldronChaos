@@ -7,6 +7,7 @@ public class RecipeStepEditor : Editor
     SerializedProperty ingredient; // this will need to be renamed
     SerializedProperty nameOfStep;
     SerializedProperty stepSprite;
+    SerializedProperty colour;
 
     private void OnEnable()
     {
@@ -15,6 +16,7 @@ public class RecipeStepEditor : Editor
         action = serializedObject.FindProperty("action");
         ingredient = serializedObject.FindProperty("ingredient");
         stepSprite = serializedObject.FindProperty("stepSprite");
+        colour = serializedObject.FindProperty("ingredientColour");
     }
 
     public override void OnInspectorGUI()
@@ -32,6 +34,9 @@ public class RecipeStepEditor : Editor
             // Show ingredient ingredient
             EditorGUILayout.PropertyField(ingredient);
             EditorGUILayout.PropertyField(stepSprite);
+
+            if(ingredient.enumValueIndex != (int)RecipeStepSO.Ingredient.Bottle)
+                EditorGUILayout.PropertyField(colour);
         }
         else if (action.enumValueIndex == (int)RecipeStepSO.ActionType.Stir)
         {

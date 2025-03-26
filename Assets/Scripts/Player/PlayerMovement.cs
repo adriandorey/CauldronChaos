@@ -152,6 +152,7 @@ public class PlayerMovement : MonoBehaviour
     private void DisableMovement()
     {
         _canMove = false;
+        _isInWindZone = false;
     }
 
     private void ToggleIceMode(bool isIcy)

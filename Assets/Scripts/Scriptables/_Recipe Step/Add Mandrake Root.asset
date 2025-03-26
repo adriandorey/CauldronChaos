@@ -16,3 +16,4 @@ MonoBehaviour:
   stepName: Mandrake_Root
   ingredient: 6
   stepSprite: {fileID: 21300000, guid: 642d446f6c79547428a76bf80b89dfe5, type: 3}
+  ingredientColour: {r: 0.43137258, g: 0.6431373, b: 0.078431375, a: 1}

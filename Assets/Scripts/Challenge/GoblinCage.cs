@@ -1,8 +1,14 @@
+using System;
 using UnityEngine;
 
 public class GoblinCage : MonoBehaviour
 {
-    [SerializeField] private Transform cageModel;
+    private Transform _cage;
+
+    private void Start()
+    {
+        _cage = GetComponent<Transform>();
+    }
 
     private void OnEnable()
     {
@@ -23,8 +29,8 @@ public class GoblinCage : MonoBehaviour
     private void MoveCage(bool tipped)
     {
         if (tipped)
-            cageModel.SetLocalPositionAndRotation(new Vector3(0f, 0.5f, -1.5f), Quaternion.Euler(-184, 0, 0));
+            _cage.SetLocalPositionAndRotation(new Vector3(-6.25f, 1, 5.864f), Quaternion.Euler(-90, 0, 0));
         else
-            cageModel.SetLocalPositionAndRotation(new Vector3(0, 0, 0), Quaternion.Euler(-90f, 0, 0));
+            _cage.SetLocalPositionAndRotation(new Vector3(-6.25f, 0.5f, 6.35f), Quaternion.identity);
     }
 }

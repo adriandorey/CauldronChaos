@@ -7,6 +7,7 @@ public class CrateHolder : Interactable
     public enum CrateType { Bottle, Mushroom, RabbitFoot, EyeOfBasilisk, Mandrake, TrollBone };
     public CrateType crateType;
     private Vector3 _originalScale;
+    [SerializeField] private ParticleSystem particles;
 
 
     public void Start()
@@ -47,25 +48,28 @@ public class CrateHolder : Interactable
 
         if(GameManager.Instance.IsInTutorialMode)
         {
-            if(crateType == CrateType.Mushroom)
+            switch (crateType)
             {
-                if (TutorialManager.CurrentStep < TutorialStep.PickUpMushroom)
+                case CrateType.Mushroom when 
+                    TutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
                     return;
-                else
+                case CrateType.Mushroom:
                     TutorialManager.PickedUpMushroom = true;
-            }
-
-            if(crateType == CrateType.Bottle)
-            {
-                if (TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle)
+                    break;
+                case CrateType.Bottle when 
+                    TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
                     return;
-                else
+                case CrateType.Bottle:
                     TutorialManager.PickedUpPotionBottle = true;
+                    break;
             }
         }
 
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
-
+       
+        if (particles != null)
+            particles.Play();
+        
         var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
         playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
     }
@@ -73,14 +77,28 @@ public class CrateHolder : Interactable
     // Function that handles the interaction between the goblin and the crate
     internal void GoblinInteraction(Transform goblin)
     {
+        // Bounces the crate when interacted with
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
 
+        // Instantiate ingredient & makes it small
         var ingredient = Instantiate(ingredientPrefab, goblin.position, Quaternion.identity);
         ingredient.transform.localScale = Vector3.zero;
-        Vector3 randomPosition = new(Random.Range(-1, 1), 0, Random.Range(-1, 1));
 
-        ingredient.transform.DOScale(new Vector3(1f, 1f, 1f), 1f); //DOTween animation for scaling the ingredient
-        ingredient.transform.DOJump(goblin.position + randomPosition, 1, 1, 1); //DOTween animation for jumping the ingredient
+        if(particles != null)
+            particles.Play();
+        
+        // Picks a random position for the item to "be thrown to"
+        var forwardDirection = transform.forward;
+        var randomSpread = Random.insideUnitCircle * 1.5f;
+        
+        // calculate final throw direction, forward + spread
+        var throwTarget = goblin.position + forwardDirection + new Vector3(randomSpread.x, 0, randomSpread.y);
+        
+        var ingredientSequence = DOTween.Sequence();
+
+        ingredientSequence
+            .Append(ingredient.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine))
+            .Join(ingredient.transform.DOLocalJump(throwTarget, 1f, 1, 0.5f).SetEase(Ease.InOutSine));
     }
 
     // Function that loads a prefab from the resources folder
@@ -93,5 +111,12 @@ public class CrateHolder : Interactable
         Debug.LogError("Prefab not found at path: " + path);
         return null;
     }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
+    }
+
    
 }
