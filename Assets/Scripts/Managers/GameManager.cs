@@ -194,6 +194,7 @@ public class GameManager : MonoBehaviour
 public enum GameState
 {
     MainMenu,
+    Credits,
     Loading,
     Intro,
     LevelSelect,

@@ -22,6 +22,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject settingsPanelUI;
     [SerializeField] private GameObject pausePanelUI;
     [SerializeField] private GameObject howToPlayPanelUI;
+    [SerializeField] private GameObject creditsPanelUI;
 
     [Header("How To Play")]
     [SerializeField] private Image howToPlayBg;
@@ -48,6 +49,7 @@ public class UiManager : MonoBehaviour
             { GameState.EndOfDay, (endOfDayPanelUI, EndOfDay) },
             { GameState.Settings, (settingsPanelUI, Settings) },
             { GameState.Pause, (pausePanelUI, Pause) },
+            { GameState.Credits , (creditsPanelUI, Credits)},
         };
     }
 
@@ -135,6 +137,11 @@ public class UiManager : MonoBehaviour
         Actions.OnSetUiLocation(Page.Intro);
     }
 
+    private void Credits()
+    {
+        Actions.OnSetUiLocation(Page.Credits);
+    }
+
 
     private void Gameplay()
     {
@@ -204,5 +211,6 @@ public enum Page
     HowToPlay,
     DebugInput,
     DebugToggle,
-    RecipeBook
+    RecipeBook,
+    Credits,
 }

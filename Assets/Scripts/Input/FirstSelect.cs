@@ -25,6 +25,7 @@ public class FirstSelect : MonoBehaviour
     [SerializeField] private GameObject debugInputFirstSelect;
     [SerializeField] private GameObject debugToggleSelect;
     [SerializeField] private GameObject systemFirstSelect;
+    [SerializeField] private GameObject creditsFirstSelect;
     #endregion
 
     [SerializeField] private EventSystem eventSystem;
@@ -59,6 +60,7 @@ public class FirstSelect : MonoBehaviour
             { Page.DebugInput, () => SetFirstSelected(debugInputFirstSelect) },
             { Page.DebugToggle, () => SetFirstSelected(debugToggleSelect) },
             { Page.Pause, () => SetFirstSelected(pauseFirstSelect)},
+            {Page.Credits,() => SetFirstSelected(creditsFirstSelect)},
         };
     }
 
