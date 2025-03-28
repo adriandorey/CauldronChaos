@@ -64,22 +64,6 @@ public class PickupBehaviour : MonoBehaviour
             Interactable container = interactionVolume.GetContainer();
             if (container != null)
             {
-                if (GameManager.Instance.IsInTutorialMode)
-                {
-                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
-                    {
-                        if (TutorialManager.CurrentStep < TutorialStep.PickUpMushroom)
-                            return;
-                    }
-
-                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
-                    {
-                        if (TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle)
-                            return;
-                    }
-
-                }
-
                 container.Interact(this);
                 playerAnimator.SetTrigger("Pickup");
             }

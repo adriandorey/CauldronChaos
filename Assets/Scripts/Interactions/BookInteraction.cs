@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class BookInteraction : Interactable
 {
     //Function that broadcasts the action to toggle the recipe book being on
@@ -9,7 +5,7 @@ public class BookInteraction : Interactable
     {
         //Debug.Log("BookInteraction");
         if (GameManager.Instance.IsInTutorialMode)
-            TutorialManager.InteractedWithBook = true;
+            Actions.OnBookInteracted?.Invoke();
 
         Actions.OnToggleRecipeBook?.Invoke();
     }

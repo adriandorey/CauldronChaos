@@ -23,6 +23,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject pausePanelUI;
     [SerializeField] private GameObject howToPlayPanelUI;
     [SerializeField] private GameObject creditsPanelUI;
+    [SerializeField] private GameObject loadingPanelUI;
 
     [Header("How To Play")]
     [SerializeField] private Image howToPlayBg;
@@ -50,6 +51,7 @@ public class UiManager : MonoBehaviour
             { GameState.Settings, (settingsPanelUI, Settings) },
             { GameState.Pause, (pausePanelUI, Pause) },
             { GameState.Credits , (creditsPanelUI, Credits)},
+            { GameState.Loading , (loadingPanelUI, Loading)}
         };
     }
 
@@ -142,10 +144,15 @@ public class UiManager : MonoBehaviour
         Actions.OnSetUiLocation(Page.Credits);
     }
 
+    private void Loading()
+    {
+        MenuVirtualCamera.OnResetCamera?.Invoke();
+        
+    }
+
 
     private void Gameplay()
     {
-        MenuVirtualCamera.OnResetCamera?.Invoke();
         Actions.OnSetUiLocation(Page.Gameplay);
         Time.timeScale = 1;
     }

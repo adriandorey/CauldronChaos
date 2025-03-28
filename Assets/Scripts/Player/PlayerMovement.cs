@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
         InputManager.MoveAction += GetMove;
         Actions.OnIceDay += ToggleIceMode;
         Actions.OnStartDay += EnableMovement;
-        Actions.OnTutorialDay += EnableMovement;
+        Actions.OnStartTutorialDay += EnableMovement;
         Actions.OnEndDay += DisableMovement;
         Actions.OnResetValues += ResetPosition;
     }
@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
-        Actions.OnTutorialDay -= EnableMovement;
+        Actions.OnStartTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;
@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
-        Actions.OnTutorialDay -= EnableMovement;
+        Actions.OnStartTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;

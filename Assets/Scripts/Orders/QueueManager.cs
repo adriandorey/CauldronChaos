@@ -137,11 +137,10 @@ public class QueueManager : MonoBehaviour
         //playing SFX for potion sale
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
 
-        if (GameManager.Instance.IsInTutorialMode)
-        {
-            TutorialManager.ServedPotion = true;
-            _tutorialManager.ServedCustomer();
-        }
+        if (!GameManager.Instance.IsInTutorialMode) return;
+        
+        Actions.OnPotionServed?.Invoke();
+        _tutorialManager.ServedCustomer();
     }
 
     #region Customer Queue Methods
@@ -244,19 +243,7 @@ public class QueueManager : MonoBehaviour
         _customers.Clear();
     }
 
-    internal int AreThereCustomers()
-    {
-        var count = 0;
-
-        foreach (var customer in _customers)
-        {
-            if (customer.GetComponent<CustomerBehaviour>().HasJoinedQueue)
-                count++;
-        }
-
-        return count;
-    }
-
+    
     internal void SpawnSpecificCustomer()
     {
         var customer = Instantiate(tutorialCustomer, entryPoint.position, Quaternion.identity);

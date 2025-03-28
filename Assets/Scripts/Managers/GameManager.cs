@@ -48,21 +48,18 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnStateChange += LoadState;
-        Actions.OnTutorialDay += SetTutorialMode;
         InputManager.PauseAction += EscapeState;
     }
 
     private void OnDisable()
     {
         Actions.OnStateChange -= LoadState;
-        Actions.OnTutorialDay -= SetTutorialMode;
         InputManager.PauseAction -= EscapeState;
     }
 
     private void OnDestroy()
     {
         Actions.OnStateChange -= LoadState;
-        Actions.OnTutorialDay -= SetTutorialMode;
         InputManager.PauseAction -= EscapeState;
     }
 
@@ -119,9 +116,6 @@ public class GameManager : MonoBehaviour
         if (_stateActions.TryGetValue(gameState, out var action))
             action.Invoke();
 
-        // if the gamestate is loading, exit the function
-        if (gameState == GameState.Loading) return;
-
         // this invokes the UI manager to change the UI for the gamestate.
         Actions.OnChangeUi?.Invoke(gameState);
     }
@@ -176,9 +170,12 @@ public class GameManager : MonoBehaviour
     }
 
     // Sets the game to tutorial mode or not.
-    private void SetTutorialMode()
+    internal void SetTutorialMode(bool isTutorial)
     {
-        IsInTutorialMode = !IsInTutorialMode;
+        IsInTutorialMode = isTutorial;
+        
+        if(isTutorial)
+            Actions.OnStartTutorialDay?.Invoke();
     }
     
 

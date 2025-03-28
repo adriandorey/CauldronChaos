@@ -50,18 +50,8 @@ public class CrateHolder : Interactable
         {
             switch (crateType)
             {
-                case CrateType.Mushroom when 
-                    TutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
-                    return;
-                case CrateType.Mushroom:
-                    TutorialManager.PickedUpMushroom = true;
-                    break;
-                case CrateType.Bottle when 
-                    TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
-                    return;
-                case CrateType.Bottle:
-                    TutorialManager.PickedUpPotionBottle = true;
-                    break;
+                case CrateType.Mushroom: Actions.OnMushroomPickedUp?.Invoke(); break;
+                case CrateType.Bottle: Actions.OnPotionBottlePickedUp?.Invoke(); break;
             }
         }
 

@@ -280,29 +280,20 @@ public class CauldronInteraction : MonoBehaviour
 
     private void CheckTutorialSteps()
     {
-        if (TutorialManager.TutorialPartCount != 1) return;
-
         // This will check what step the tutorial is on only in part one
-        switch (TutorialManager.CurrentStep)
+        switch (_currentStep)
         {
             // checks to see if the ingredient inserted was a mushroom
-            case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
-                TutorialManager.InsertCorrectIngredient = true; // tells tutorial manager correct move was made
-                TutorialManager.LastCauldronUsed = modelRenderer; // tells tutorial manager which cauldron to highlight based on where they inserted the mushroom
-                TutorialManager.StirStickToHighlight = stirStickRend; // tells the tutorial manager to highlight which stir stick
+            case "Mushroom":
+                Actions.LastCauldronUsed?.Invoke(modelRenderer, stirStickRend);
+                Actions.OnIngredientInserted?.Invoke();
                 break;
             // checks to see if filled bottle is the last cauldron was used
-            case TutorialStep.FillPotionBottle when TutorialManager.LastCauldronUsed == modelRenderer:
-                TutorialManager.FilledPotionBottle = true; // tells tutorial manager correct move was made
-                break;
+            case "Bottle_Potion": Actions.OnPotionFilled?.Invoke(modelRenderer); break;
             // checks to see if the last cauldron was used and if they stirred in the right direction
-            case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed == modelRenderer && _currentStep == "Stir_C":
-                TutorialManager.StirredCauldronCorrectly = true; // tells tutorial manager correct move was made
-                break;
-            // This tells the tutorial manager the wrong cauldron was stirred.
-            case TutorialStep.StirCauldron when TutorialManager.LastCauldronUsed != modelRenderer:
-                HandleIncorrectStep();
-                break;
+            case "Stir_C": Actions.OnCauldronStirred?.Invoke(stirStickRend); break;
+            // anything else that occurs is an incorrect step?
+                default: HandleIncorrectStep(); break;
         }
     }
 
@@ -312,8 +303,8 @@ public class CauldronInteraction : MonoBehaviour
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
 
         // If its in tutorial mode it will show they've made an incorrect move
-        if (GameManager.Instance.IsInTutorialMode)
-            TutorialManager.MadeIncorrectMove = true;
+        if (GameManager.Instance.IsInTutorialMode) 
+            Actions.OnMadeIncorrectMove?.Invoke();
 
         // audio manager will play sfx
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, incorrectStepSounds.PickAudioClip(), true);
@@ -478,12 +469,6 @@ public class CauldronInteraction : MonoBehaviour
             _canInteract = false;
         else
         {
-            if (GameManager.Instance.IsInTutorialMode)
-            {
-                if (TutorialManager.CurrentStep < TutorialStep.StirCauldron)
-                    return;
-            }
-
             _canInteract = true;
             Actions.OnShowStir?.Invoke();
         }

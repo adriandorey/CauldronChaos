@@ -177,7 +177,7 @@ public class DayManager : MonoBehaviour
        
         if (_currentDay == 1)
         {
-           Actions.OnTutorialDay?.Invoke();
+            GameManager.Instance.SetTutorialMode(true);
         }
         else
         {

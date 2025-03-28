@@ -3176,24 +3176,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   queueManager: {fileID: 2735336521705904682}
-  tutorialPopup: {fileID: 564287478}
-  tutorialText: {fileID: 1925084197}
+  highlighter: {fileID: 1390998597}
+  tutorialUI: {fileID: 688695551}
+  popUpTime: 5
   partOneText: "Your first customer! \nThey ordered the Potion of Healing. \nCheck
     the <color=\"green\">Recipe Book</color>, then get brewing!"
   partTwoText: "Success! \nThere are still <color=\"green\">two more</color> Healing
     Potions worth of brew in the cauldron. \nGo and sell those!"
   partThreeText: "Great Job! \nYou're ready to brew and serve on your own.\nUse the
     <color=\"green\">Recipe Book</color> if needed\nGood Luck!"
-  highlightMaterial: {fileID: 2100000, guid: 96f348cc9ba01c245a0246415d593ca2, type: 2}
-  recipeBook: {fileID: 1741295247}
-  cauldrons:
-  - {fileID: 1150924414}
-  - {fileID: 2141153368}
-  crate: {fileID: 2129871066}
-  potionBottles:
-  - {fileID: 1517951590}
-  - {fileID: 1038149147}
-  servingCounter: {fileID: 2735336521705904681}
 --- !u!4 &107474870
 Transform:
   m_ObjectHideFlags: 0
@@ -3209,6 +3200,7 @@ Transform:
   m_Children:
   - {fileID: 688695547}
   - {fileID: 893341779}
+  - {fileID: 1390998596}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &107474871
@@ -20319,6 +20311,7 @@ GameObject:
   - component: {fileID: 688695550}
   - component: {fileID: 688695549}
   - component: {fileID: 688695548}
+  - component: {fileID: 688695551}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -20409,6 +20402,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &688695551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688695546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01c69a5d6af01445a48a01c4f9db848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popUp: {fileID: 564287478}
+  tutorialText: {fileID: 1925084197}
 --- !u!1 &688996566
 GameObject:
   m_ObjectHideFlags: 0
@@ -42335,6 +42342,60 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389836343}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1390998595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1390998596}
+  - component: {fileID: 1390998597}
+  m_Layer: 0
+  m_Name: HIghlighter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1390998596
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390998595}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 107474870}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1390998597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390998595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66fe54939e5f04944b9eede367b04575, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightMaterial: {fileID: 2100000, guid: 96f348cc9ba01c245a0246415d593ca2, type: 2}
+  recipeBook: {fileID: 1741295247}
+  crate: {fileID: 2129871066}
+  cauldrons:
+  - {fileID: 1150924414}
+  - {fileID: 2141153368}
+  potionBottles:
+  - {fileID: 1517951590}
+  - {fileID: 1038149147}
+  servingCounter: {fileID: 2735336521705904681}
 --- !u!1 &1391162396
 GameObject:
   m_ObjectHideFlags: 0

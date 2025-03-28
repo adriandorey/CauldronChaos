@@ -1,319 +1,194 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
-using TMPro;
 using UnityEngine;
-
-public enum TutorialStep
-{
-    HighlightRecipeBook,
-    PickUpMushroom,
-    InsertIngredient,
-    StirCauldron,
-    PickUpPotionBottle,
-    FillPotionBottle,
-    ServePotion,
-    Completed
-}
-
 
 public class TutorialManager : MonoBehaviour
 {
     [SerializeField] private QueueManager queueManager;
+    [SerializeField] private TutorialHighlighter highlighter;
+    [SerializeField] private TutorialUI tutorialUI;
 
-    public static TutorialStep CurrentStep = TutorialStep.HighlightRecipeBook;
-    private bool _stepCompleted;
-
-    public static bool InteractedWithBook;
-    public static bool PickedUpMushroom;
-    public static bool InsertCorrectIngredient;
-    public static bool StirredCauldronCorrectly;
-    public static bool PickedUpPotionBottle;
-    public static bool FilledPotionBottle;
-    public static bool ServedPotion;
-    public static bool MadeIncorrectMove;
-    public static Renderer LastCauldronUsed;
-    public static Renderer StirStickToHighlight;
-
-    public static int TutorialPartCount;
+    private TutorialStep _currentStep;
+    private int _tutorialPart;
 
     private int _customersSpawned;
     private int _customersServed;
 
-    [Header("Pop Up")]
-    [SerializeField] private GameObject tutorialPopup;
-    [SerializeField] private TextMeshProUGUI tutorialText;
+    [Header("Tutorial Pop up")]
+    [Tooltip("This time is in seconds")]
+    [SerializeField] private float popUpTime = 5f;
+
+    private CustomTimer _popUpTimer;
 
     [Header("Tutorial Text")]
     [TextArea]
     [SerializeField] private string partOneText;
+
     [TextArea]
     [SerializeField] private string partTwoText;
+
     [TextArea]
     [SerializeField] private string partThreeText;
 
-    [Header("Highlight")]
-    [SerializeField] private Material highlightMaterial;
-
-    [SerializeField] private Renderer recipeBook;
-    [SerializeField] private Renderer[] cauldrons;
-    [SerializeField] private Renderer crate;
-    [SerializeField] private Renderer[] potionBottles;
-    [SerializeField] private Renderer servingCounter;
-
     private bool _hasShownPopUp;
-    private bool _isMaterialChanged = false;
-    private Dictionary<Renderer, Material[]> _originalMaterials = new();
-    
+    private bool _hasInteracted;
+
+    private Dictionary<TutorialStep, (string highlightTarget, TutorialStep nextStep)> _tutorialSteps =
+        new()
+        {
+            { TutorialStep.HighlightRecipeBook, ("recipeBook", TutorialStep.PickUpMushroom) },
+            { TutorialStep.PickUpMushroom, ("crate", TutorialStep.InsertIngredient) },
+            { TutorialStep.InsertIngredient, ("cauldrons", TutorialStep.StirCauldron) },
+            { TutorialStep.StirCauldron, ("stirStick", TutorialStep.PickUpPotionBottle) },
+            { TutorialStep.PickUpPotionBottle, ("potionBottles", TutorialStep.FillPotionBottle) },
+            { TutorialStep.FillPotionBottle, ("potionFilling", TutorialStep.ServePotion) },
+            { TutorialStep.ServePotion, ("servingCounter", TutorialStep.Completed) } // Final step
+        };
+
     private void Start()
     {
-        tutorialPopup.SetActive(false);
+        _currentStep = TutorialStep.HighlightRecipeBook;
+        _popUpTimer = new CustomTimer(popUpTime, false);
+    }
+
+    private void Update()
+    {
+        if (!_popUpTimer.isRunning) return;
+
+        if (_popUpTimer.UpdateTimer())
+        {
+            _popUpTimer.StopTimer();
+            tutorialUI.DeactivatePopUp();
+        }
     }
 
     #region Enable / Disable / Destroy
 
     private void OnEnable()
     {
-        Actions.OnTutorialDay += StartTutorial;
+        Actions.OnStartTutorialDay += StartTutorial;
         Actions.OnResetValues += ResetAll;
+        Actions.OnBookInteracted += HandleBookInteraction;
+        Actions.OnMushroomPickedUp += HandleMushroomPickup;
+        Actions.OnIngredientInserted += HandleIngredientInsertion;
+        Actions.OnCauldronStirred += HandleCauldronStir;
+        Actions.OnPotionBottlePickedUp += HandlePotionPickup;
+        Actions.OnPotionFilled += HandlePotionFilling;
+        Actions.OnPotionServed += HandlePotionServing;
+        Actions.OnMadeIncorrectMove += RestartTutorial;
     }
 
     private void OnDisable()
     {
-        Actions.OnTutorialDay -= StartTutorial;
+        Actions.OnStartTutorialDay -= StartTutorial;
         Actions.OnResetValues -= ResetAll;
+        Actions.OnBookInteracted -= HandleBookInteraction;
+        Actions.OnMushroomPickedUp -= HandleMushroomPickup;
+        Actions.OnIngredientInserted -= HandleIngredientInsertion;
+        Actions.OnCauldronStirred -= HandleCauldronStir;
+        Actions.OnPotionBottlePickedUp -= HandlePotionPickup;
+        Actions.OnPotionFilled -= HandlePotionFilling;
+        Actions.OnPotionServed -= HandlePotionServing;
+        Actions.OnMadeIncorrectMove -= RestartTutorial;
     }
 
     private void OnDestroy()
     {
-        Actions.OnTutorialDay -= StartTutorial;
+        Actions.OnStartTutorialDay -= StartTutorial;
         Actions.OnResetValues -= ResetAll;
+        Actions.OnBookInteracted -= HandleBookInteraction;
+        Actions.OnMushroomPickedUp -= HandleMushroomPickup;
+        Actions.OnIngredientInserted -= HandleIngredientInsertion;
+        Actions.OnCauldronStirred -= HandleCauldronStir;
+        Actions.OnPotionBottlePickedUp -= HandlePotionPickup;
+        Actions.OnPotionFilled -= HandlePotionFilling;
+        Actions.OnPotionServed -= HandlePotionServing;
+        Actions.OnMadeIncorrectMove -= RestartTutorial;
     }
 
     #endregion
 
-
-    private void Update()
-    {
-        if (GameManager.Instance.IsInTutorialMode)
-        {
-            if (TutorialPartCount == 1)
-            {
-                // if at any point they make an incorrect move, the tutorial will start over.
-                if (MadeIncorrectMove)
-                {
-                    RestartTutorial();
-                    return;
-                }
-                
-                CheckStepOneCompletion();
-                return;
-            }
-
-            // Check if the customers served is equal to customers spawned
-            if (_customersServed == _customersSpawned)
-            {
-                // Debug.Log("Next part of tutorial should happen");
-                ResetFlags();
-                NextPartOfTutorial();
-            }
-        }
-    }
-
     private void StartTutorial()
     {
         Debug.Log("Starting Tutorial");
-        TutorialPartCount = 1;
+        _tutorialPart = 1;
         queueManager.SpawnSpecificCustomer();
         _customersSpawned++;
+
+        highlighter.ChangeMaterial("recipeBook", true);
     }
 
-    private void CheckStepOneCompletion()
+    private void HandleBookInteraction()
     {
-        if (ServedPotion && CurrentStep != TutorialStep.ServePotion)
-        {
-            queueManager.SpawnSpecificCustomer();
-            _customersSpawned++;
-            ResetFlags();
-            return;
-        }
+        if (_hasInteracted) return;
 
-        switch (CurrentStep)
-        {
-            case TutorialStep.HighlightRecipeBook:
-                // Highlight book
-                if(!_isMaterialChanged) ChangeMaterials(recipeBook);
-                
-                if (InteractedWithBook)
-                {
-                    RevertMaterial(recipeBook);
-                    tutorialPopup.SetActive(false);
-                    NextStep("Step 2: Pick Up Mushroom");
-                }
-                break;
-            case TutorialStep.PickUpMushroom:
-                // Highlight crate
-                if(!_isMaterialChanged) ChangeMaterials(crate);
-                
-                if (PickedUpMushroom)
-                {
-                    RevertMaterial(crate);
-                    NextStep("Step 3: Insert mushroom into cauldron");
-                }
-                break;
-            case TutorialStep.InsertIngredient:
-                // highlight a cauldron. This should also keep track of what cauldron the mushroom was put into
-                if (!_isMaterialChanged)
-                {
-                    foreach (var cauldron in cauldrons)
-                    {
-                        ChangeMaterials(cauldron);
-                    }
-                }
-
-                if (InsertCorrectIngredient)
-                {
-                    foreach (var cauldron in cauldrons)
-                    {
-                        RevertMaterial(cauldron);
-                    }
-                    NextStep("Step 4: Stir the cauldron clockwise");
-                }
-                break;
-            case TutorialStep.StirCauldron:
-                if (!_isMaterialChanged)
-                {
-                    // StirStickToHighlight.transform.DOLocalRotate(new Vector3(15, 0, 16), 1f, RotateMode.Fast)
-                    //     .SetLoops(-1, LoopType.Yoyo);
-                    ChangeMaterials(StirStickToHighlight);
-                }
-                
-                if (StirredCauldronCorrectly)
-                {
-                    // StirStickToHighlight.transform.DOKill();
-                    RevertMaterial(StirStickToHighlight);
-                    NextStep("Step 5: Pick Up Potion Bottle");
-                }
-                break;
-            case TutorialStep.PickUpPotionBottle:
-                // highlight potion bottles
-                if (!_isMaterialChanged)
-                {
-                    foreach (var potionBottle in potionBottles)
-                    {
-                        ChangeMaterials(potionBottle);
-                    }
-                }
-
-                if (PickedUpPotionBottle)
-                {
-                    foreach (var potionBottle in potionBottles)
-                    {
-                        RevertMaterial(potionBottle);
-                    }
-                    NextStep("Step 6: Fill Potion Bottle");
-                }
-                break;
-            case TutorialStep.FillPotionBottle:
-                // highlight cauldron
-                if(!_isMaterialChanged) ChangeMaterials(LastCauldronUsed);
-                
-                if (FilledPotionBottle)
-                {
-                    RevertMaterial(LastCauldronUsed);
-                    NextStep("Step 7: Serve Potion Bottle");
-                }
-                break;
-            case TutorialStep.ServePotion:
-                // highlight serving counter
-                if(!_isMaterialChanged) ChangeMaterials(servingCounter);
-                
-                if (ServedPotion)
-                {
-                    RevertMaterial(servingCounter);
-                    NextPartOfTutorial();
-                }
-                break;
-       }
+        HandleTutorialStep(TutorialStep.HighlightRecipeBook);
+        _hasInteracted = true;
     }
 
-    private void ChangeMaterials(Renderer rend)
+    private void HandleMushroomPickup() => HandleTutorialStep(TutorialStep.PickUpMushroom);
+    private void HandleIngredientInsertion() => HandleTutorialStep(TutorialStep.InsertIngredient);
+    private void HandleCauldronStir(Renderer rend) => HandleTutorialStep(TutorialStep.StirCauldron, rend);
+    private void HandlePotionPickup() => HandleTutorialStep(TutorialStep.PickUpPotionBottle);
+    private void HandlePotionFilling(Renderer rend) => HandleTutorialStep(TutorialStep.FillPotionBottle, rend);
+    private void HandlePotionServing() => HandleTutorialStep(TutorialStep.ServePotion);
+
+
+    private void HandleTutorialStep(TutorialStep step, Renderer rend = null)
     {
-        // Makes sure it's not changing the materials every frame and it only happens once
-        _isMaterialChanged = true;
-        
-        // Store the original materials if we haven't already
-        if (!_originalMaterials.ContainsKey(rend))
-        {
-            _originalMaterials[rend] = rend.materials; // Save original materials
-        }
+        if (_tutorialPart != 1) return;
+        if (_currentStep != step) RestartTutorial();
 
-        // Create a new array with space for the highlight material
-        Material[] newMaterials = new Material[rend.materials.Length + 1];
+        // Specific conditions
+        if (step == TutorialStep.StirCauldron && highlighter.StirStick != rend ||
+            step == TutorialStep.FillPotionBottle && highlighter.LastCauldron != rend)
+            RestartTutorial();
 
-        // Copy original materials
-        for (var i = 0; i < rend.materials.Length; i++)
-        {
-            newMaterials[i] = rend.materials[i];
-        }
+        // Get next step details
+        if (!_tutorialSteps.TryGetValue(step, out var stepData)) return;
 
-        // Add the highlight material at the end
-        newMaterials[newMaterials.Length - 1] = highlightMaterial;
+        // Disable current highlight
+        highlighter.ChangeMaterial(stepData.highlightTarget, false);
 
-        // Apply the new material array
-        rend.materials = newMaterials;
+        if (stepData.nextStep == TutorialStep.Completed) return;
+
+        // Proceed to the next step
+        NextStep(stepData.nextStep);
+        highlighter.ChangeMaterial(_tutorialSteps[stepData.nextStep].highlightTarget, true);
     }
 
 
-
-    private void RevertMaterial(Renderer rend)
+    private void NextStep(TutorialStep nextStep)
     {
-        _isMaterialChanged = false;
-        // Only restore if we actually stored the original materials
-        if (!_originalMaterials.ContainsKey(rend)) return;
-        
-        rend.materials = _originalMaterials[rend]; // Restore original materials
-        _originalMaterials.Remove(rend); // Clean up the stored reference
-    }
-
-
-    private void NextStep(string step)
-    {
-        CurrentStep++;
-        Debug.Log(step);
+        _currentStep = nextStep;
     }
 
     private void NextPartOfTutorial()
     {
         ResetFlags();
 
-        switch (TutorialPartCount)
+        switch (_tutorialPart)
         {
             // Spawn two customers to show that one cauldron can give multiple potions
-            case 1:
-                
-                StartCoroutine(SpawnTwoCustomers());
-                TutorialPartCount++;
-                break;
-            // This will be unguided the player needs to complete it themselves.
             case 2:
-                queueManager.SpawnSpecificCustomer();
-                tutorialPopup.SetActive(false);
-                _customersSpawned++;
-                TutorialPartCount++;
-                break;
-            // Completing the previous ones will start the day.
+                StartCoroutine(SpawnTwoCustomers());
+                return;
+            // This will be unguided the player needs to complete it themselves.
             case 3:
+                queueManager.SpawnSpecificCustomer();
+                _customersSpawned++;
+                return;
+            // Completing the previous ones will start the day.
+            case 4:
                 Debug.Log("Tutorial Completed!");
-                CurrentStep = TutorialStep.Completed;
-                
                 StartCoroutine(StartDay());
                 GameManager.Instance.IsInTutorialMode = false;
-                break;
+                return;
         }
     }
 
-    
+
     // Spawns Two Customers with a pause between the two so they're not spawned on each other.
     private IEnumerator SpawnTwoCustomers()
     {
@@ -325,7 +200,7 @@ public class TutorialManager : MonoBehaviour
         _customersSpawned++;
         yield return new WaitForSeconds(1);
 
-        CurrentStep = TutorialStep.PickUpPotionBottle;
+        // CurrentStep = TutorialStep.PickUpPotionBottle;
     }
 
     // Waits 5 seconds after the last tutorial part is completed, then opens the store and starts the timer.
@@ -337,100 +212,75 @@ public class TutorialManager : MonoBehaviour
         enabled = false;
     }
 
-    private IEnumerator ShowTutorialText(string text)
-    {
-        tutorialPopup.SetActive(true);
-        tutorialText.text = text;
-        yield return new WaitForSeconds(3);
-        tutorialPopup.SetActive(false);
-    }
-
-
     private void RestartTutorial()
     {
-        // if the tutorial is restarted, it should also restart the cauldron that's been used if there is one.
-        if(TutorialPartCount != 1) return;
-        
-        tutorialPopup.SetActive(true);
-        tutorialText.text = "You made a mistake!\nTry Again!";
-        
-        CurrentStep = TutorialStep.HighlightRecipeBook;
+        if (_tutorialPart != 1) return;
+        _hasInteracted = false;
+        tutorialUI.ActivatePopUp("You made a mistake!\nTry again!");
+        _tutorialPart = 1;
+        _currentStep = TutorialStep.HighlightRecipeBook;
         ResetFlags();
     }
 
     internal void ServedCustomer()
     {
         _customersServed++;
+
+        if (_customersServed != _customersSpawned) return;
+
+        _tutorialPart++;
+        NextPartOfTutorial();
     }
 
     private void ResetFlags()
     {
-        ResetAllMaterials();
-            
         _customersServed = 0;
         _customersSpawned = 0;
-        InteractedWithBook = false;
-        PickedUpMushroom = false;
-        InsertCorrectIngredient = false;
-        StirredCauldronCorrectly = false;
-        PickedUpPotionBottle = false;
-        FilledPotionBottle = false;
-        ServedPotion = false;
-        MadeIncorrectMove = false;
-        tutorialPopup.SetActive(false);
     }
 
-    private void ResetAllMaterials()
-    {
-        foreach (var cauldron in cauldrons)
-        {
-            RevertMaterial(cauldron);
-        }
-
-        foreach (var potionBottle in potionBottles)
-        {
-            RevertMaterial(potionBottle);
-        }
-
-        RevertMaterial(StirStickToHighlight);
-        RevertMaterial(crate);
-        RevertMaterial(servingCounter);
-        RevertMaterial(recipeBook);
-    }
 
     private void ResetAll()
     {
-        CurrentStep = TutorialStep.HighlightRecipeBook;
-        TutorialPartCount = 1;
-        ResetAllMaterials();
-        _hasShownPopUp = false;
+        _currentStep = TutorialStep.HighlightRecipeBook;
+        _tutorialPart = 1;
+        _hasInteracted = false;
         ResetFlags();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(!GameManager.Instance.IsInTutorialMode) return;
+        if (!GameManager.Instance.IsInTutorialMode) return;
 
         if (!other.CompareTag("Customer")) return;
-        
-        switch (TutorialPartCount)
+
+        switch (_tutorialPart)
         {
-                case 1:
-                    tutorialPopup.SetActive(true);
-                    tutorialText.text = partOneText;
-                    break;
-                case 2:
-                    if (_hasShownPopUp) break;
-                    
-                    tutorialPopup.SetActive(true);
-                    StartCoroutine(ShowTutorialText(partTwoText));
-                    tutorialText.text = partTwoText;
-                    _hasShownPopUp = true;
-                    break;
-                case 3:
-                    tutorialPopup.SetActive(true);
-                    StartCoroutine(ShowTutorialText(partThreeText));
-                    break;
+            case 1:
+                tutorialUI.ActivatePopUp(partOneText);
+                _popUpTimer.StartTimer();
+                break;
+            case 2:
+                if (_hasShownPopUp) break;
+                tutorialUI.ActivatePopUp(partTwoText);
+                _popUpTimer.StartTimer();
+                _hasShownPopUp = true;
+                break;
+            case 3:
+                tutorialUI.ActivatePopUp(partThreeText);
+                _popUpTimer.StartTimer();
+                break;
         }
     }
+}
+
+public enum TutorialStep
+{
+    HighlightRecipeBook,
+    PickUpMushroom,
+    InsertIngredient,
+    StirCauldron,
+    PickUpPotionBottle,
+    FillPotionBottle,
+    ServePotion,
+    Completed,
 }
