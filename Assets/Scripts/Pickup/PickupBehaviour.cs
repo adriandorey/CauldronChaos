@@ -15,6 +15,8 @@ public class PickupBehaviour : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Image pickupUIHolder;
     internal bool isHoldingItem = false;
+    
+    private TutorialManager _tutorialManager;
 
     private void Awake()
     {
@@ -64,6 +66,21 @@ public class PickupBehaviour : MonoBehaviour
             Interactable container = interactionVolume.GetContainer();
             if (container != null)
             {
+                if (GameManager.Instance.IsInTutorialMode)
+                {
+                    if(_tutorialManager ==   null)
+                        _tutorialManager = FindObjectOfType<TutorialManager>();
+                    
+                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
+                    {
+                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpMushroom) return;
+                    }
+
+                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
+                    {
+                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle) return;
+                    }
+                }
                 container.Interact(this);
                 playerAnimator.SetTrigger("Pickup");
             }

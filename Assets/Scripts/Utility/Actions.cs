@@ -138,13 +138,8 @@ public static class Actions
     #region Tutorial Actions
     public static Action OnStartTutorialDay;
     public static Action OnBookInteracted;
-    public static Action OnMushroomPickedUp;
-    public static Action OnIngredientInserted;
-    public static Action <Renderer> OnCauldronStirred;
-    public static Action OnPotionBottlePickedUp;
     public static Action OnPotionServed;
-    public static Action <Renderer> OnPotionFilled;
-    public static Action OnMadeIncorrectMove;
+    public static Action BlowUpCauldron;
 
     // This will be used to set the last cauldron used and the stir stick that belongs to it
     public static Action<Renderer, Renderer> LastCauldronUsed; 

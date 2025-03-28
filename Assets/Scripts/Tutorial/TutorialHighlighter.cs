@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class TutorialHighlighter : MonoBehaviour
 {
-   [Header("Highlight")]
+    [Header("Highlight")]
     [SerializeField] private Material highlightMaterial;
 
     [Header("Renderers")]
     [SerializeField] private Renderer recipeBook;
+
     [SerializeField] private Renderer crate;
     [SerializeField] private Renderer[] cauldrons;
     [SerializeField] private Renderer[] potionBottles;
@@ -22,6 +23,7 @@ public class TutorialHighlighter : MonoBehaviour
     private bool _isMaterialChanged;
 
     #region Enable / Disable / Destroy
+
     private void OnEnable()
     {
         Actions.LastCauldronUsed += SetLastUsed;
@@ -36,6 +38,7 @@ public class TutorialHighlighter : MonoBehaviour
     {
         Actions.LastCauldronUsed -= SetLastUsed;
     }
+
     #endregion
 
     internal void ChangeMaterial(string rendererName, bool isAddingHighlight)
@@ -43,40 +46,52 @@ public class TutorialHighlighter : MonoBehaviour
         switch (rendererName)
         {
             case "recipeBook":
-                if(isAddingHighlight) SingleHighlight(recipeBook);
+                if (isAddingHighlight) SingleHighlight(recipeBook);
                 else RevertSingleHighlight(recipeBook);
                 break;
             case "crate":
-                if(isAddingHighlight) SingleHighlight(crate);
+                if (isAddingHighlight) SingleHighlight(crate);
                 else RevertSingleHighlight(crate);
                 break;
             case "cauldrons":
-                if(isAddingHighlight) MultipleHighlights(cauldrons);
+                if (isAddingHighlight) MultipleHighlights(cauldrons);
                 else RevertMultiHighlights(cauldrons);
                 break;
             case "potionFilling":
-                if(isAddingHighlight) SingleHighlight(LastCauldron);
+                if (isAddingHighlight) SingleHighlight(LastCauldron);
                 else RevertSingleHighlight(LastCauldron);
                 break;
             case "stirStick":
-                if(isAddingHighlight) SingleHighlight(StirStick);
+                if (isAddingHighlight) SingleHighlight(StirStick);
                 else RevertSingleHighlight(StirStick);
                 break;
             case "potionBottles":
-                if(isAddingHighlight) MultipleHighlights(potionBottles);
+                if (isAddingHighlight) MultipleHighlights(potionBottles);
                 else RevertMultiHighlights(potionBottles);
                 break;
             case "servingCounter":
-                if(isAddingHighlight) SingleHighlight(servingCounter);
+                if (isAddingHighlight) SingleHighlight(servingCounter);
                 else RevertSingleHighlight(servingCounter);
                 break;
         }
     }
 
+    internal void ResetAllMaterials()
+    {
+        RevertSingleHighlight(recipeBook);
+        RevertSingleHighlight(crate);
+        RevertMultiHighlights(cauldrons);
+        RevertMultiHighlights(potionBottles);
+        RevertSingleHighlight(StirStick);
+        RevertSingleHighlight(LastCauldron);
+        RevertSingleHighlight(servingCounter);
+    }
+
     #region Highlight
+
     private void MultipleHighlights(Renderer[] meshRend)
     {
-        foreach (var rend in  meshRend)
+        foreach (var rend in meshRend)
         {
             SingleHighlight(rend);
         }
@@ -89,30 +104,34 @@ public class TutorialHighlighter : MonoBehaviour
         {
             _originalMaterials[rend] = rend.material; // save original materials
         }
-        
+
         // Create a new array with space for the highlight material
         var newMaterials = new Material[rend.materials.Length + 1];
-        
+
         // copy original materials
         for (var i = 0; i < rend.materials.Length; i++)
         {
             newMaterials[i] = rend.materials[i];
         }
-        
+
         // Add the highlight material at the end
         newMaterials[newMaterials.Length - 1] = highlightMaterial;
-        
+
         // Apply the new material array
         rend.materials = newMaterials;
     }
+
     #endregion
 
     #region Remove Highlight
+
     private void RevertSingleHighlight(Renderer rend)
     {
+        if (rend == null) return;
+
         // only restore if we have the original materials.
-        if(!_originalMaterials.ContainsKey(rend)) return;
-        
+        if (!_originalMaterials.ContainsKey(rend)) return;
+
         rend.materials = new[] { _originalMaterials[rend] }; // restore original materials
         _originalMaterials.Remove(rend); // clean up the stored reference
     }
@@ -124,6 +143,7 @@ public class TutorialHighlighter : MonoBehaviour
             RevertSingleHighlight(rend);
         }
     }
+
     #endregion
 
     private void SetLastUsed(Renderer cauldron, Renderer stirStick)

@@ -11,6 +11,7 @@ public class CauldronInteraction : MonoBehaviour
 {
     // Reference to the RecipeManager script
     private RecipeManager _recipeManager;
+    private TutorialManager _tutorialManager;
 
     private RecipeSO[] _availRecipes; // holds all recipes that can be crafted in this cauldron
     private List<RecipeSO> _possibleRecipes = new(); // list of possible recipes
@@ -84,6 +85,7 @@ public class CauldronInteraction : MonoBehaviour
         _recipeManager = FindObjectOfType<RecipeManager>();
         _availRecipes = _recipeManager.FindAvailableRecipes();
         _player = FindObjectOfType<PickupBehaviour>();
+        _tutorialManager = FindObjectOfType<TutorialManager>();
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -91,18 +93,21 @@ public class CauldronInteraction : MonoBehaviour
     {
         InputManager.StirClockwiseAction += StirClockwise;
         InputManager.StirCounterClockwiseAction += StirCounterClockwise;
+        Actions.BlowUpCauldron += HandleIncorrectStep;
     }
 
     private void OnDisable()
     {
         InputManager.StirClockwiseAction -= StirClockwise;
         InputManager.StirCounterClockwiseAction -= StirCounterClockwise;
+        Actions.BlowUpCauldron -= HandleIncorrectStep;
     }
 
     private void OnDestroy()
     {
         InputManager.StirClockwiseAction -= StirClockwise;
         InputManager.StirCounterClockwiseAction -= StirCounterClockwise;
+        Actions.BlowUpCauldron -= HandleIncorrectStep;
         DOTween.KillAll();
     }
     #endregion
@@ -280,20 +285,29 @@ public class CauldronInteraction : MonoBehaviour
 
     private void CheckTutorialSteps()
     {
-        // This will check what step the tutorial is on only in part one
-        switch (_currentStep)
+        if (_tutorialManager.CurrentStep != TutorialStep.Completed)
         {
-            // checks to see if the ingredient inserted was a mushroom
-            case "Mushroom":
-                Actions.LastCauldronUsed?.Invoke(modelRenderer, stirStickRend);
-                Actions.OnIngredientInserted?.Invoke();
-                break;
-            // checks to see if filled bottle is the last cauldron was used
-            case "Bottle_Potion": Actions.OnPotionFilled?.Invoke(modelRenderer); break;
-            // checks to see if the last cauldron was used and if they stirred in the right direction
-            case "Stir_C": Actions.OnCauldronStirred?.Invoke(stirStickRend); break;
-            // anything else that occurs is an incorrect step?
-                default: HandleIncorrectStep(); break;
+            // This will check what step the tutorial is on only in part one
+            switch (_tutorialManager.CurrentStep)
+            {
+                // checks to see if the ingredient inserted was a mushroom
+                case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
+                    Actions.LastCauldronUsed?.Invoke(modelRenderer, stirStickRend);
+                    _tutorialManager.HandleTutorialStep(TutorialStep.InsertIngredient);
+                    // Actions.OnIngredientInserted?.Invoke();
+                    break;
+                // checks to see if filled bottle is the last cauldron was used
+                case TutorialStep.FillPotionBottle when _currentStep == "Bottle_Potion": 
+                    _tutorialManager.HandleTutorialStep(TutorialStep.FillPotionBottle, modelRenderer);
+                    // Actions.OnPotionFilled?.Invoke(modelRenderer); 
+                    break;
+                // checks to see if the last cauldron was used and if they stirred in the right direction
+                case TutorialStep.StirCauldron when _currentStep == "Stir_C":
+                    _tutorialManager.HandleTutorialStep(TutorialStep.StirCauldron, stirStickRend);
+                    // Actions.OnCauldronStirred?.Invoke(stirStickRend); 
+                    break;
+                default: _tutorialManager.RestartTutorial(); break;
+            }
         }
     }
 
@@ -301,10 +315,6 @@ public class CauldronInteraction : MonoBehaviour
     {
         _propBlock = new MaterialPropertyBlock();
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
-
-        // If its in tutorial mode it will show they've made an incorrect move
-        if (GameManager.Instance.IsInTutorialMode) 
-            Actions.OnMadeIncorrectMove?.Invoke();
 
         // audio manager will play sfx
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.StationSounds, incorrectStepSounds.PickAudioClip(), true);

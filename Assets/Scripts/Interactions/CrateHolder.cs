@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CrateHolder : Interactable
@@ -8,10 +9,12 @@ public class CrateHolder : Interactable
     public CrateType crateType;
     private Vector3 _originalScale;
     [SerializeField] private ParticleSystem particles;
+    private TutorialManager _tutorialManager;
 
 
     public void Start()
     {
+        _tutorialManager = FindObjectOfType<TutorialManager>();
         _originalScale = transform.localScale;
 
         // If no ingredient prefab is assigned, load the default prefab based on the crate type
@@ -48,10 +51,23 @@ public class CrateHolder : Interactable
 
         if(GameManager.Instance.IsInTutorialMode)
         {
-            switch (crateType)
+            if (_tutorialManager.CurrentStep != TutorialStep.Completed)
             {
-                case CrateType.Mushroom: Actions.OnMushroomPickedUp?.Invoke(); break;
-                case CrateType.Bottle: Actions.OnPotionBottlePickedUp?.Invoke(); break;
+                switch (crateType)
+                {
+                    case CrateType.Mushroom 
+                        when _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom: return;
+                    case CrateType.Mushroom:
+                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
+                        // Actions.OnMushroomPickedUp?.Invoke(); 
+                        break;
+                    case CrateType.Bottle
+                        when _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle: return;
+                    case CrateType.Bottle: 
+                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
+                        // Actions.OnPotionBottlePickedUp?.Invoke(); 
+                        break;
+                }
             }
         }
 

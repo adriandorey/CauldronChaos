@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private QueueManager queueManager;
     [SerializeField] private TutorialHighlighter highlighter;
     [SerializeField] private TutorialUI tutorialUI;
 
-    private TutorialStep _currentStep;
+    internal TutorialStep CurrentStep;
     private int _tutorialPart;
 
     private int _customersSpawned;
@@ -48,7 +49,7 @@ public class TutorialManager : MonoBehaviour
 
     private void Start()
     {
-        _currentStep = TutorialStep.HighlightRecipeBook;
+        CurrentStep = TutorialStep.HighlightRecipeBook;
         _popUpTimer = new CustomTimer(popUpTime, false);
     }
 
@@ -70,13 +71,7 @@ public class TutorialManager : MonoBehaviour
         Actions.OnStartTutorialDay += StartTutorial;
         Actions.OnResetValues += ResetAll;
         Actions.OnBookInteracted += HandleBookInteraction;
-        Actions.OnMushroomPickedUp += HandleMushroomPickup;
-        Actions.OnIngredientInserted += HandleIngredientInsertion;
-        Actions.OnCauldronStirred += HandleCauldronStir;
-        Actions.OnPotionBottlePickedUp += HandlePotionPickup;
-        Actions.OnPotionFilled += HandlePotionFilling;
         Actions.OnPotionServed += HandlePotionServing;
-        Actions.OnMadeIncorrectMove += RestartTutorial;
     }
 
     private void OnDisable()
@@ -84,13 +79,7 @@ public class TutorialManager : MonoBehaviour
         Actions.OnStartTutorialDay -= StartTutorial;
         Actions.OnResetValues -= ResetAll;
         Actions.OnBookInteracted -= HandleBookInteraction;
-        Actions.OnMushroomPickedUp -= HandleMushroomPickup;
-        Actions.OnIngredientInserted -= HandleIngredientInsertion;
-        Actions.OnCauldronStirred -= HandleCauldronStir;
-        Actions.OnPotionBottlePickedUp -= HandlePotionPickup;
-        Actions.OnPotionFilled -= HandlePotionFilling;
         Actions.OnPotionServed -= HandlePotionServing;
-        Actions.OnMadeIncorrectMove -= RestartTutorial;
     }
 
     private void OnDestroy()
@@ -98,13 +87,7 @@ public class TutorialManager : MonoBehaviour
         Actions.OnStartTutorialDay -= StartTutorial;
         Actions.OnResetValues -= ResetAll;
         Actions.OnBookInteracted -= HandleBookInteraction;
-        Actions.OnMushroomPickedUp -= HandleMushroomPickup;
-        Actions.OnIngredientInserted -= HandleIngredientInsertion;
-        Actions.OnCauldronStirred -= HandleCauldronStir;
-        Actions.OnPotionBottlePickedUp -= HandlePotionPickup;
-        Actions.OnPotionFilled -= HandlePotionFilling;
         Actions.OnPotionServed -= HandlePotionServing;
-        Actions.OnMadeIncorrectMove -= RestartTutorial;
     }
 
     #endregion
@@ -119,31 +102,35 @@ public class TutorialManager : MonoBehaviour
         highlighter.ChangeMaterial("recipeBook", true);
     }
 
-    private void HandleBookInteraction()
+    
+    // Just makes sure the book can be interacted with multiple times
+    internal void HandleBookInteraction()
     {
         if (_hasInteracted) return;
 
         HandleTutorialStep(TutorialStep.HighlightRecipeBook);
         _hasInteracted = true;
     }
-
-    private void HandleMushroomPickup() => HandleTutorialStep(TutorialStep.PickUpMushroom);
-    private void HandleIngredientInsertion() => HandleTutorialStep(TutorialStep.InsertIngredient);
-    private void HandleCauldronStir(Renderer rend) => HandleTutorialStep(TutorialStep.StirCauldron, rend);
-    private void HandlePotionPickup() => HandleTutorialStep(TutorialStep.PickUpPotionBottle);
-    private void HandlePotionFilling(Renderer rend) => HandleTutorialStep(TutorialStep.FillPotionBottle, rend);
     private void HandlePotionServing() => HandleTutorialStep(TutorialStep.ServePotion);
 
 
-    private void HandleTutorialStep(TutorialStep step, Renderer rend = null)
+    internal void HandleTutorialStep(TutorialStep step, Renderer rend = null)
     {
+        // Debug.Log(step);
         if (_tutorialPart != 1) return;
-        if (_currentStep != step) RestartTutorial();
+        if (CurrentStep != step)
+        {
+            RestartTutorial();
+            return;
+        }
 
         // Specific conditions
         if (step == TutorialStep.StirCauldron && highlighter.StirStick != rend ||
             step == TutorialStep.FillPotionBottle && highlighter.LastCauldron != rend)
+        {
             RestartTutorial();
+            return;
+        }
 
         // Get next step details
         if (!_tutorialSteps.TryGetValue(step, out var stepData)) return;
@@ -151,7 +138,11 @@ public class TutorialManager : MonoBehaviour
         // Disable current highlight
         highlighter.ChangeMaterial(stepData.highlightTarget, false);
 
-        if (stepData.nextStep == TutorialStep.Completed) return;
+        if (stepData.nextStep == TutorialStep.Completed)
+        {
+            CurrentStep = stepData.nextStep;
+            return;
+        } 
 
         // Proceed to the next step
         NextStep(stepData.nextStep);
@@ -161,7 +152,7 @@ public class TutorialManager : MonoBehaviour
 
     private void NextStep(TutorialStep nextStep)
     {
-        _currentStep = nextStep;
+        CurrentStep = nextStep;
     }
 
     private void NextPartOfTutorial()
@@ -212,14 +203,18 @@ public class TutorialManager : MonoBehaviour
         enabled = false;
     }
 
-    private void RestartTutorial()
+    internal void RestartTutorial()
     {
         if (_tutorialPart != 1) return;
-        _hasInteracted = false;
-        tutorialUI.ActivatePopUp("You made a mistake!\nTry again!");
-        _tutorialPart = 1;
-        _currentStep = TutorialStep.HighlightRecipeBook;
-        ResetFlags();
+        
+        Actions.BlowUpCauldron?.Invoke(); // Reset both cauldrons
+        highlighter.ResetAllMaterials(); // Reset all the highlighted materials
+        _hasInteracted = false; // reset the has interacted - used for the book
+        
+        tutorialUI.ActivatePopUp("You made a mistake!\nTry again!"); 
+        
+        CurrentStep = TutorialStep.HighlightRecipeBook;
+        highlighter.ChangeMaterial("recipeBook", true);
     }
 
     internal void ServedCustomer()
@@ -228,8 +223,15 @@ public class TutorialManager : MonoBehaviour
 
         if (_customersServed != _customersSpawned) return;
 
-        _tutorialPart++;
-        NextPartOfTutorial();
+        if (CurrentStep == TutorialStep.Completed)
+        {
+            _tutorialPart++;
+            NextPartOfTutorial();
+        }
+        else
+        {
+            queueManager.SpawnSpecificCustomer();
+        }
     }
 
     private void ResetFlags()
@@ -241,7 +243,7 @@ public class TutorialManager : MonoBehaviour
 
     private void ResetAll()
     {
-        _currentStep = TutorialStep.HighlightRecipeBook;
+        CurrentStep = TutorialStep.HighlightRecipeBook;
         _tutorialPart = 1;
         _hasInteracted = false;
         ResetFlags();
