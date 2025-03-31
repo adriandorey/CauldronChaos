@@ -127,19 +127,18 @@ public class PickupBehaviour : MonoBehaviour
     //Mutator method that manually sets the held object
     public void SetHeldObject(PickupObject targetObject)
     {
-        //Debug.Log("In set held object");
         heldObject = targetObject;
         playerAnimator.SetTrigger("Pickup");
+        //Debug.Log("Player Pick up3");
         pickupVolume.RemovePickupFromList(heldObject);
         heldObject.PickUp(pickupHolder);
         isHoldingItem = true;
-        Debug.Log("Player Pick up3");
     }
 
     private void DropItem()
     {
         playerAnimator.SetTrigger("Drop");
-        Debug.Log("Player Drop");
+        //Debug.Log("Player Drop");
         pickupUIHolder.enabled = false;
         heldObject.Drop();
         isHoldingItem = false;

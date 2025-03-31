@@ -436,7 +436,7 @@ public class CauldronInteraction : MonoBehaviour
     internal void GoblinInteraction()
     {
         _recipe = null;
-        Debug.Log("Goblin Interaction");
+        //Debug.Log("Goblin Interaction");
         cauldronFill.DOLocalMove(cauldronFill.localPosition - new Vector3(0, 0.11f * 2, 0), 1f).SetEase(Ease.InOutSine).OnComplete(ResetValues);
     }
 

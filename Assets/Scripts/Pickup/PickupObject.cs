@@ -33,7 +33,7 @@ public class PickupObject : MonoBehaviour
     private void Update()
     {
         //moves pickup towards the target position if the positions do not match
-        if(_targetPos.name == "PlayerHands" && transform.position != _targetPos.position)
+        if(_targetPos != null && transform.position != _targetPos.position)
         {
             transform.position = _targetPos.position;
         }
