@@ -1,16 +1,14 @@
 using UnityEngine;
-using static WindyDay;
 
 public class PickupObject : MonoBehaviour
 {
     [Header("Ingredient")]
     public RecipeStepSO recipeIngredient;
-    public Color ingredientColor;
 
     [Header("Pick Up")]
     public bool isHeld = false; //bool tracking if the pickup is held
     private Transform _targetPos; //transform tracking the target position of the pickup
-    private Rigidbody rb; //rigidbody component of the pickup
+    private Rigidbody _rb; //rigidbody component of the pickup
     private bool _addedToCauldron = false;
     private Collider _objCollider;
 
@@ -25,7 +23,7 @@ public class PickupObject : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
         _objCollider = GetComponent<Collider>();
     }
 
@@ -46,7 +44,7 @@ public class PickupObject : MonoBehaviour
         if (_inWindZone && !_addedToCauldron && !isHeld)
         {
             // Add wind resistance (force) to the item
-            rb.AddForce(_windArea.AddWindResistance());
+            _rb.AddForce(_windArea.AddWindResistance());
         }
     }
 
@@ -55,7 +53,7 @@ public class PickupObject : MonoBehaviour
     {
         //setting held to true and removing gravity
         isHeld = true;
-        rb.isKinematic = true;
+        _rb.isKinematic = true;
         _objCollider.enabled = false;
         //rb.useGravity = false;
 
@@ -73,7 +71,7 @@ public class PickupObject : MonoBehaviour
     {
         //setting held to false and enabling gravity
         isHeld = false;
-        rb.isKinematic = false;
+        _rb.isKinematic = false;
         _objCollider.enabled = true;
 
         //rb.useGravity = true;

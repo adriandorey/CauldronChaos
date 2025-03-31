@@ -261,15 +261,9 @@ public class GoblinAI : MonoBehaviour
     private void PlayIdleSound()
     {
         SFXLibrary goblinSounds;
+        
         // if the goblin is free the goblin sounds will be goblin idle else it'll be goblin cry.
-        if (_isFree)
-        {
-            goblinSounds = goblinIdle;
-        }
-        else
-        {
-            goblinSounds = goblinCry;
-        }
+        goblinSounds = _isFree ? goblinIdle : goblinCry;
 
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.GoblinSounds, goblinSounds.PickAudioClip(),
             true); //play audio clip
