@@ -13,4 +13,6 @@ public class RecipeStepSO : ScriptableObject
     public Ingredient ingredient;
    
     public Sprite stepSprite;
+
+    public Color ingredientColour;
 }

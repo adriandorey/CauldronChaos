@@ -22,21 +22,19 @@ public class SlimeTrail : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnStartSlime += StartSlimeTrail;
-        Actions.OnEndSlime += EndSlimeTrail;
         Actions.OnResetValues += ResetTrail;
     }
 
     private void OnDisable()
     {
         Actions.OnStartSlime -= StartSlimeTrail;
-        Actions.OnEndSlime -= EndSlimeTrail;
         Actions.OnResetValues -= ResetTrail;
     }
 
     private void OnDestroy()
     {
         Actions.OnStartSlime -= StartSlimeTrail;
-        Actions.OnEndSlime -= EndSlimeTrail;
+        Actions.OnResetValues -= ResetTrail;
     }
     #endregion
 
@@ -70,15 +68,10 @@ public class SlimeTrail : MonoBehaviour
         _startPosition = transform.position;
     }
 
-    // Turns off the slime trail when the level is done.    
-    private void EndSlimeTrail()
-    {
-        _trailActive = false;
-    }
-
     // Removes all slime from the scene
     private void ResetTrail()
     {
+        _trailActive = false;
         foreach (var slime in _slimeTrail)
         {
             Destroy(slime);

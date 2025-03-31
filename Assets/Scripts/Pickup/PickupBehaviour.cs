@@ -15,6 +15,8 @@ public class PickupBehaviour : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Image pickupUIHolder;
     internal bool isHoldingItem = false;
+    
+    private TutorialManager _tutorialManager;
 
     private void Awake()
     {
@@ -66,20 +68,19 @@ public class PickupBehaviour : MonoBehaviour
             {
                 if (GameManager.Instance.IsInTutorialMode)
                 {
+                    if(_tutorialManager ==   null)
+                        _tutorialManager = FindObjectOfType<TutorialManager>();
+                    
                     if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
                     {
-                        if (TutorialManager.CurrentStep < TutorialStep.PickUpMushroom)
-                            return;
+                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpMushroom) return;
                     }
 
                     if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
                     {
-                        if (TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle)
-                            return;
+                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle) return;
                     }
-
                 }
-
                 container.Interact(this);
                 playerAnimator.SetTrigger("Pickup");
             }
@@ -122,6 +123,7 @@ public class PickupBehaviour : MonoBehaviour
     {
         //Debug.Log("In set held object");
         heldObject = targetObject;
+        playerAnimator.SetTrigger("Pickup");
         pickupVolume.RemovePickupFromList(heldObject);
         pickupUIHolder.enabled = true;
         pickupUIHolder.sprite = heldObject.GetComponent<PickupObject>().recipeIngredient.stepSprite;
@@ -147,15 +149,15 @@ public class PickupBehaviour : MonoBehaviour
     }
 
     private void RemoveItem()
-    {
+    { 
+        playerAnimator.SetTrigger("Drop");
+        
         if (pickupHolder.childCount > 0)
         {
             foreach (Transform child in pickupHolder)
             {
                 Destroy(child.gameObject);
             }
-
-            playerAnimator.SetTrigger("Drop");
         }
     }
 

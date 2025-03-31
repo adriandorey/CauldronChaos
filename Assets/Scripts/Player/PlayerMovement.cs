@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Movement Variables")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 180;
+    [SerializeField] private ParticleSystem movementParticles;
     private float _defaultSpeed;
 
     [Header("Collision Detection")]
@@ -55,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
         _spawnPosition = transform.localPosition;
         _spawnRotation = transform.rotation;
         _playerAnimation = GetComponentInChildren<Animator>();
+        movementParticles.Stop();
 
 
         if(SceneManager.GetActiveScene().name != "MainMenu")
@@ -72,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
         InputManager.MoveAction += GetMove;
         Actions.OnIceDay += ToggleIceMode;
         Actions.OnStartDay += EnableMovement;
-        Actions.OnTutorialDay += EnableMovement;
+        Actions.OnStartTutorialDay += EnableMovement;
         Actions.OnEndDay += DisableMovement;
         Actions.OnResetValues += ResetPosition;
     }
@@ -82,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
-        Actions.OnTutorialDay -= EnableMovement;
+        Actions.OnStartTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;
@@ -92,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     {
         InputManager.MoveAction -= GetMove;
         Actions.OnIceDay -= ToggleIceMode;
-        Actions.OnTutorialDay -= EnableMovement;
+        Actions.OnStartTutorialDay -= EnableMovement;
         Actions.OnStartDay -= EnableMovement;
         Actions.OnEndDay -= DisableMovement;
         Actions.OnResetValues -= ResetPosition;
@@ -139,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResetPosition()
     {
+        _playerAnimation.SetBool("isMoving", false);
         transform.localPosition = _spawnPosition;
         transform.rotation = _spawnRotation;
         _canMove = false;
@@ -153,6 +156,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _canMove = false;
         _isInWindZone = false;
+        movementParticles.Stop();
     }
 
     private void ToggleIceMode(bool isIcy)
@@ -169,7 +173,6 @@ public class PlayerMovement : MonoBehaviour
     private void GetMove(InputAction.CallbackContext input)
     {
         _moveDir = input.ReadValue<Vector2>();
-
     }
 
 
@@ -191,10 +194,13 @@ public class PlayerMovement : MonoBehaviour
             var toRotation = Quaternion.LookRotation(movement, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.fixedDeltaTime);
             _playerAnimation.SetBool("isMoving", true);
+            if(!movementParticles.isPlaying)
+                movementParticles.Play();
         }
         else
         {
             _playerAnimation.SetBool("isMoving", false);
+            movementParticles.Stop();
         }
 
         //apply multipliers

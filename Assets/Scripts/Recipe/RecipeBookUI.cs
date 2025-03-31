@@ -210,7 +210,7 @@ public class RecipeBookUI : MonoBehaviour
         recipeNav.buttonIcon.enabled = enableIcon;
         recipeNav.buttonText.enabled = !enableIcon;
         
-        Debug.Log(inputAction);
+        // Debug.Log(inputAction);
         SetNavDisplay(recipeNav, enableIcon, inputAction);
     }
 

@@ -3,8 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-        using UnityEngine.InputSystem.DualShock;
-        using UnityEngine.InputSystem.XInput;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.XInput;
 
 public class AbovePlayerUi : MonoBehaviour
 {

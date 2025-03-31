@@ -10,9 +10,6 @@ public static class Actions
     // Shop Actions
     #region Shop Actions
 
-    /// <summary> Starts tutorial Day  </summary>
-    public static Action OnTutorialDay;
-
     /// <summary> Starts Shop Day, this is meant to start anything that has to run when the store opens.  </summary>
     public static Action OnStartDay;
 
@@ -87,7 +84,7 @@ public static class Actions
     /// <summary> Used to open settings </summary>
     public static Action OnOpenSettingsAction;
 
-    /// <summary> Used to activate how to play based on if its a loading screen or not </summary>
+    /// <summary> Used to activate how to play based on if it's a loading screen or not </summary>
     public static Action<bool> OnActivateHowToPlay;
 
     /// <summary> Deactivates how to play </summary>
@@ -119,7 +116,7 @@ public static class Actions
     /// <summary> Used to top the goblin cage or reset it </summary>
     public static Action<bool> OnMoveCage;
 
-    /// <summary> Used to start the goblin, telling it if its the first day or not </summary>
+    /// <summary> Used to start the goblin, telling it if it's the first day or not </summary>
     public static Action<bool> OnStartGoblin;
 
     /// <summary> Tells the goblin to stop </summary>
@@ -134,8 +131,17 @@ public static class Actions
     /// <summary> Starts the slime </summary>
     public static Action OnStartSlime;
 
-    /// <summary> Ends the slime </summary>
-    public static Action OnEndSlime;
+    #endregion
+    
+    // Tutorial Actions
 
+    #region Tutorial Actions
+    public static Action OnStartTutorialDay;
+    public static Action OnBookInteracted;
+    public static Action OnPotionServed;
+    public static Action BlowUpCauldron;
+
+    // This will be used to set the last cauldron used and the stir stick that belongs to it
+    public static Action<Renderer, Renderer> LastCauldronUsed; 
     #endregion
 }

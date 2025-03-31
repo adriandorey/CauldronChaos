@@ -5,38 +5,21 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.InputSystem;
 using System;
-using UnityEngine.EventSystems;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour
 {
-    [Header("Loading Screen")]
-    [SerializeField] private Canvas loadingScreen;
+    [SerializeField] private SceneLoader sceneLoader;
+    [SerializeField] private LoadingUI loadingUI;
+    [SerializeField] private SceneTransition sceneTransition;
+    [SerializeField] private DayManager dayManager;
 
-    [SerializeField] private Slider loadingBar;
-    [SerializeField] private float fakeProgressSpeed;
-    [SerializeField] private TextMeshProUGUI loadingText;
-
-    [Header("Scene Fade")]
-    private Animator _fadeAnimator;
-
-    [Header("Event System")]
-    [SerializeField] private EventSystem eventSystem;
-    
-    private DayManager _dayManager;
-
-    // Callback function to be invoked after fade animation completes
-    private Action _fadeCallback;
+    private string _sceneName;
 
     public void Start()
     {
-        _dayManager = FindObjectOfType<DayManager>();
-        _fadeAnimator = GetComponent<Animator>();
-        _fadeAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        sceneLoader.OnProgressUpdated += loadingUI.UpdateProgress;
+        sceneLoader.OnSceneReady += ShowPressAnyKeyPrompt;
     }
 
 
@@ -49,70 +32,33 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        // // Disable player interactions during transition
-        // InputManager.Instance.TurnOffInteraction();
-
-
-        // start fade out animation before loading the new scene
-        Fade("FadeOut", () =>
+        // Scene Transition, Fades out then completes these actions
+        sceneTransition.FadeOut(() =>
         {
-            // subscribe to the scene loaded event
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            
-            // Notify listeners that the game is loading
+            _sceneName = sceneName;
+            loadingUI.Show();
             Actions.OnStateChange("Loading");
+            sceneLoader.LoadScene(sceneName);
 
-        
-            loadingScreen.enabled = true;
-            loadingText.text = "Loading...";
-
-            if (sceneName.StartsWith("Day"))
-            {
+            if (_sceneName.StartsWith("Day"))
                 Actions.OnActivateHowToPlay?.Invoke(true);
-                fakeProgressSpeed = 0.2f;
-            }
-            else
-            {
-                fakeProgressSpeed = 0.6f;
-            }
-
-
-            StartCoroutine(LoadAsync(sceneName));
         });
     }
 
-    private IEnumerator LoadAsync(string sceneName)
+    private void ShowPressAnyKeyPrompt()
     {
-        // Load the scene asynchronously
-        var loadOperation = SceneManager.LoadSceneAsync(sceneName);
-
-        // Prevent the scene from activating immediately, even if it's fully loaded
-        loadOperation.allowSceneActivation = false;
-
-
-
-        if(sceneName.StartsWith("Day"))
+        if (_sceneName == "MainMenu" || _sceneName == "LevelSelect")
         {
-            var fakeProgress = 0f;
-            while (fakeProgress < 1f)
-            {
-                // Gradually increase the fake progress
-                fakeProgress += Time.unscaledDeltaTime * fakeProgressSpeed;
-
-                // Ensure fake progress doesn't exceed the actual loading progress
-                var actualProgress = Mathf.Clamp01(loadOperation.progress / 0.9f);
-                fakeProgress = Mathf.Min(fakeProgress, actualProgress);
-
-                // Update the loading bar
-                loadingBar.value = fakeProgress;
-
-                // Wait for the next frame
-                yield return null;
-            }
+            Actions.OnStateChange(_sceneName == "MainMenu" ? "MainMenu" : "LevelSelect");
+            loadingUI.Hide();
+            sceneTransition.FadeIn();
+            return;
         }
 
-        loadOperation.allowSceneActivation = true;
+        loadingUI.ShowPressAnyKey();
+        StartCoroutine(WaitForAnyKeyPress());
     }
+
 
     // Used for loading screen between level selection or main menu and gameplay
     private IEnumerator WaitForAnyKeyPress()
@@ -123,75 +69,22 @@ public class LevelManager : MonoBehaviour
 
         while (true)
         {
-            // Check for any key press on the keyboard
-            if (keyboard?.anyKey.wasPressedThisFrame == true)
+            if (keyboard?.anyKey.wasPressedThisFrame == true ||
+                (gamepad != null && gamepad.allControls.Any(c => c.IsPressed())))
             {
-                yield break; // Exit the loop and the coroutine
-            }
-
-            // Check for any button press on the gamepad
-            if (gamepad != null)
-            {
-                if (gamepad.buttonSouth.wasPressedThisFrame ||
-                    gamepad.buttonNorth.wasPressedThisFrame ||
-                    gamepad.buttonEast.wasPressedThisFrame ||
-                    gamepad.buttonWest.wasPressedThisFrame ||
-                    gamepad.leftStick.ReadValue().magnitude > 0.1f ||
-                    gamepad.rightStick.ReadValue().magnitude > 0.1f ||
-                    gamepad.dpad.ReadValue().magnitude > 0.1f)
-                {
-                    yield break; // Exit the loop and the coroutine
-                }
+                break;
             }
 
             yield return null;
         }
-    }
 
-    // Called when the scene is loaded and ready to be activated
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        
-        StartCoroutine(WaitForPressThenFade(SceneManager.GetActiveScene()));
-    }
-    
-    private IEnumerator WaitForPressThenFade(Scene currentScene)
-    {
-        loadingText.text = "Press Any Key To Continue";
-    
-        yield return WaitForAnyKeyPress(); // Wait until the player presses a key
+        loadingUI.Hide();
+        Actions.OnDeactivateHowToPlay?.Invoke();
 
-        loadingScreen.enabled = false; // Only disable after input
-        Fade("FadeIn"); // Now fade into the scene
-       
-        if (currentScene.name.StartsWith("Day"))
-        {
-            Actions.OnDeactivateHowToPlay?.Invoke();
-            Actions.OnStateChange("Gameplay");
-            _dayManager.ShowStartDayPanel();
-            // InputManager.Instance.TurnOnInteraction();
-        }
+        sceneTransition.FadeIn();
 
-        if (currentScene.name == "MainMenu" || currentScene.name == "LevelSelect")
-        {
-            Actions.OnStateChange(currentScene.name == "MainMenu" ? "MainMenu" : "LevelSelect");
-        }
-    }
-
-
-    // Fade the screen to black or clear
-    private void Fade(string fadeDir, Action callback = null)
-    {
-        _fadeCallback = callback;
-        _fadeAnimator.SetTrigger(fadeDir);
-    }
-
-    // Is called at the end of the fade out animation
-    public void FadeAnimationComplete()
-    {
-        _fadeCallback?.Invoke();
-        _fadeCallback = null;
+        Actions.OnStateChange("Gameplay");
+        dayManager.ShowStartDayPanel();
     }
 }
 

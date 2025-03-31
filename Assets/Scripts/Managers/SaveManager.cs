@@ -1,25 +1,27 @@
-using System;
 using System.Collections;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class SaveManager : MonoBehaviour
 {
     private string _savePath;
-    private const string SaveFileName = "cauldronChaos.json";
+    private string _saveFileName = "cauldronChaos.json";
     [SerializeField] private TextMeshProUGUI deleteFileConfirmation;
 
     public GameData gameData;
 
     private Coroutine _deleteConfirm;
+    
+    [SerializeField] private GraphicsManager graphicsManager;
+    
+    
 
     public void Start()
     {
        deleteFileConfirmation.enabled = false;
-        _savePath = Path.Combine(Application.persistentDataPath, SaveFileName);
+        _savePath = Path.Combine(Application.persistentDataPath, _saveFileName);
         LoadGame();
     }
 
@@ -27,19 +29,16 @@ public class SaveManager : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnSaveDay += SaveDayScore;
-        Actions.OnDeleteSaveFile += DeleteSave;
     }
 
     private void OnDisable()
     {
         Actions.OnSaveDay -= SaveDayScore;
-        Actions.OnDeleteSaveFile -= DeleteSave;
     }
 
     private void OnDestroy()
     {
         Actions.OnSaveDay -= SaveDayScore;
-        Actions.OnDeleteSaveFile -= DeleteSave;
     }
     #endregion
 
@@ -49,6 +48,7 @@ public class SaveManager : MonoBehaviour
         {
             Actions.OnSetUnlockedDays?.Invoke(GetUnlockedDaysCount());
             Actions.OnSetScore?.Invoke(GetAllScores());
+            graphicsManager.SetAbovePlayerUi(gameData.abovePlayerUI);                    
             Actions.OnSaveExist?.Invoke(true);
         }
         else
@@ -57,13 +57,13 @@ public class SaveManager : MonoBehaviour
             {
                 Actions.OnSaveExist?.Invoke(true);
                 Actions.OnSetUnlockedDays?.Invoke(10);
-                return;
             }
             else
             {
                 Actions.OnSaveExist?.Invoke(false);
                 Actions.OnSetUnlockedDays?.Invoke(1);
                 Actions.OnSetDay(1);
+                graphicsManager.SetAbovePlayerUi(true);
                 gameData = new GameData();
                 gameData.CreateNewSave();
             }
@@ -73,20 +73,15 @@ public class SaveManager : MonoBehaviour
 
     private void SaveGame()
     {
-        if(!GameManager.Instance.IsDebugging())
-        {
-            gameData.isValidSave = true;
+        if(GameManager.Instance.IsDebugging()) return;
 
-            Actions.OnSetUnlockedDays?.Invoke(GetUnlockedDaysCount());
-            Actions.OnSetScore?.Invoke(GetAllScores());
-
-            var json = JsonUtility.ToJson(gameData);
-            File.WriteAllText(_savePath, json);
-        }
-        else
-        {
-            Debug.Log("Save file not created in debug mode");
-        }
+        gameData.isValidSave = true;
+        gameData.abovePlayerUI = graphicsManager.GetAbovePlayerUi();
+        Actions.OnSetUnlockedDays?.Invoke(GetUnlockedDaysCount());
+        Actions.OnSetScore?.Invoke(GetAllScores());
+        
+        var json = JsonUtility.ToJson(gameData);
+        File.WriteAllText(_savePath, json);
     }
 
     private void LoadGame()
@@ -98,47 +93,27 @@ public class SaveManager : MonoBehaviour
         gameData.days[0].isUnlocked = true;
     }
 
-    public void SaveAbovePlayerUI(Toggle abovePlayer)
-    {
-        if (!GameManager.Instance.IsDebugging())
-        {
-            gameData.abovePlayerUI = abovePlayer.isOn;
-
-            var json = JsonUtility.ToJson(abovePlayer);
-            File.WriteAllText(_savePath, json);
-        }
-        else
-        {
-            Debug.Log("Save file not created in debug mode");
-        }
-    }
-
     private void SaveDayScore(int day, int score, bool unlockNext)
     {
-        if (!GameManager.Instance.IsDebugging())
+        if (GameManager.Instance.IsDebugging()) return;
+        
+        // Update the day data if the day is valid
+        if (day < gameData.days.Count)
         {
-            // Update the day data if the day is valid
-            if (day < gameData.days.Count)
-            {
-                var dayData = gameData.days[day];
+            var dayData = gameData.days[day];
 
-                // Update the best score and people served for the day
-                if (score > dayData.bestScore)
-                    dayData.bestScore = score;
+            // Update the best score and people served for the day
+            if (score > dayData.bestScore)
+                dayData.bestScore = score;
 
-                // Day 0 will always be unlocked
-                gameData.days[0].isUnlocked = true;
-                // Unlock the next day if the current day is completed
-                if (unlockNext)
-                    UnlockDay(day + 1);
-            }
-
-            SaveGame();
+            // Day 0 will always be unlocked
+            gameData.days[0].isUnlocked = true;
+            // Unlock the next day if the current day is completed
+            if (unlockNext)
+                UnlockDay(day + 1);
         }
-        else
-        {
-            Debug.Log("Save file not created in debug mode");
-        }
+
+        SaveGame();
     }
 
     private void UnlockDay(int day)
@@ -175,7 +150,13 @@ public class SaveManager : MonoBehaviour
 
     private void DeleteSave()
     {
-        if (File.Exists(_savePath))
+        Debug.Log("Deleting save");
+        // check if there isn't a save first then check to see if there is. 
+        if (!File.Exists(_savePath))
+        {
+            _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("No Save File Found"));
+        }
+        else
         {
             File.Delete(_savePath);
 
@@ -185,10 +166,7 @@ public class SaveManager : MonoBehaviour
             gameData = new GameData();
             gameData.CreateNewSave();
             _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("Save File Deleted"));
-            return;
         }
-        
-        _deleteConfirm = StartCoroutine(ShowDeleteConfirmation("No Save File Found"));
     }
 
     private IEnumerator ShowDeleteConfirmation(string text)

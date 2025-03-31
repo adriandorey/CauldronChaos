@@ -16,3 +16,4 @@ MonoBehaviour:
   stepName: Bottle_Potion
   ingredient: 1
   stepSprite: {fileID: 21300000, guid: a65a67f22cf2195498a9ff2285af46a0, type: 3}
+  ingredientColour: {r: 0.454902, g: 0.47450984, b: 0.95294124, a: 1}

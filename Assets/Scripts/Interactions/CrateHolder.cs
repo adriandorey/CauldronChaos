@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CrateHolder : Interactable
@@ -7,10 +8,13 @@ public class CrateHolder : Interactable
     public enum CrateType { Bottle, Mushroom, RabbitFoot, EyeOfBasilisk, Mandrake, TrollBone };
     public CrateType crateType;
     private Vector3 _originalScale;
+    [SerializeField] private ParticleSystem particles;
+    private TutorialManager _tutorialManager;
 
 
     public void Start()
     {
+        _tutorialManager = FindObjectOfType<TutorialManager>();
         _originalScale = transform.localScale;
 
         // If no ingredient prefab is assigned, load the default prefab based on the crate type
@@ -47,25 +51,31 @@ public class CrateHolder : Interactable
 
         if(GameManager.Instance.IsInTutorialMode)
         {
-            switch (crateType)
+            if (_tutorialManager.CurrentStep != TutorialStep.Completed)
             {
-                case CrateType.Mushroom when 
-                    TutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
-                    return;
-                case CrateType.Mushroom:
-                    TutorialManager.PickedUpMushroom = true;
-                    break;
-                case CrateType.Bottle when 
-                    TutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
-                    return;
-                case CrateType.Bottle:
-                    TutorialManager.PickedUpPotionBottle = true;
-                    break;
+                switch (crateType)
+                {
+                    case CrateType.Mushroom 
+                        when _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom: return;
+                    case CrateType.Mushroom:
+                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
+                        // Actions.OnMushroomPickedUp?.Invoke(); 
+                        break;
+                    case CrateType.Bottle
+                        when _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle: return;
+                    case CrateType.Bottle: 
+                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
+                        // Actions.OnPotionBottlePickedUp?.Invoke(); 
+                        break;
+                }
             }
         }
 
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
-
+       
+        if (particles != null)
+            particles.Play();
+        
         var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
         playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
     }
@@ -79,6 +89,9 @@ public class CrateHolder : Interactable
         // Instantiate ingredient & makes it small
         var ingredient = Instantiate(ingredientPrefab, goblin.position, Quaternion.identity);
         ingredient.transform.localScale = Vector3.zero;
+
+        if(particles != null)
+            particles.Play();
         
         // Picks a random position for the item to "be thrown to"
         var forwardDirection = transform.forward;
@@ -105,11 +118,9 @@ public class CrateHolder : Interactable
         return null;
     }
     
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
-    }
-
-   
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
+    //}
 }
