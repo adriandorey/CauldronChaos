@@ -223,8 +223,11 @@ public class TutorialManager : MonoBehaviour
 
         if (_customersServed != _customersSpawned) return;
 
+        Debug.Log(CurrentStep);
+
         if (CurrentStep == TutorialStep.Completed)
         {
+            Debug.Log("Tutorial Part:" + _tutorialPart);
             _tutorialPart++;
             NextPartOfTutorial();
         }

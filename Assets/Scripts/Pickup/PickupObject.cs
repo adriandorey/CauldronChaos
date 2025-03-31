@@ -30,14 +30,15 @@ public class PickupObject : MonoBehaviour
     }
 
     // Update is called once per frame
-    //private void Update()
-    //{
-    //    //moves pickup towards the target position if the positions do not match
-    //    if (isHeld && rb.position != targetPos.position)
-    //    {
-    //        rb.MovePosition(targetPos.position);
-    //    }
-    //}
+    private void Update()
+    {
+        //moves pickup towards the target position if the positions do not match
+        if(_targetPos.name == "PlayerHands" && transform.position != _targetPos.position)
+        {
+            transform.position = _targetPos.position;
+        }
+    }
+
 
     private void FixedUpdate()
     {
