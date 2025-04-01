@@ -210,7 +210,7 @@ public class CauldronInteraction : MonoBehaviour
 
     private void CheckRecipeProgress()
     {
-        if (GameManager.Instance.IsInTutorialMode)
+        if (GameManager.Instance.IsInTutorial())
             CheckTutorialSteps();
 
         if (_recipe == null)

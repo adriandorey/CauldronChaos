@@ -16,11 +16,7 @@ public class TutorialManager : MonoBehaviour
     private int _customersSpawned;
     private int _customersServed;
 
-    [Header("Tutorial Pop up")]
-    [Tooltip("This time is in seconds")]
-    [SerializeField] private float popUpTime = 5f;
-
-    private CustomTimer _popUpTimer;
+  
 
     [Header("Tutorial Text")]
     [TextArea]
@@ -50,20 +46,9 @@ public class TutorialManager : MonoBehaviour
     private void Start()
     {
         CurrentStep = TutorialStep.HighlightRecipeBook;
-        _popUpTimer = new CustomTimer(popUpTime, false);
     }
 
-    private void Update()
-    {
-        if (!_popUpTimer.isRunning) return;
-
-        if (_popUpTimer.UpdateTimer())
-        {
-            _popUpTimer.StopTimer();
-            tutorialUI.DeactivatePopUp();
-        }
-    }
-
+   
     #region Enable / Disable / Destroy
 
     private void OnEnable()
@@ -96,8 +81,7 @@ public class TutorialManager : MonoBehaviour
     {
         Debug.Log("Starting Tutorial");
         _tutorialPart = 1;
-        queueManager.SpawnSpecificCustomer();
-        _customersSpawned++;
+        SpawnCustomer();
 
         highlighter.ChangeMaterial("recipeBook", true);
     }
@@ -167,14 +151,13 @@ public class TutorialManager : MonoBehaviour
                 return;
             // This will be unguided the player needs to complete it themselves.
             case 3:
-                queueManager.SpawnSpecificCustomer();
-                _customersSpawned++;
+                SpawnCustomer();
                 return;
             // Completing the previous ones will start the day.
             case 4:
                 Debug.Log("Tutorial Completed!");
                 StartCoroutine(StartDay());
-                GameManager.Instance.IsInTutorialMode = false;
+                GameManager.Instance.SetTutorialMode(false);
                 return;
         }
     }
@@ -183,22 +166,28 @@ public class TutorialManager : MonoBehaviour
     // Spawns Two Customers with a pause between the two so they're not spawned on each other.
     private IEnumerator SpawnTwoCustomers()
     {
-        queueManager.SpawnSpecificCustomer();
-        _customersSpawned++;
-        yield return new WaitForSeconds(3);
+        for(var i = 0; i < 2; i++)
+        {
+            SpawnCustomer();
+            yield return new WaitForSeconds(3);
 
-        queueManager.SpawnSpecificCustomer();
-        _customersSpawned++;
-        yield return new WaitForSeconds(1);
-
-        // CurrentStep = TutorialStep.PickUpPotionBottle;
+        }
     }
+
+    /// <summary> Spawns a single customer and increments the customer spawed count</summary>
+    private void SpawnCustomer()
+    {
+            queueManager.SpawnCustomer();
+            _customersSpawned++;
+    }
+
 
     // Waits 5 seconds after the last tutorial part is completed, then opens the store and starts the timer.
     // Also disables the Tutorial Manager.
     private IEnumerator StartDay()
     {
         yield return new WaitForSeconds(5);
+        GameManager.Instance.SetTutorialMode(false);
         Actions.OnStartDay?.Invoke();
         enabled = false;
     }
@@ -217,33 +206,32 @@ public class TutorialManager : MonoBehaviour
         highlighter.ChangeMaterial("recipeBook", true);
     }
 
+
     internal void ServedCustomer()
     {
         _customersServed++;
 
         if (_customersServed != _customersSpawned) return;
 
-        Debug.Log(CurrentStep);
-
-        if (CurrentStep == TutorialStep.Completed)
+        if (CurrentStep != TutorialStep.Completed)
         {
-            Debug.Log("Tutorial Part:" + _tutorialPart);
-            _tutorialPart++;
-            NextPartOfTutorial();
+            queueManager.SpawnCustomer();
+            return;
         }
-        else
-        {
-            queueManager.SpawnSpecificCustomer();
-        }
+         
+        Debug.Log("Tutorial Part:" + _tutorialPart);
+        _tutorialPart++;
+        NextPartOfTutorial();
     }
 
+    // This only Resets the customer served / customer spawn counters
     private void ResetFlags()
     {
         _customersServed = 0;
         _customersSpawned = 0;
     }
 
-
+    // This resets all the tutorial
     private void ResetAll()
     {
         CurrentStep = TutorialStep.HighlightRecipeBook;
@@ -254,7 +242,7 @@ public class TutorialManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!GameManager.Instance.IsInTutorialMode) return;
+        if (!GameManager.Instance.IsInTutorial()) return;
 
         if (!other.CompareTag("Customer")) return;
 
@@ -262,17 +250,14 @@ public class TutorialManager : MonoBehaviour
         {
             case 1:
                 tutorialUI.ActivatePopUp(partOneText);
-                _popUpTimer.StartTimer();
                 break;
             case 2:
                 if (_hasShownPopUp) break;
                 tutorialUI.ActivatePopUp(partTwoText);
-                _popUpTimer.StartTimer();
                 _hasShownPopUp = true;
                 break;
             case 3:
                 tutorialUI.ActivatePopUp(partThreeText);
-                _popUpTimer.StartTimer();
                 break;
         }
     }

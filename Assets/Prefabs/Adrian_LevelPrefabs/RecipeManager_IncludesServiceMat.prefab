@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeForCustomer: 1
-  tutorialCustomer: {fileID: 6356803835694476596, guid: 96e79bc864b817642932067c309ecb93,
+  tutorialCustomer: {fileID: 1634264643722406736, guid: cdc2d09b8d8b27340997423e11bc1fb6,
     type: 3}
   customerPrefabs:
   - {fileID: 6356803835694476596, guid: 96e79bc864b817642932067c309ecb93, type: 3}

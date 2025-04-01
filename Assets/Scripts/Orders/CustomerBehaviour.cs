@@ -169,6 +169,8 @@ public class CustomerBehaviour : MonoBehaviour
 
     internal void ScareAway()
     {
+        HasJoinedQueue = false;
+        _leavingQueue = true;
         animator.speed = 2f;
         moveSpeed = 12f;
     }

@@ -114,7 +114,7 @@ public static class Actions
     public static Action OnEndCauldron;
 
     /// <summary> Used to top the goblin cage or reset it </summary>
-    public static Action<bool> OnMoveCage;
+    public static Action OnMoveCage;
 
     /// <summary> Used to start the goblin, telling it if it's the first day or not </summary>
     public static Action<bool> OnStartGoblin;

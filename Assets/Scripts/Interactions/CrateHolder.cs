@@ -49,7 +49,7 @@ public class CrateHolder : Interactable
             return;
         }
 
-        if(GameManager.Instance.IsInTutorialMode)
+        if(GameManager.Instance.IsInTutorial())
         {
             CheckTutorialSteps();
         }

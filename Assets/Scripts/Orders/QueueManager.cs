@@ -13,7 +13,7 @@ public class QueueManager : MonoBehaviour
     private readonly int _maxCustomers = 5;
     private CustomTimer _newCustomer;
     private bool _startCustomers;
-    private int _previousIndex;
+    private int _customerIndex;
 
     [Header("Customer Queue Positions")]
     [SerializeField] private Transform firstPos;
@@ -49,20 +49,17 @@ public class QueueManager : MonoBehaviour
 
     private void Update()
     {
-        // // For testing purposes
-        // if (Input.GetKeyDown(KeyCode.Tab))
-        // {
-        //     StartCustomers();
-        // }
 
-        if (_startCustomers)
-        {
-            if (_newCustomer.UpdateTimer())
-            {
-                SpawnNewCustomer();
-                _newCustomer.ResetTimer();
-            }
-        }
+        // theres a better way to do this. I need to look at this again.
+        if (!_startCustomers) return;
+
+        if (!CanAddCustomer()) return;
+
+        if (!_newCustomer.UpdateTimer()) return;
+
+
+        SpawnNewCustomer();
+        _newCustomer.ResetTimer();
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -97,6 +94,45 @@ public class QueueManager : MonoBehaviour
         _newCustomer = new CustomTimer(3, false);
         _newCustomer.StartTimer();
         SpawnNewCustomer();
+    }
+
+    internal void SpawnCustomer()
+    {
+        var newCustomer = Instantiate(PickCustomer(), entryPoint.position, Quaternion.identity);
+        var customerBehaviour = newCustomer.GetComponent<CustomerBehaviour>();
+
+        AssignOrder(customerBehaviour);
+    }
+
+
+    private void AssignOrder(CustomerBehaviour customer)
+    {
+        var order = orderManager.GiveOrder(customer.customerName);
+        customer.AssignOrder(order, orderHolder.transform);
+
+        AddToQueue(customer.gameObject);
+    }
+
+    private void AddToQueue(GameObject customer)
+    {
+        _customers.Add(customer);
+        UpdateQueuePositions();
+    }
+
+    // Spawn new customer
+
+    // add give them a recipe
+
+    // add them to the line
+
+    // check customer recipes
+
+    // finish order if one is complete. - need to find a way to make sure it's not the same customer.
+
+
+    private bool CanAddCustomer()
+    {
+        return _customers.Count < _maxCustomers;
     }
 
     internal void CheckCustomerRecipes(PotionOutput potionOutput)
@@ -137,8 +173,8 @@ public class QueueManager : MonoBehaviour
         //playing SFX for potion sale
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
 
-        if (!GameManager.Instance.IsInTutorialMode) return;
-        
+        if (!GameManager.Instance.IsInTutorial()) return;
+
         Actions.OnPotionServed?.Invoke();
         _tutorialManager.ServedCustomer();
     }
@@ -162,7 +198,7 @@ public class QueueManager : MonoBehaviour
             {
                 Destroy(customer);
 
-                if (!GameManager.Instance.IsInTutorialMode)
+                if (!GameManager.Instance.IsInTutorial())
                     SpawnNewCustomer();
             });
             UpdateQueuePositions();
@@ -172,26 +208,54 @@ public class QueueManager : MonoBehaviour
     // Spawn a new customer at the entry point and add them to the queue
     private void SpawnNewCustomer()
     {
-        if (customerPrefabs.Count > 0 && _customers.Count < _maxCustomers)
+        if (customerPrefabs.Count == 0) return;
+        if (_customers.Count < _maxCustomers)
         {
-            int randomIndex = Random.Range(0, customerPrefabs.Count);
-
-            while (randomIndex == _previousIndex)
-            {
-                randomIndex = Random.Range(0, customerPrefabs.Count);
-            }
-
-            _previousIndex = randomIndex;
-            var newCustomer = Instantiate(customerPrefabs[randomIndex], entryPoint.position, Quaternion.identity);
-
+            _customerIndex = PickRandomNumber();
+            
+            var newCustomer = Instantiate(customerPrefabs[_customerIndex], entryPoint.position, Quaternion.identity);
             var newCustomBehaviour = newCustomer.GetComponent<CustomerBehaviour>();
-
-            newCustomBehaviour.AssignOrder(orderManager.GiveOrder(newCustomBehaviour.customerName),
-                orderHolder.transform);
+            newCustomBehaviour.AssignOrder(orderManager.GiveOrder(newCustomBehaviour.customerName), orderHolder.transform);
 
             AddCustomer(newCustomer);
         }
     }
+
+    /// <summary> Picks a random number that isnt the previous number </summary>
+    private int PickRandomNumber()
+    {
+        int randomIndex = Random.Range(0, customerPrefabs.Count);
+
+        while (randomIndex == _customerIndex)
+        {
+            randomIndex = Random.Range(0, customerPrefabs.Count);
+        }
+
+        _customerIndex = randomIndex;
+
+        return randomIndex;
+    }
+
+
+    /// <summary>
+    /// Picks a customer based on if it's in tutorial or not. 
+    /// </summary>
+    private GameObject PickCustomer()
+    {
+        GameObject customer;
+
+        if(GameManager.Instance.IsInTutorial())
+        {
+            customer = tutorialCustomer;
+        }
+        else
+        {
+            customer = customerPrefabs[PickRandomNumber()];
+        }
+
+        return customer;
+    }
+
 
     // Update customer positions in the queue
     private void UpdateQueuePositions()
@@ -243,12 +307,12 @@ public class QueueManager : MonoBehaviour
         _customers.Clear();
     }
 
-    
-    internal void SpawnSpecificCustomer()
-    {
-        var customer = Instantiate(tutorialCustomer, entryPoint.position, Quaternion.identity);
-        var customBehaviour = customer.GetComponent<CustomerBehaviour>();
-        customBehaviour.AssignOrder(orderManager.TutorialOrder(), orderHolder.transform);
-        AddCustomer(customer);
-    }
+
+    //internal void SpawnSpecificCustomer()
+    //{
+    //    var customer = Instantiate(tutorialCustomer, entryPoint.position, Quaternion.identity);
+    //    var customBehaviour = customer.GetComponent<CustomerBehaviour>();
+    //    customBehaviour.AssignOrder(orderManager.TutorialOrder(), orderHolder.transform);
+    //    AddCustomer(customer);
+    //}
 }

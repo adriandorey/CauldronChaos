@@ -33,23 +33,20 @@ public class OrderManager : MonoBehaviour
 
         RecipeSO assignedOrder;
 
-        if(customerName == "Evil Mage")
+
+        switch(customerName)
         {
-            assignedOrder = _availableRecipes[0];
-        }
-        else
-        {
-            var randomIndex = Random.Range(0, _availableRecipes.Count);
-            assignedOrder = _availableRecipes[randomIndex];
+            case "Evil Mage": assignedOrder = _availableRecipes[0]; break;
+            case "Tutorial": assignedOrder = _availableRecipes[4]; break;
+            default: assignedOrder = PickRandomRecipe(); break;
         }
 
         return assignedOrder;
     }
 
-    internal RecipeSO TutorialOrder()
+    private RecipeSO PickRandomRecipe()
     {
-        if(_availableRecipes.Count == 0) return null;
-        var assignedOrder = _availableRecipes[4];
-        return assignedOrder;
+        var randomIndex = Random.Range(0, _availableRecipes.Count);
+        return _availableRecipes[randomIndex];
     }
 } 

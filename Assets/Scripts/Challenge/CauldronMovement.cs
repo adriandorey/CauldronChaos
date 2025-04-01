@@ -21,9 +21,9 @@ public class CauldronMovement : MonoBehaviour
     [Header("Lift Animation Settings")]
     [SerializeField] private Transform cauldronModel;
     [SerializeField] private float liftAmount = 0.4f;
+    [SerializeField] private GameObject _otherCauldron; // saves a reference to the other cauldron in the scene
     private Vector3 _startingPos; // saves starting position of the cauldron model
     private Coroutine _movement;
-    private GameObject _otherCauldron; // saves a reference to the other cauldron in the scene
 
     private void Start()
     {
@@ -33,13 +33,6 @@ public class CauldronMovement : MonoBehaviour
         
         if(_agent != null)
             _agent.avoidancePriority = 30;
-
-        // Finds the other cauldron
-        foreach (var cauldron in FindObjectsOfType<CauldronMovement>())
-        {
-            if (cauldron != this)
-                _otherCauldron = cauldron.gameObject;
-        }
     }
 
     // These are used to call the functions for turning the cauldrons on and off. On Destroy is only as a back-up just in case on disable doesn't do what it should.
@@ -144,8 +137,7 @@ public class CauldronMovement : MonoBehaviour
     // Check if the cauldron has reached the target
     private bool ReachedTarget()
     {
-        return !_agent.pathPending &&
-              _agent.remainingDistance <= _agent.stoppingDistance &&
+        return !_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance &&
               (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f);
     }
 }

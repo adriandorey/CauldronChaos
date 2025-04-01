@@ -12,25 +12,30 @@ public class GoblinCage : MonoBehaviour
 
     private void OnEnable()
     {
-        Actions.OnMoveCage += MoveCage;
+        Actions.OnMoveCage += TipCage;
+        Actions.OnResetValues += ResetCage;
     }
 
     private void OnDisable()
     {
-        Actions.OnMoveCage -= MoveCage;
+        Actions.OnMoveCage -= TipCage;
+        Actions.OnResetValues -= ResetCage;
     }
 
     private void OnDestroy()
     {
-        Actions.OnMoveCage -= MoveCage;
+        Actions.OnMoveCage -= TipCage;
+        Actions.OnResetValues -= ResetCage;
     }
 
-    // Should tip the cage when told to, if not. it will set the cage back to it's normal rotation.
-    private void MoveCage(bool tipped)
+
+    private void TipCage()
     {
-        if (tipped)
             _cage.SetLocalPositionAndRotation(new Vector3(-6.25f, 1, 5.864f), Quaternion.Euler(-90, 0, 0));
-        else
+    }
+
+    private void ResetCage()
+    {
             _cage.SetLocalPositionAndRotation(new Vector3(-6.25f, 0.5f, 6.35f), Quaternion.identity);
     }
 }

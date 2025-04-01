@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     private GameState _newState;
 
     private bool _isInDebugMode;
-    internal bool IsInTutorialMode;
+    private bool _isInTutorialMode;
 
     private Dictionary<GameState, Action> _stateActions;
     
@@ -172,10 +172,15 @@ public class GameManager : MonoBehaviour
     // Sets the game to tutorial mode or not.
     internal void SetTutorialMode(bool isTutorial)
     {
-        IsInTutorialMode = isTutorial;
+        _isInTutorialMode = isTutorial;
         
         if(isTutorial)
             Actions.OnStartTutorialDay?.Invoke();
+    }
+
+    internal bool IsInTutorial()
+    {
+        return _isInTutorialMode;
     }
     
 

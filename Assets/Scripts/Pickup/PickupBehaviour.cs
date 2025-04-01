@@ -66,7 +66,7 @@ public class PickupBehaviour : MonoBehaviour
             Interactable container = interactionVolume.GetContainer();
             if (container != null)
             {
-                if (GameManager.Instance.IsInTutorialMode)
+                if (GameManager.Instance.IsInTutorial())
                 {
                     CheckTutorialSteps(container);
                 }

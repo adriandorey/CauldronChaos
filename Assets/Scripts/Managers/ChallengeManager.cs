@@ -21,14 +21,29 @@ public class ChallengeManager : MonoBehaviour
             {
                 Actions.OnIceDay?.Invoke(true);
                 Actions.OnApplyFloorMaterial?.Invoke(slipperyMaterial, icyTexture);
+                SetEnvironmentSfx(EnvironmentSound.icy);
             }},
-            {2, () => Actions.OnStartCauldron?.Invoke()},
-            { 3, () => { 
+            {2, () => 
+            {
+                Actions.OnStartCauldron?.Invoke();
+                SetEnvironmentSfx(EnvironmentSound.regular);
+            }},
+            { 3, () => 
+            { 
                 Actions.OnStartGoblin?.Invoke(true);
-                Actions.OnMoveCage?.Invoke(true);
+                Actions.OnMoveCage?.Invoke();
+                SetEnvironmentSfx(EnvironmentSound.regular);
             }},
-            { 4, () => Actions.OnStartWindy?.Invoke() },
-            { 5, () => Actions.OnStartSlime?.Invoke() }
+            { 4, () => 
+            {
+                Actions.OnStartWindy?.Invoke();
+                SetEnvironmentSfx(EnvironmentSound.windy);
+            }},
+            { 5, () => 
+            {
+                Actions.OnStartSlime?.Invoke();
+                SetEnvironmentSfx(EnvironmentSound.regular);
+            }}
         };
     }
 
@@ -61,38 +76,46 @@ public class ChallengeManager : MonoBehaviour
         if (_challengeActions.TryGetValue(challenge, out var action))
         {
             // Debug.Log("Challenge Started: " + challenge);
-
-            //play the environmental audio for correct challenge
-            switch (challenge)
-            {
-                case 1:
-                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.icy);
-                    break;
-
-                case 2:
-                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-                    break;
-
-                case 3:
-                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-                    break;
-
-                case 4:
-                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.windy);
-                    break;
-
-                case 5:
-                    AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-                    break;
-            }
-            
             action.Invoke();
+
+            // Removing this switch statement and turning it into a function. 
+
+            ////play the environmental audio for correct challenge
+            //switch (challenge)
+            //{
+            //    case 1:
+            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.icy);
+            //        break;
+
+            //    case 2:
+            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+            //        break;
+
+            //    case 3:
+            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+            //        break;
+
+            //    case 4:
+            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.windy);
+            //        break;
+
+            //    case 5:
+            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
+            //        break;
+            //}
         }
         else
         {
             Debug.LogWarning($"Challenge {challenge} not found, resetting challenges.");
-            ResetChallenges();
         }
+    }
+    
+
+
+    private void SetEnvironmentSfx(EnvironmentSound sound)
+    {
+        Debug.Log("Playing Environmental sound " + sound);
+        AudioManager.instance.environmentManager.StartEnvironmentSFX(sound);
     }
 
     // Reset all challenges
@@ -103,6 +126,5 @@ public class ChallengeManager : MonoBehaviour
         Actions.OnIceDay?.Invoke(false);
         Actions.OnEndGoblin?.Invoke();
         Actions.OnStopWindy?.Invoke();
-        Actions.OnMoveCage?.Invoke(false);
     }
 }
