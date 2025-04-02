@@ -144,12 +144,12 @@ public class CustomerBehaviour : MonoBehaviour
         isWalking = true;
 
         const float stepDistance = 1.2f; // Distance to step back
-        const float moveDuration = 0.5f;
+        const float moveDuration = 1f;
         var backwardStep = transform.position - transform.forward * stepDistance;
 
         
         // Rotate to face backward and move back smoothly
-        transform.DORotateQuaternion(Quaternion.LookRotation(-transform.forward), 0.2f);
+        transform.DORotateQuaternion(Quaternion.LookRotation(-transform.forward), 0.2f).WaitForCompletion();
         yield return transform.DOMove(backwardStep, moveDuration).SetEase(Ease.InOutSine).WaitForCompletion();
 
         // Rotate towards the exit dynamically
@@ -174,6 +174,12 @@ public class CustomerBehaviour : MonoBehaviour
         //     transform.position = Vector3.MoveTowards(transform.position, exitPosition, moveSpeed * Time.deltaTime);
         //     yield return null;
         // }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 5f);
     }
 
     internal void ScareAway()

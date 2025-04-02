@@ -122,6 +122,7 @@ public class QueueManager : MonoBehaviour
     private void FinishOrder(CustomerBehaviour customer)
     {
         customer.OrderComplete(exitPoint.position);
+        _customers.Remove(customer.gameObject);
         
         //playing SFX for potion sale
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
@@ -205,6 +206,6 @@ public class QueueManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Destroy(other.gameObject);
+        Debug.Log("Triggerd from queue");
     }
 }

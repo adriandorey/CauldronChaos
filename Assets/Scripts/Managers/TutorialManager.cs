@@ -16,8 +16,6 @@ public class TutorialManager : MonoBehaviour
     private int _customersSpawned;
     private int _customersServed;
 
-  
-
     [Header("Tutorial Text")]
     [TextArea]
     [SerializeField] private string partOneText;
@@ -79,7 +77,7 @@ public class TutorialManager : MonoBehaviour
 
     private void StartTutorial()
     {
-        Debug.Log("Starting Tutorial");
+        //Debug.Log("Starting Tutorial");
         _tutorialPart = 1;
         SpawnCustomer();
 
@@ -155,7 +153,7 @@ public class TutorialManager : MonoBehaviour
                 return;
             // Completing the previous ones will start the day.
             case 4:
-                Debug.Log("Tutorial Completed!");
+                //Debug.Log("Tutorial Completed!");
                 StartCoroutine(StartDay());
                 GameManager.Instance.SetTutorialMode(false);
                 return;
@@ -219,7 +217,7 @@ public class TutorialManager : MonoBehaviour
             return;
         }
          
-        Debug.Log("Tutorial Part:" + _tutorialPart);
+        //Debug.Log("Tutorial Part:" + _tutorialPart);
         _tutorialPart++;
         NextPartOfTutorial();
     }
@@ -242,13 +240,10 @@ public class TutorialManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter");
         if (!GameManager.Instance.IsInTutorial()) return;
 
-        Debug.Log("OnTriggerEnter after is in tutorial");
         if (!other.CompareTag("Customer")) return;
 
-        Debug.Log("Should show tutorial");
         switch (_tutorialPart)
         {
             case 1:
