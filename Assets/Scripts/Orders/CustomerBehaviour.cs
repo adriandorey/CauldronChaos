@@ -36,6 +36,8 @@ public class CustomerBehaviour : MonoBehaviour
     [SerializeField] private float customerStepTime = 0.3f;
     private float stepTimer = 0f;
     private bool isWalking = false;
+
+    private Coroutine _customerCoroutine;
     
 
     private void Start()
@@ -82,14 +84,8 @@ public class CustomerBehaviour : MonoBehaviour
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, sfxOrderIn, true);
     }
 
-    internal RecipeSO HasOrder()
+    internal void OrderComplete()
     {
-        return RequestedOrder;
-    }
-
-    internal void OrderComplete(Vector3 exit)
-    {
-        LeaveQueue(exit);
         Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
         coin.Play();
     }
@@ -104,14 +100,6 @@ public class CustomerBehaviour : MonoBehaviour
         isWalking = true;
         _targetPosition = position;
         _leavingQueue = false;
-    }
-
-    // Leave the queue and call a callback once finished
-    internal void LeaveQueue(Vector3 exitPosition)
-    {
-        _leavingQueue = true;
-        Destroy(_orderUiInstance);
-        StartCoroutine(LeaveAndExit(exitPosition));
     }
 
     private void MoveToTarget()
@@ -138,43 +126,46 @@ public class CustomerBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator LeaveAndExit(Vector3 exitPosition)
+    // Leave the queue and call a callback once finished
+    internal void LeaveQueue(Vector3 exitPosition, System.Action onExitComplete)
+    {
+        _leavingQueue = true;
+        Destroy(_orderUiInstance);
+        StartCoroutine(LeaveAndExit(exitPosition, onExitComplete));
+    }
+
+    private IEnumerator LeaveAndExit(Vector3 exitPosition, System.Action onExitComplete)
     {
         animator.SetBool("isWalking", true);
         isWalking = true;
 
         const float stepDistance = 1.2f; // Distance to step back
-        const float moveDuration = 1f;
-        var backwardStep = transform.position - transform.forward * stepDistance;
+        var backwardStep = transform.position - transform.forward * stepDistance; // Step back 1 unit
 
-        
-        // Rotate to face backward and move back smoothly
-        transform.DORotateQuaternion(Quaternion.LookRotation(-transform.forward), 0.2f).WaitForCompletion();
-        yield return transform.DOMove(backwardStep, moveDuration).SetEase(Ease.InOutSine).WaitForCompletion();
+        transform.rotation = Quaternion.Euler(0, 180, 0);
 
-        // Rotate towards the exit dynamically
-        transform.DORotateQuaternion(Quaternion.LookRotation(exitPosition - transform.position), 0.2f);
-        yield return transform.DOMove(exitPosition, moveDuration * 2).SetEase(Ease.InOutSine).WaitForCompletion();
-        
-        // transform.rotation = Quaternion.Euler(0, 180, 0);
-        //
-        // // Step 1: Move 1 unit backward
-        // while (Vector3.Distance(transform.position, backwardStep) > 0.1f)
-        // {
-        //     transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
-        //     yield return null;
-        // }
-        //
-        //
-        // transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
-        //
-        // // Step 3: Move to the exit
-        // while (Vector3.Distance(transform.position, exitPosition) > 0.1f)
-        // {
-        //     transform.position = Vector3.MoveTowards(transform.position, exitPosition, moveSpeed * Time.deltaTime);
-        //     yield return null;
-        // }
+        // Step 1: Move 1 unit backward
+        while (Vector3.Distance(transform.position, backwardStep) > 0.1f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+
+        transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
+
+        // Step 3: Move to the exit
+        while (Vector3.Distance(transform.position, exitPosition) > 0.1f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, exitPosition, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // Notify that the customer has left
+        onExitComplete?.Invoke();
     }
+
+
 
     private void OnDrawGizmos()
     {

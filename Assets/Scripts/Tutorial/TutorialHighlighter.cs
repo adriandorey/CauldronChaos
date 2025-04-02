@@ -7,6 +7,7 @@ public class TutorialHighlighter : MonoBehaviour
 {
     [Header("Highlight")]
     [SerializeField] private Material highlightMaterial;
+    [SerializeField] private Material recipeHighlight;
 
     [Header("Renderers")]
     [SerializeField] private Renderer recipeBook;
@@ -15,6 +16,15 @@ public class TutorialHighlighter : MonoBehaviour
     [SerializeField] private Renderer[] cauldrons;
     [SerializeField] private Renderer[] potionBottles;
     [SerializeField] private Renderer servingCounter;
+
+    [Header("Particle Systems")]
+    [SerializeField] private ParticleSystem crateParticle;
+    [SerializeField] private ParticleSystem[] cauldronsParticle;
+    [SerializeField] private ParticleSystem[] potionParticle;
+    [SerializeField] private ParticleSystem servingParticle;
+    [SerializeField] private ParticleSystem recipeParticle;
+
+
     internal Renderer StirStick;
     internal Renderer LastCauldron;
 
@@ -46,11 +56,17 @@ public class TutorialHighlighter : MonoBehaviour
         switch (rendererName)
         {
             case "recipeBook":
-                if (isAddingHighlight) SingleHighlight(recipeBook);
-                else RevertSingleHighlight(recipeBook);
+                if (isAddingHighlight)
+                {
+                    SingleHighlight(recipeBook, recipeHighlight);
+                }
+                else
+                {
+                    RevertSingleHighlight(recipeBook);
+                }
                 break;
             case "crate":
-                if (isAddingHighlight) SingleHighlight(crate);
+                if (isAddingHighlight) SingleHighlight(crate, highlightMaterial);
                 else RevertSingleHighlight(crate);
                 break;
             case "cauldrons":
@@ -58,11 +74,11 @@ public class TutorialHighlighter : MonoBehaviour
                 else RevertMultiHighlights(cauldrons);
                 break;
             case "potionFilling":
-                if (isAddingHighlight) SingleHighlight(LastCauldron);
+                if (isAddingHighlight) SingleHighlight(LastCauldron, highlightMaterial);
                 else RevertSingleHighlight(LastCauldron);
                 break;
             case "stirStick":
-                if (isAddingHighlight) SingleHighlight(StirStick);
+                if (isAddingHighlight) SingleHighlight(StirStick, highlightMaterial);
                 else RevertSingleHighlight(StirStick);
                 break;
             case "potionBottles":
@@ -70,7 +86,7 @@ public class TutorialHighlighter : MonoBehaviour
                 else RevertMultiHighlights(potionBottles);
                 break;
             case "servingCounter":
-                if (isAddingHighlight) SingleHighlight(servingCounter);
+                if (isAddingHighlight) SingleHighlight(servingCounter, highlightMaterial);
                 else RevertSingleHighlight(servingCounter);
                 break;
         }
@@ -93,11 +109,11 @@ public class TutorialHighlighter : MonoBehaviour
     {
         foreach (var rend in meshRend)
         {
-            SingleHighlight(rend);
+            SingleHighlight(rend, highlightMaterial);
         }
     }
 
-    private void SingleHighlight(Renderer rend)
+    private void SingleHighlight(Renderer rend, Material highlight)
     {
         // store original materials if we haven't already
         if (!_originalMaterials.ContainsKey(rend))
@@ -115,11 +131,12 @@ public class TutorialHighlighter : MonoBehaviour
         }
 
         // Add the highlight material at the end
-        newMaterials[newMaterials.Length - 1] = highlightMaterial;
+        newMaterials[newMaterials.Length - 1] = highlight;
 
         // Apply the new material array
         rend.materials = newMaterials;
     }
+
 
     #endregion
 
@@ -145,6 +162,16 @@ public class TutorialHighlighter : MonoBehaviour
     }
 
     #endregion
+
+
+    #region Add Single Particle
+    private void AddSingleParticle(ParticleSystem particles)
+    {
+        particles.Play();
+    }
+
+    #endregion
+
 
     private void SetLastUsed(Renderer cauldron, Renderer stirStick)
     {

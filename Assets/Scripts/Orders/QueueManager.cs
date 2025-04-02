@@ -121,8 +121,8 @@ public class QueueManager : MonoBehaviour
 
     private void FinishOrder(CustomerBehaviour customer)
     {
-        customer.OrderComplete(exitPoint.position);
-        _customers.Remove(customer.gameObject);
+        customer.OrderComplete();
+        RemoveCustomer(customer.gameObject);
         
         //playing SFX for potion sale
         AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
@@ -132,7 +132,21 @@ public class QueueManager : MonoBehaviour
         Actions.OnPotionServed?.Invoke();
         _tutorialManager.ServedCustomer();
     }
-    
+
+    private void RemoveCustomer(GameObject customer)
+    {
+        if (_customers.Contains(customer) && customer.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+        {
+            _customers.Remove(customer);
+            customer.GetComponent<CustomerBehaviour>().LeaveQueue(exitPoint.position, () =>
+            {
+                Destroy(customer);
+            });
+            UpdateQueuePositions();
+        }
+    }
+
+
     public GameObject GetRandomCustomer()
     {
         // Filters the customers list and keeps only those that are in queue

@@ -7,6 +7,7 @@ public class RecipeSO : ScriptableObject
 {
     [Header("Recipe Name")]
     public string recipeName;
+    public Sprite recipeNameIcon;
 
     [Header("Weight")]
     [Tooltip("1 is rare, 10 is more common")]
