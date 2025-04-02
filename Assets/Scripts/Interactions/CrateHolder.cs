@@ -51,24 +51,7 @@ public class CrateHolder : Interactable
 
         if(GameManager.Instance.IsInTutorialMode)
         {
-            if (_tutorialManager.CurrentStep != TutorialStep.Completed)
-            {
-                switch (crateType)
-                {
-                    case CrateType.Mushroom 
-                        when _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom: return;
-                    case CrateType.Mushroom:
-                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
-                        // Actions.OnMushroomPickedUp?.Invoke(); 
-                        break;
-                    case CrateType.Bottle
-                        when _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle: return;
-                    case CrateType.Bottle: 
-                        _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
-                        // Actions.OnPotionBottlePickedUp?.Invoke(); 
-                        break;
-                }
-            }
+            CheckTutorialSteps();
         }
 
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
@@ -118,9 +101,27 @@ public class CrateHolder : Interactable
         return null;
     }
     
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.blue;
-    //    Gizmos.DrawRay(transform.position, transform.forward * 2f); // Draw forward direction
-    //}
+    private void CheckTutorialSteps()
+    {
+        if (_tutorialManager.CurrentStep != TutorialStep.Completed)
+        {
+            switch (crateType)
+            {
+                case CrateType.Mushroom
+                    when _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
+                    return;
+                case CrateType.Mushroom:
+                    _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
+                    // Actions.OnMushroomPickedUp?.Invoke(); 
+                    break;
+                case CrateType.Bottle
+                    when _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
+                    return;
+                case CrateType.Bottle:
+                    _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
+                    // Actions.OnPotionBottlePickedUp?.Invoke(); 
+                    break;
+            }
+        }
+    }
 }

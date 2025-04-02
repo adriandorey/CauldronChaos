@@ -29,15 +29,16 @@ public class AudioManager : MonoBehaviour
     {
         get
         {
+            if (_instance != null) return _instance;
+            
             _instance = FindObjectOfType<AudioManager>(); // Try to find an existing AudioManager in the scene
 
             //check if Instance is null
-            if (_instance == null)
-            {
-                // If no Instance exists, instantiate it
-                _instance = Instantiate(Resources.Load("AudioManager") as GameObject).GetComponent<AudioManager>();
-                _instance.name = "AudioManager";
-            }
+            if (_instance != null) return _instance;
+            
+            // If no Instance exists, instantiate it
+            _instance = Instantiate(Resources.Load("AudioManager") as GameObject).GetComponent<AudioManager>();
+            _instance.name = "AudioManager";
 
             return _instance;
         }
@@ -46,17 +47,15 @@ public class AudioManager : MonoBehaviour
     // Awake is called before the first frame update and before start
     void Awake()
     {
-        //check if this is the active Instance
-        if (_instance == null)
+        // Now checks if there is an instance and if that instance is not this before destroying the object.
+        if (_instance != null && _instance != this)
         {
-            _instance = this;
-            DontDestroyOnLoad(this);
+            Destroy(gameObject); // Ensures only duplicates are destroyed
+            return;
         }
-        else
-        {
-            //remove copy
-            Destroy(gameObject);
-        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()

@@ -68,32 +68,21 @@ public class PickupBehaviour : MonoBehaviour
             {
                 if (GameManager.Instance.IsInTutorialMode)
                 {
-                    if(_tutorialManager ==   null)
-                        _tutorialManager = FindObjectOfType<TutorialManager>();
-                    
-                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
-                    {
-                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpMushroom) return;
-                    }
-
-                    if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
-                    {
-                        if (_tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle) return;
-                    }
+                    CheckTutorialSteps(container);
                 }
+
                 container.Interact(this);
-                playerAnimator.SetTrigger("Pickup");
+                return;
             }
             //pick-up off the ground
             else
             {
-                //try to get held item from pickup detector
+                ////try to get held item from pickup detector
                 heldObject = pickupVolume.GetPickup();
 
                 //if item is in detection range
                 if (heldObject != null)
                 {
-                    playerAnimator.SetTrigger("Pickup");
                     heldObject.PickUp(pickupHolder);
                     pickupUIHolder.enabled = true;
                     SetHeldObject(heldObject);
@@ -118,15 +107,30 @@ public class PickupBehaviour : MonoBehaviour
         }
     }
 
+    // Check Tutorial Steps
+    private void CheckTutorialSteps(Interactable container)
+    {
+        if (_tutorialManager == null)
+            _tutorialManager = FindObjectOfType<TutorialManager>();
+
+        if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Mushroom)
+        {
+            if (_tutorialManager.CurrentStep < TutorialStep.PickUpMushroom) return;
+        }
+
+        if (container.GetComponent<CrateHolder>().crateType == CrateHolder.CrateType.Bottle)
+        {
+            if (_tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle) return;
+        }
+    }
+
     //Mutator method that manually sets the held object
     public void SetHeldObject(PickupObject targetObject)
     {
-        //Debug.Log("In set held object");
         heldObject = targetObject;
         playerAnimator.SetTrigger("Pickup");
+        //Debug.Log("Player Pick up3");
         pickupVolume.RemovePickupFromList(heldObject);
-        pickupUIHolder.enabled = true;
-        pickupUIHolder.sprite = heldObject.GetComponent<PickupObject>().recipeIngredient.stepSprite;
         heldObject.PickUp(pickupHolder);
         isHoldingItem = true;
     }
@@ -134,6 +138,7 @@ public class PickupBehaviour : MonoBehaviour
     private void DropItem()
     {
         playerAnimator.SetTrigger("Drop");
+        //Debug.Log("Player Drop");
         pickupUIHolder.enabled = false;
         heldObject.Drop();
         isHoldingItem = false;
@@ -151,7 +156,8 @@ public class PickupBehaviour : MonoBehaviour
     private void RemoveItem()
     { 
         playerAnimator.SetTrigger("Drop");
-        
+        Debug.Log("Player Drop");
+
         if (pickupHolder.childCount > 0)
         {
             foreach (Transform child in pickupHolder)

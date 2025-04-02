@@ -146,7 +146,7 @@ public class DayManager : MonoBehaviour
 
     internal void ShowStartDayPanel()
     {
-        Debug.Log("Day Countdown Started");
+        //Debug.Log("Day Countdown Started");
         if (_currentDay % 2 == 0)
         {
             Actions.OnStartChallenge?.Invoke(_currentDay / 2);
@@ -192,6 +192,8 @@ public class DayManager : MonoBehaviour
         timerFill.fillAmount = 0;
         _gameplayTimerStarted = false;
         _gameplayTimer.ResetTimer();
+        SetDigitalClock();
+        SetTimerRotation();
     }
 
     // Used for loading screen between level selection or main menu and gameplay

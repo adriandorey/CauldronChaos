@@ -66,7 +66,18 @@ public class ScoreManager : MonoBehaviour
     {
         _score += regularScore;
 
+        if (quotaFill.fillAmount == 1)
+        {
+            coinImage.transform.DOScale(Vector3.one * 1.5f, 1f).OnComplete(ResetCoinSize);
+            return;
+        }
+
         quotaFill.fillAmount = (float)_score / (float)scorePerLevel[_currentDay];
+    }
+
+    private void ResetCoinSize()
+    {
+        coinImage.transform.localScale = Vector3.one;
     }
 
     private void UpdateEodText()
