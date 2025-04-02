@@ -1,89 +1,49 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class RecipeManager : MonoBehaviour
 {
     [Header("Available Recipes")]
     [SerializeField] private RecipeSO[] allRecipes;
     [SerializeField] private int numberOfRecipes;
-    [SerializeField] private GameObject recipeBookUi;
     [SerializeField] private bool useAllRecipes;
-    [SerializeField] private GameObject closeButton;
 
-    private void Update()
+    private List<RecipeSO> _weightedRecipes;
+    private List<RecipeSO> _availableRecipes;
+
+    private void Awake()
     {
-        if (!recipeBookUi.activeSelf) return;
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        GenerateAvailableRecipes();
+        GenerateWeightedRecipes();
+        
+    }
+
+    private void GenerateAvailableRecipes()
+    {
+        // store unweighted recipes for UI / general availability
+        _availableRecipes = useAllRecipes 
+            ? allRecipes.ToList()
+            : allRecipes.Take(numberOfRecipes).ToList();
+    }
+    
+    private void GenerateWeightedRecipes()
+    {
+        _weightedRecipes = new List<RecipeSO>();
+
+        // this will go through each recipe in available recipe and create a list.
+        foreach (var recipe in _availableRecipes)
         {
-            ToggleRecipeBook();
+            // this list will include the amount set in the weight part of the recipes.
+            _weightedRecipes.AddRange(Enumerable.Repeat(recipe, recipe.weight));
         }
     }
 
-    #region OnEnable / OnDisable / OnDestroy Events
+    internal List<RecipeSO> GetWeightedRecipes() => _weightedRecipes;
 
-    private void OnEnable()
-    {
-        Actions.OnToggleRecipeBook += ToggleRecipeBook;
-    }
+    internal List<RecipeSO> GetAvailableRecipes() => _availableRecipes;
 
-    private void OnDisable()
-    {
-        Actions.OnToggleRecipeBook -= ToggleRecipeBook;
-    }
+    internal RecipeSO GetHydrationRecipe() => allRecipes[0];
 
-    private void OnDestroy()
-    {
-        Actions.OnToggleRecipeBook -= ToggleRecipeBook;
-    }
-
-    #endregion
-
-    public RecipeSO[] FindAvailableRecipes()
-    {
-        var availableRecipes = new RecipeSO[numberOfRecipes];
-
-        if (useAllRecipes)
-        {
-            availableRecipes = allRecipes;
-        }
-        else
-        {
-            for (var i = 0; i < numberOfRecipes; i++)
-            {
-                availableRecipes[i] = allRecipes[i];
-            }
-        }
-
-        return availableRecipes;
-    }
-
-    internal RecipeSO GetRandomRecipe()
-    {
-        return allRecipes[Random.Range(0, numberOfRecipes)];
-    }
-
-    internal RecipeSO GetRecipeByName(string recipeName)
-    {
-        return allRecipes.FirstOrDefault(recipe => recipe.recipeName == recipeName);
-    }
-
-    public void ToggleRecipeBook()
-    {
-        if (recipeBookUi.activeSelf)
-        {
-            Time.timeScale = 1;
-            recipeBookUi.SetActive(false);
-            Actions.OnSetUiLocation(Page.Gameplay);
-            InputManager.OnGameplayInputs();
-        }
-        else
-        {
-            Time.timeScale = 0;
-            recipeBookUi.SetActive(true);
-            Actions.OnSetUiLocation(Page.RecipeBook);
-            Actions.OnSelectRecipeButton(closeButton);
-            InputManager.OnRecipeBookInputs();
-        }
-    }
+    internal RecipeSO GetTutorialRecipe() => allRecipes[1];
 }

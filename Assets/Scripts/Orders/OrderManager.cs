@@ -6,23 +6,25 @@ public class OrderManager : MonoBehaviour
     [Header("Order Variables")]
     [SerializeField] private RecipeManager recipeManager;
     private List<RecipeSO> _availableRecipes = new();
+    private RecipeSO _tutorialRecipe;
+    private RecipeSO _hydrationRecipe;
 
+
+    private Dictionary<string, RecipeSO> _assignedOrders;
 
     private void Start()
     {
         recipeManager = FindObjectOfType<RecipeManager>();
-        GetAvailableRecipes();
-    }
+        _availableRecipes = recipeManager.GetWeightedRecipes();
+        _tutorialRecipe = recipeManager.GetTutorialRecipe();
+        _hydrationRecipe = recipeManager.GetHydrationRecipe();
 
-    private void GetAvailableRecipes()
-    {
-        foreach (var recipe in recipeManager.FindAvailableRecipes())
+        // Sets up the two assigned orders
+        _assignedOrders = new Dictionary<string, RecipeSO>()
         {
-            for(var i = 0; i < recipe.weight; i++)
-            {
-                _availableRecipes.Add(recipe);
-            }
-        }
+            { "Evil Mage", _hydrationRecipe },
+            {"Tutorial", _tutorialRecipe },
+        };
     }
 
     // Generate a random order for a customer
@@ -31,19 +33,13 @@ public class OrderManager : MonoBehaviour
         // If there are no available recipes, return
         if (_availableRecipes.Count == 0) return null;
 
-        RecipeSO assignedOrder;
-
-
-        switch(customerName)
-        {
-            case "Evil Mage": assignedOrder = _availableRecipes[0]; break;
-            case "Tutorial": assignedOrder = _availableRecipes[4]; break;
-            default: assignedOrder = PickRandomRecipe(); break;
-        }
-
-        return assignedOrder;
+        // Check to see if it's an assigned order, if not, pick a random recipe
+        return _assignedOrders.TryGetValue(customerName, out var recipe)
+            ? recipe
+            : PickRandomRecipe();
     }
 
+    // returns a random recipe out of all available recipes.
     private RecipeSO PickRandomRecipe()
     {
         var randomIndex = Random.Range(0, _availableRecipes.Count);

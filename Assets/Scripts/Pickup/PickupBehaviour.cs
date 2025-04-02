@@ -9,12 +9,12 @@ public class PickupBehaviour : MonoBehaviour
     [SerializeField] private InteractionDetection interactionVolume; //the detector for interacting with objects
     [SerializeField] private Transform pickupHolder; //transform holding the held location of the pickup
     [SerializeField] private InteractionBehaviour interactionBehaviour; //component containing behaviour for object interactions
-    private PickupObject heldObject = null; //reference to object in hand
+    private PickupObject _heldObject = null; //reference to object in hand
     [SerializeField] private Animator playerAnimator;
 
     [Header("UI")]
     [SerializeField] private Image pickupUIHolder;
-    internal bool isHoldingItem = false;
+    internal bool IsHoldingItem = false;
     
     private TutorialManager _tutorialManager;
 
@@ -51,58 +51,53 @@ public class PickupBehaviour : MonoBehaviour
     //function that handles picking up an object
     private void Pickup(InputAction.CallbackContext input)
     {
-        if (input.performed)
+        if (!input.performed) return;
+        //Debug.Log("Input Activated");
+
+        //player is holding something
+        if (_heldObject != null)
         {
-            //Debug.Log("Input Activated");
+            DropItem();
+            return;
+        }
 
-            //player is holding something
-            if (heldObject != null)
+        //player is not holding anything and is by an ingredient crate
+        var container = interactionVolume.GetContainer();
+        if (container != null)
+        {
+            container.Interact(this);
+            if (GameManager.Instance.IsInTutorial())
             {
-                DropItem();
-                return;
+                CheckTutorialSteps(container);
+            }
+        }
+        //pick-up off the ground
+        else
+        {
+            ////try to get held item from pickup detector
+            _heldObject = pickupVolume.GetPickup();
+
+            //if item is in detection range
+            if (_heldObject == null) return;
+            
+            _heldObject.PickUp(pickupHolder);
+            pickupUIHolder.enabled = true;
+            SetHeldObject(_heldObject);
+
+            if (_heldObject.TryGetComponent(out PotionOutput potionOutput) && potionOutput.potionInside != null)
+            {
+                pickupUIHolder.sprite = potionOutput.potionInside.potionIcon;
+            }
+            else if (_heldObject.TryGetComponent(out PickupObject ingredientHolder))
+            {
+                pickupUIHolder.sprite = ingredientHolder.recipeIngredient.stepSprite;
             }
 
-            //player is not holding anything and is by an ingredient crate
-            Interactable container = interactionVolume.GetContainer();
-            if (container != null)
+            //try to get interactable component of the held object
+            if (_heldObject.TryGetComponent<Interactable>(out var interactable))
             {
-                if (GameManager.Instance.IsInTutorial())
-                {
-                    CheckTutorialSteps(container);
-                }
-
-                container.Interact(this);
-                return;
-            }
-            //pick-up off the ground
-            else
-            {
-                ////try to get held item from pickup detector
-                heldObject = pickupVolume.GetPickup();
-
-                //if item is in detection range
-                if (heldObject != null)
-                {
-                    heldObject.PickUp(pickupHolder);
-                    pickupUIHolder.enabled = true;
-                    SetHeldObject(heldObject);
-
-                    if (heldObject.TryGetComponent(out PotionOutput potionOutput) && potionOutput.potionInside != null)
-                    {
-                        pickupUIHolder.sprite = potionOutput.potionInside.potionIcon;
-                    }
-                    else if (heldObject.TryGetComponent(out PickupObject ingredientHolder))
-                    {
-                        pickupUIHolder.sprite = ingredientHolder.recipeIngredient.stepSprite;
-                    }
-
-                    //try to get interactable component of the held object
-                    if (heldObject.TryGetComponent<Interactable>(out var interactable))
-                    {
-                        //add interactable as being held
-                        interactionBehaviour.UpdateHeldInteractable(interactable);
-                    }
-                }
+                //add interactable as being held
+                interactionBehaviour.UpdateHeldInteractable(interactable);
             }
         }
     }
@@ -127,12 +122,12 @@ public class PickupBehaviour : MonoBehaviour
     //Mutator method that manually sets the held object
     public void SetHeldObject(PickupObject targetObject)
     {
-        heldObject = targetObject;
+        _heldObject = targetObject;
         playerAnimator.SetTrigger("Pickup");
         //Debug.Log("Player Pick up3");
-        pickupVolume.RemovePickupFromList(heldObject);
-        heldObject.PickUp(pickupHolder);
-        isHoldingItem = true;
+        pickupVolume.RemovePickupFromList(_heldObject);
+        _heldObject.PickUp(pickupHolder);
+        IsHoldingItem = true;
     }
 
     private void DropItem()
@@ -140,8 +135,8 @@ public class PickupBehaviour : MonoBehaviour
         playerAnimator.SetTrigger("Drop");
         //Debug.Log("Player Drop");
         pickupUIHolder.enabled = false;
-        heldObject.Drop();
-        isHoldingItem = false;
+        _heldObject.Drop();
+        IsHoldingItem = false;
 
         // check if held item is an interactable
         if (interactionBehaviour.GetHeldInteractable() != null)
@@ -150,20 +145,19 @@ public class PickupBehaviour : MonoBehaviour
             interactionBehaviour.UpdateHeldInteractable(null);
         }
 
-        heldObject = null;
+        _heldObject = null;
     }
 
     private void RemoveItem()
     { 
         playerAnimator.SetTrigger("Drop");
-        Debug.Log("Player Drop");
+        // Debug.Log("Player Drop");
 
-        if (pickupHolder.childCount > 0)
+        if (pickupHolder.childCount <= 0) return;
+        
+        foreach (Transform child in pickupHolder)
         {
-            foreach (Transform child in pickupHolder)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(child.gameObject);
         }
     }
 

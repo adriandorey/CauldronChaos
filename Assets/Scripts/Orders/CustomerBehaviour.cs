@@ -1,5 +1,5 @@
 using System.Collections;
-using TMPro;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +26,7 @@ public class CustomerBehaviour : MonoBehaviour
     private Vector3 _targetPosition;
     private bool _leavingQueue;
     internal bool HasJoinedQueue;
+    internal bool HasReceivedPotion;
 
     private GameObject _orderUiInstance;
 
@@ -86,8 +87,9 @@ public class CustomerBehaviour : MonoBehaviour
         return RequestedOrder;
     }
 
-    internal void OrderComplete()
+    internal void OrderComplete(Vector3 exit)
     {
+        LeaveQueue(exit);
         Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
         coin.Play();
     }
@@ -105,11 +107,11 @@ public class CustomerBehaviour : MonoBehaviour
     }
 
     // Leave the queue and call a callback once finished
-    internal void LeaveQueue(Vector3 exitPosition, System.Action onExitComplete)
+    internal void LeaveQueue(Vector3 exitPosition)
     {
         _leavingQueue = true;
         Destroy(_orderUiInstance);
-        StartCoroutine(LeaveAndExit(exitPosition, onExitComplete));
+        StartCoroutine(LeaveAndExit(exitPosition));
     }
 
     private void MoveToTarget()
@@ -136,35 +138,42 @@ public class CustomerBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator LeaveAndExit(Vector3 exitPosition, System.Action onExitComplete)
+    private IEnumerator LeaveAndExit(Vector3 exitPosition)
     {
         animator.SetBool("isWalking", true);
         isWalking = true;
 
         const float stepDistance = 1.2f; // Distance to step back
-        var backwardStep = transform.position - transform.forward * stepDistance; // Step back 1 unit
+        const float moveDuration = 0.5f;
+        var backwardStep = transform.position - transform.forward * stepDistance;
 
-        transform.rotation = Quaternion.Euler(0, 180, 0);
+        
+        // Rotate to face backward and move back smoothly
+        transform.DORotateQuaternion(Quaternion.LookRotation(-transform.forward), 0.2f);
+        yield return transform.DOMove(backwardStep, moveDuration).SetEase(Ease.InOutSine).WaitForCompletion();
 
-        // Step 1: Move 1 unit backward
-        while (Vector3.Distance(transform.position, backwardStep) > 0.1f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-
-        transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
-
-        // Step 3: Move to the exit
-        while (Vector3.Distance(transform.position, exitPosition) > 0.1f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, exitPosition, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-        // Notify that the customer has left
-        onExitComplete?.Invoke();
+        // Rotate towards the exit dynamically
+        transform.DORotateQuaternion(Quaternion.LookRotation(exitPosition - transform.position), 0.2f);
+        yield return transform.DOMove(exitPosition, moveDuration * 2).SetEase(Ease.InOutSine).WaitForCompletion();
+        
+        // transform.rotation = Quaternion.Euler(0, 180, 0);
+        //
+        // // Step 1: Move 1 unit backward
+        // while (Vector3.Distance(transform.position, backwardStep) > 0.1f)
+        // {
+        //     transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
+        //     yield return null;
+        // }
+        //
+        //
+        // transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
+        //
+        // // Step 3: Move to the exit
+        // while (Vector3.Distance(transform.position, exitPosition) > 0.1f)
+        // {
+        //     transform.position = Vector3.MoveTowards(transform.position, exitPosition, moveSpeed * Time.deltaTime);
+        //     yield return null;
+        // }
     }
 
     internal void ScareAway()

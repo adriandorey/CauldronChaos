@@ -1,13 +1,17 @@
+using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PotionOutput : MonoBehaviour
 {
     [SerializeField] private Renderer rend;
     private MaterialPropertyBlock _propBlock;
     private Color _storedColor;
+    private Rigidbody _rb;
+    private Collider _col;
 
     public RecipeSO potionInside;
-    public bool givenToCustomer;
+    internal bool GivenToCustomer;
 
     private bool _wasPaused;
     private bool _addedWobble;
@@ -28,6 +32,11 @@ public class PotionOutput : MonoBehaviour
     private float _pulse;
     private float _time = 0.5f;
 
+    private void Start()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _col = GetComponent<Collider>();
+    }
 
     public void Update()
     {
@@ -46,7 +55,28 @@ public class PotionOutput : MonoBehaviour
             Wobble();
     }
 
+    internal void GoToCustomer(CustomerBehaviour customer)
+    {
+        GivenToCustomer = true;
+        _rb.isKinematic = true;
+        _col.enabled = false;
+        
+        transform.SetParent(customer.customerHands);
+        transform.DOJump(customer.customerHands.position, 1,1, 0.3f);
+    }
 
+    internal void NoCustomerAvailable()
+    {
+        GivenToCustomer = false;
+        _rb.isKinematic = false;
+        _col.enabled = true;
+        
+        var startPos = transform.position;
+        var randomDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(0.5f, 2f));
+        var endPos = startPos + randomDirection * 3f;
+        transform.DOJump(endPos, 2, 1, 1);
+    }
+    
     public void SetPotionColor()
     {
         _storedColor = potionInside.potionColor;

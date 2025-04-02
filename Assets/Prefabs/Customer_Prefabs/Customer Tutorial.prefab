@@ -18,6 +18,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a4d20532ab6ba8d4da8dd50c1caf99e8, type: 2}
+    - target: {fileID: 755270792256598601, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
     - target: {fileID: 1019489123517990889, guid: 96e79bc864b817642932067c309ecb93,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -73,11 +78,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3074144205062314793, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
+    - target: {fileID: 3902628406798968091, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
     - target: {fileID: 4028038263514788674, guid: 96e79bc864b817642932067c309ecb93,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a4d20532ab6ba8d4da8dd50c1caf99e8, type: 2}
+    - target: {fileID: 5975774166687843816, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
     - target: {fileID: 6242979879473526914, guid: 96e79bc864b817642932067c309ecb93,
         type: 3}
       propertyPath: customerName
@@ -87,6 +107,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Customer Tutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 7335650812654629374, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8095472138614928973, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8310174738934854314, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Customer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

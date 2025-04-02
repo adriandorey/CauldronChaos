@@ -17,7 +17,7 @@ public class OrderCounter : MonoBehaviour
         // Check to see if there's a potion output on the object
         if (other.TryGetComponent(out PotionOutput potion))
         {
-            if (potion.givenToCustomer) return;
+            if (potion.GivenToCustomer) return;
 
             queueManager.CheckCustomerRecipes(potion);
             return;

@@ -321,7 +321,7 @@ public class GoblinAI : MonoBehaviour
 
     internal GameObject GetCustomerToScare()
     {
-        return _queue.FindCustomer();
+        return _queue.GetRandomCustomer();
     }
 
     internal void ScareCustomer(GameObject customerToScare)

@@ -90,7 +90,7 @@ public class ThrowItemsFromFloorState : GoblinState
         var potion = item.GetComponent<PotionOutput>();
         if (potion != null)
         {
-            if (potion.givenToCustomer) return false;
+            if (potion.GivenToCustomer) return false;
         }
 
         return true;
@@ -120,7 +120,7 @@ public class ThrowItemsFromFloorState : GoblinState
         {
             var pickup = potion.GetComponent<PickupObject>();
 
-            if (!potion.givenToCustomer && !pickup.isHeld)
+            if (!potion.GivenToCustomer && !pickup.isHeld)
                 ingredients.Add(potion.gameObject);
         }
 

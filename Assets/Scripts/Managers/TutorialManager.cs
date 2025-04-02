@@ -242,10 +242,13 @@ public class TutorialManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("OnTriggerEnter");
         if (!GameManager.Instance.IsInTutorial()) return;
 
+        Debug.Log("OnTriggerEnter after is in tutorial");
         if (!other.CompareTag("Customer")) return;
 
+        Debug.Log("Should show tutorial");
         switch (_tutorialPart)
         {
             case 1:

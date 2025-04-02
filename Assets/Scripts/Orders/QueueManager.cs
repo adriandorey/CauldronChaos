@@ -1,28 +1,29 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 
 public class QueueManager : MonoBehaviour
 {
-    [Header("Customer Queue Variables")]
-    [SerializeField] private int timeForCustomer = 1;
-
+    [Header("Customer Prefabs")]
     [SerializeField] private GameObject tutorialCustomer;
     [SerializeField] private List<GameObject> customerPrefabs; // List of possible customer prefabs
+
+    [Header("Customer Queue Variables")]
+    [SerializeField] private int timeForCustomer = 3;
     private List<GameObject> _customers = new();
-    private readonly int _maxCustomers = 5;
-    private CustomTimer _newCustomer;
     private bool _startCustomers;
     private int _customerIndex;
+    private const int MaxCustomers = 5;
 
     [Header("Customer Queue Positions")]
     [SerializeField] private Transform firstPos;
-
     [SerializeField] private Transform entryPoint; // Spawn point for new customers
     [SerializeField] private Transform exitPoint; // Spawn point for new customers
     private Vector3[] _queuePositions = new Vector3[5]; //queue positions
 
-    [Header("Order Manager")]
+    [Header("References")]
     [SerializeField] private OrderManager orderManager;
 
     [Header("Order Holder")]
@@ -33,78 +34,58 @@ public class QueueManager : MonoBehaviour
 
     private TutorialManager _tutorialManager;
 
+    private Coroutine _spawnCoroutine;
 
     public void Start()
     {
-        _newCustomer = new CustomTimer(timeForCustomer, true);
-
-        _queuePositions[0] = firstPos.position;
-        for (int i = 1; i < 5; i++)
-        {
-            _queuePositions[i] = firstPos.position + new Vector3(i, 0, 0);
-        }
-
+        SetQueue();
         _tutorialManager = FindObjectOfType<TutorialManager>();
     }
 
-    private void Update()
-    {
-
-        // theres a better way to do this. I need to look at this again.
-        if (!_startCustomers) return;
-
-        if (!CanAddCustomer()) return;
-
-        if (!_newCustomer.UpdateTimer()) return;
-
-
-        SpawnNewCustomer();
-        _newCustomer.ResetTimer();
-    }
-
     #region OnEnable / OnDisable / OnDestroy Events
-
-    private void OnEnable()
-    {
-        Actions.OnEndDay += RemoveAllCustomers;
-        Actions.OnStartDay += StartCustomerQueue;
-        Actions.OnResetValues += RemoveAllCustomers;
-    }
-
-    private void OnDisable()
-    {
-        Actions.OnEndDay -= RemoveAllCustomers;
-        Actions.OnStartDay -= StartCustomerQueue;
-        Actions.OnResetValues -= RemoveAllCustomers;
-    }
-
-    private void OnDestroy()
-    {
-        Actions.OnEndDay -= RemoveAllCustomers;
-        Actions.OnStartDay -= StartCustomerQueue;
-        Actions.OnResetValues -= RemoveAllCustomers;
-    }
-
+    private void OnEnable() => SubscribeToEvents();
+    private void OnDisable() => UnsubscribeFromEvents();
+    private void OnDestroy() => UnsubscribeFromEvents();
     #endregion
 
     /// <summary> Starts the Customer Queue, timer and spawns customer </summary>
     private void StartCustomerQueue()
     {
         _startCustomers = true;
-        _newCustomer = new CustomTimer(3, false);
-        _newCustomer.StartTimer();
-        SpawnNewCustomer();
+        
+        if (_spawnCoroutine != null) return; // Prevent multiple coroutines from being started.
+        _spawnCoroutine = StartCoroutine(CustomerSpawner());
+    }
+
+    private IEnumerator CustomerSpawner()
+    {
+        while (_startCustomers)
+        {
+            yield return new WaitForSeconds(timeForCustomer);
+            
+            if(CanAddCustomer())
+                SpawnCustomer();
+        }
     }
 
     internal void SpawnCustomer()
     {
-        var newCustomer = Instantiate(PickCustomer(), entryPoint.position, Quaternion.identity);
-        var customerBehaviour = newCustomer.GetComponent<CustomerBehaviour>();
+        var newCustomer = Instantiate(PickCustomer(), entryPoint.position,  Quaternion.identity);
+        var customer = newCustomer.GetComponent<CustomerBehaviour>();
 
-        AssignOrder(customerBehaviour);
+        AssignOrder(customer);
+    }
+    
+    private GameObject PickCustomer()
+    {
+        var customer = GameManager.Instance.IsInTutorial() 
+            ? tutorialCustomer 
+            : customerPrefabs[Random.Range(0, customerPrefabs.Count)];
+    
+        return customer;
     }
 
-
+    
     private void AssignOrder(CustomerBehaviour customer)
     {
         var order = orderManager.GiveOrder(customer.customerName);
@@ -113,206 +94,117 @@ public class QueueManager : MonoBehaviour
         AddToQueue(customer.gameObject);
     }
 
+    private bool CanAddCustomer() => _customers.Count < MaxCustomers;
+
+    internal void CheckCustomerRecipes(PotionOutput potionOutput)
+    {
+        var potion = potionOutput.potionInside;
+        var potionObj = potionOutput.gameObject;
+
+        foreach (var person in _customers)
+        {
+            var customer = person.GetComponent<CustomerBehaviour>();
+            
+            if(customer.RequestedOrder != potion || !customer.HasJoinedQueue || customer.HasReceivedPotion) 
+                continue;
+            
+            customer.HasReceivedPotion = true;
+            potionOutput.GoToCustomer(customer);
+
+            FinishOrder(customer);
+            return;
+        }
+        
+        potionOutput.NoCustomerAvailable();
+    }
+
+
+    private void FinishOrder(CustomerBehaviour customer)
+    {
+        customer.OrderComplete(exitPoint.position);
+        
+        //playing SFX for potion sale
+        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
+        
+        if(!GameManager.Instance.IsInTutorial()) return;
+        
+        Actions.OnPotionServed?.Invoke();
+        _tutorialManager.ServedCustomer();
+    }
+    
+    public GameObject GetRandomCustomer()
+    {
+        // Filters the customers list and keeps only those that are in queue
+        var customersInQueue = _customers.
+            Where(c => c.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+            .ToList();
+    
+        // returns a random customer that is in queue.
+        return customersInQueue.Count == 0 ? null : customersInQueue[Random.Range(0, customersInQueue.Count)];
+    }
+    
+    internal void ScareCustomer(GameObject customerToScare)
+    {
+        if (customerToScare == null) return;
+        
+        customerToScare.GetComponent<CustomerBehaviour>().ScareAway();
+        _customers.Remove(customerToScare);
+    }
+  
+    #region Queue Methods
+    private void SetQueue()
+    {
+        _queuePositions[0] = firstPos.position;
+        for (var i = 1; i < 5; i++)
+        {
+            _queuePositions[i] = firstPos.position + new Vector3(i, 0, 0);
+        }
+    }
+
     private void AddToQueue(GameObject customer)
     {
         _customers.Add(customer);
         UpdateQueuePositions();
     }
-
-    // Spawn new customer
-
-    // add give them a recipe
-
-    // add them to the line
-
-    // check customer recipes
-
-    // finish order if one is complete. - need to find a way to make sure it's not the same customer.
-
-
-    private bool CanAddCustomer()
-    {
-        return _customers.Count < _maxCustomers;
-    }
-
-    internal void CheckCustomerRecipes(PotionOutput potionOutput)
-    {
-        var sO = potionOutput.potionInside;
-        var potionObj = potionOutput.gameObject;
-
-        foreach (var t in _customers)
-        {
-            var customer = t.GetComponent<CustomerBehaviour>();
-
-            if (customer.RequestedOrder == sO && customer.HasJoinedQueue)
-            {
-                potionOutput.givenToCustomer = true;
-                potionObj.GetComponent<Collider>().enabled = false;
-                potionObj.GetComponent<Rigidbody>().isKinematic = true;
-
-                var servingCustomer = t.GetComponent<CustomerBehaviour>();
-
-                potionObj.transform.SetParent(servingCustomer.customerHands);
-                potionObj.transform.DOJump(servingCustomer.customerHands.position, 1, 1, 0.3f)
-                    .OnComplete(() => FinishOrder(servingCustomer));
-                return;
-            }
-        }
-
-        var startPos = potionObj.transform.position;
-        var randomDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(0.5f, 2f));
-        var endPos = startPos + randomDirection * 3f;
-        potionObj.transform.DOJump(endPos, 2, 1, 1);
-    }
-
-    private void FinishOrder(CustomerBehaviour servingCustomer)
-    {
-        RemoveCustomer(servingCustomer.gameObject);
-        servingCustomer.OrderComplete();
-
-        //playing SFX for potion sale
-        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, potionSaleSfx, true);
-
-        if (!GameManager.Instance.IsInTutorial()) return;
-
-        Actions.OnPotionServed?.Invoke();
-        _tutorialManager.ServedCustomer();
-    }
-
-    #region Customer Queue Methods
-
-    // Add a new customer to the end of the queue
-    private void AddCustomer(GameObject customer)
-    {
-        _customers.Add(customer);
-        UpdateQueuePositions();
-    }
-
-    // Remove a customer and spawn a new one
-    private void RemoveCustomer(GameObject customer)
-    {
-        if (_customers.Contains(customer) && customer.GetComponent<CustomerBehaviour>().HasJoinedQueue)
-        {
-            _customers.Remove(customer);
-            customer.GetComponent<CustomerBehaviour>().LeaveQueue(exitPoint.position, () =>
-            {
-                Destroy(customer);
-
-                if (!GameManager.Instance.IsInTutorial())
-                    SpawnNewCustomer();
-            });
-            UpdateQueuePositions();
-        }
-    }
-
-    // Spawn a new customer at the entry point and add them to the queue
-    private void SpawnNewCustomer()
-    {
-        if (customerPrefabs.Count == 0) return;
-        if (_customers.Count < _maxCustomers)
-        {
-            _customerIndex = PickRandomNumber();
-            
-            var newCustomer = Instantiate(customerPrefabs[_customerIndex], entryPoint.position, Quaternion.identity);
-            var newCustomBehaviour = newCustomer.GetComponent<CustomerBehaviour>();
-            newCustomBehaviour.AssignOrder(orderManager.GiveOrder(newCustomBehaviour.customerName), orderHolder.transform);
-
-            AddCustomer(newCustomer);
-        }
-    }
-
-    /// <summary> Picks a random number that isnt the previous number </summary>
-    private int PickRandomNumber()
-    {
-        int randomIndex = Random.Range(0, customerPrefabs.Count);
-
-        while (randomIndex == _customerIndex)
-        {
-            randomIndex = Random.Range(0, customerPrefabs.Count);
-        }
-
-        _customerIndex = randomIndex;
-
-        return randomIndex;
-    }
-
-
-    /// <summary>
-    /// Picks a customer based on if it's in tutorial or not. 
-    /// </summary>
-    private GameObject PickCustomer()
-    {
-        GameObject customer;
-
-        if(GameManager.Instance.IsInTutorial())
-        {
-            customer = tutorialCustomer;
-        }
-        else
-        {
-            customer = customerPrefabs[PickRandomNumber()];
-        }
-
-        return customer;
-    }
-
-
-    // Update customer positions in the queue
+    
     private void UpdateQueuePositions()
     {
-        for (int i = 0; i < _customers.Count; i++)
+        for (var i = 0; i < _customers.Count; i++)
         {
             _customers[i].GetComponent<CustomerBehaviour>().SetTarget(_queuePositions[i]);
         }
     }
-
-    #endregion
-
-    internal void ScareCustomer(GameObject customerToScare)
+    
+    private void ResetQueue()
     {
-        customerToScare.GetComponent<CustomerBehaviour>().ScareAway();
-        RemoveCustomer(customerToScare);
-    }
-
-    internal GameObject FindCustomer()
-    {
-        List<GameObject> customersInQueue = new();
-        GameObject customerToScare = null;
-
-        foreach (var customer in _customers)
-        {
-            if (customer.GetComponent<CustomerBehaviour>().HasJoinedQueue)
-            {
-                customersInQueue.Add(customer);
-            }
-        }
-
-        if (customersInQueue.Count <= 0) return null;
-
-        var random = Random.Range(0, customersInQueue.Count);
-        customerToScare = customersInQueue[random];
-
-        return customerToScare;
-    }
-
-    private void RemoveAllCustomers()
-    {
+        StopCoroutine(_spawnCoroutine);
         _startCustomers = false;
-
+    
         foreach (var customer in _customers)
         {
             Destroy(customer);
         }
-
+    
         _customers.Clear();
     }
+    #endregion
 
+    private void SubscribeToEvents()
+    {
+        Actions.OnEndDay += ResetQueue;
+        Actions.OnStartDay += StartCustomerQueue;
+        Actions.OnResetValues += ResetQueue;
+    }
 
-    //internal void SpawnSpecificCustomer()
-    //{
-    //    var customer = Instantiate(tutorialCustomer, entryPoint.position, Quaternion.identity);
-    //    var customBehaviour = customer.GetComponent<CustomerBehaviour>();
-    //    customBehaviour.AssignOrder(orderManager.TutorialOrder(), orderHolder.transform);
-    //    AddCustomer(customer);
-    //}
+    private void UnsubscribeFromEvents()
+    {
+        Actions.OnEndDay -= ResetQueue;
+        Actions.OnStartDay -= StartCustomerQueue;
+        Actions.OnResetValues -= ResetQueue;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(other.gameObject);
+    }
 }

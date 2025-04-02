@@ -13,7 +13,7 @@ public class CauldronInteraction : MonoBehaviour
     private RecipeManager _recipeManager;
     private TutorialManager _tutorialManager;
 
-    private RecipeSO[] _availRecipes; // holds all recipes that can be crafted in this cauldron
+    private List<RecipeSO> _availRecipes; // holds all recipes that can be crafted in this cauldron
     private List<RecipeSO> _possibleRecipes = new(); // list of possible recipes
     private string _currentStep; // holds current step
     private string _lastStep; // holds last step done - used to make sure we can stir multiple times
@@ -83,7 +83,7 @@ public class CauldronInteraction : MonoBehaviour
 
         // Get the RecipeManager script & set the craft-able recipes
         _recipeManager = FindObjectOfType<RecipeManager>();
-        _availRecipes = _recipeManager.FindAvailableRecipes();
+        _availRecipes = _recipeManager.GetAvailableRecipes();
         _player = FindObjectOfType<PickupBehaviour>();
         _tutorialManager = FindObjectOfType<TutorialManager>();
     }
@@ -475,7 +475,7 @@ public class CauldronInteraction : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        if (_player.isHoldingItem)
+        if (_player.IsHoldingItem)
             _canInteract = false;
         else
         {

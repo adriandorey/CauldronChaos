@@ -3156,6 +3156,7 @@ GameObject:
   - component: {fileID: 107474870}
   - component: {fileID: 107474869}
   - component: {fileID: 107474872}
+  - component: {fileID: 107474873}
   m_Layer: 0
   m_Name: TutorialManager
   m_TagString: Untagged
@@ -3177,7 +3178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   queueManager: {fileID: 2735336521705904682}
   highlighter: {fileID: 1390998597}
-  tutorialUI: {fileID: 688695551}
+  tutorialUI: {fileID: 107474872}
   partOneText: "Your first customer! \nThey ordered the Potion of Healing. \nCheck
     the <color=\"green\">Recipe Book</color>, then get brewing!"
   partTwoText: "Success! \nThere are still <color=\"green\">two more</color> Healing
@@ -3217,6 +3218,33 @@ MonoBehaviour:
   popUp: {fileID: 564287478}
   tutorialText: {fileID: 1925084197}
   popUpTime: 5
+--- !u!54 &107474873
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107474868}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &117294187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20298,7 +20326,6 @@ GameObject:
   - component: {fileID: 688695550}
   - component: {fileID: 688695549}
   - component: {fileID: 688695548}
-  - component: {fileID: 688695551}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -20389,21 +20416,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
---- !u!114 &688695551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 688695546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a01c69a5d6af01445a48a01c4f9db848, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  popUp: {fileID: 564287478}
-  tutorialText: {fileID: 1925084197}
-  popUpTime: 5
 --- !u!1 &688996566
 GameObject:
   m_ObjectHideFlags: 0
@@ -25684,7 +25696,6 @@ GameObject:
   m_Component:
   - component: {fileID: 893341779}
   - component: {fileID: 893341780}
-  - component: {fileID: 893341781}
   m_Layer: 0
   m_Name: Trigger
   m_TagString: Untagged
@@ -25728,33 +25739,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &893341781
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 893341778}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &897478556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64326,6 +64310,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RecipeManager
       objectReference: {fileID: 0}
+    - target: {fileID: 502153133774814190, guid: e8bf7052047b969418f9861460a0b8cd,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 640842423132883420, guid: e8bf7052047b969418f9861460a0b8cd,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -64356,10 +64345,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -397.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1452921653096776414, guid: e8bf7052047b969418f9861460a0b8cd,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4384049950554709815, guid: e8bf7052047b969418f9861460a0b8cd,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297656714816106301, guid: e8bf7052047b969418f9861460a0b8cd,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297656714816106301, guid: e8bf7052047b969418f9861460a0b8cd,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6297656714816106301, guid: e8bf7052047b969418f9861460a0b8cd,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6912728288701112207, guid: e8bf7052047b969418f9861460a0b8cd,
         type: 3}

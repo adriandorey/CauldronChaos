@@ -278,7 +278,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536541585055616895}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: RecipeBookUI, Assembly-CSharp
         m_MethodName: ButtonNavigation
         m_Mode: 6
@@ -333,7 +333,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2252328080268707936}
+  - {fileID: 601295889282188102}
   - {fileID: 7320147269982494274}
   - {fileID: 7893414110922886125}
   - {fileID: 7848039233070803726}
@@ -367,9 +367,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0bd8afd36bfe82c45a34d83696553e95, type: 2}
   - {fileID: 11400000, guid: 19338638cf98d88428e9b837e62eff60, type: 2}
   numberOfRecipes: 2
-  recipeBookUi: {fileID: 8838291415264404701}
   useAllRecipes: 0
-  closeButton: {fileID: 2337243748302970550}
 --- !u!1 &475520456937432344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1955,6 +1953,50 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2939619654733618604
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5158798854091984144}
+  - component: {fileID: 6368713896112282390}
+  m_Layer: 0
+  m_Name: Navigator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5158798854091984144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2939619654733618604}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 601295889282188102}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6368713896112282390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2939619654733618604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc74352c9970ba489e8e45a453271b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3250179123549902761
 GameObject:
   m_ObjectHideFlags: 0
@@ -3199,7 +3241,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2240342482127368098}
-  m_Father: {fileID: 6912728288701112207}
+  m_Father: {fileID: 601295889282188102}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4706,6 +4748,199 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &6111209958859296534
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 601295889282188102}
+  - component: {fileID: 4789956581225751687}
+  m_Layer: 0
+  m_Name: RecipeBook
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &601295889282188102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111209958859296534}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5158798854091984144}
+  - {fileID: 8185588240403627372}
+  - {fileID: 2252328080268707936}
+  m_Father: {fileID: 6912728288701112207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4789956581225751687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6111209958859296534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54300ad0144fdd044ac2940d2d2c13b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipeManager: {fileID: 5635559856003141154}
+  navigator: {fileID: 6368713896112282390}
+  bookUi: {fileID: 7723832906731081641}
+  recipeBook: {fileID: 8838291415264404701}
+  closeButton: {fileID: 2337243748302970550}
+  pageFlipSounds: {fileID: 6351307525904921933}
+--- !u!1 &6292035417806912471
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8185588240403627372}
+  - component: {fileID: 7723832906731081641}
+  m_Layer: 0
+  m_Name: Ui Rend
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8185588240403627372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6292035417806912471}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 601295889282188102}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7723832906731081641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6292035417806912471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc0f59a750685b429eeb3345be4c36f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipeUiLeft:
+    recipeObject: {fileID: 8147066182497144317}
+    recipeName: {fileID: 2887793582090919376}
+    potionIcon: {fileID: 6609530871745945418}
+    potionPrice: {fileID: 1793268911152994056}
+    stepVisual:
+    - mainObject: {fileID: 4384049950554709815}
+      stirButtonText: {fileID: 8230731499598864738}
+      stirIcon: {fileID: 5326881903976818878}
+    - mainObject: {fileID: 3816807579693593282}
+      stirButtonText: {fileID: 6680081007002141119}
+      stirIcon: {fileID: 3452040007236212996}
+    - mainObject: {fileID: 9112475612270753015}
+      stirButtonText: {fileID: 8964926997335806402}
+      stirIcon: {fileID: 7170281664013631882}
+    - mainObject: {fileID: 4109282302351931203}
+      stirButtonText: {fileID: 7393094897112010315}
+      stirIcon: {fileID: 1571855332905023030}
+    - mainObject: {fileID: 475520456937432344}
+      stirButtonText: {fileID: 8339021673033229821}
+      stirIcon: {fileID: 2193858916993349613}
+    - mainObject: {fileID: 5061103810412839526}
+      stirButtonText: {fileID: 1808672903993609801}
+      stirIcon: {fileID: 8314605880304739595}
+  recipeUiRight:
+    recipeObject: {fileID: 3855539660366807955}
+    recipeName: {fileID: 8863688474429434227}
+    potionIcon: {fileID: 5069031371357788343}
+    potionPrice: {fileID: 3441332826653032847}
+    stepVisual:
+    - mainObject: {fileID: 2825075396719861979}
+      stirButtonText: {fileID: 7645703255411843421}
+      stirIcon: {fileID: 3889864570426320561}
+    - mainObject: {fileID: 971675093016463396}
+      stirButtonText: {fileID: 6068483651316507334}
+      stirIcon: {fileID: 1736107375311329874}
+    - mainObject: {fileID: 5780313363272186206}
+      stirButtonText: {fileID: 8874856152633861915}
+      stirIcon: {fileID: 750620982854755936}
+    - mainObject: {fileID: 921366656834166481}
+      stirButtonText: {fileID: 2033905850485114640}
+      stirIcon: {fileID: 5099170600045452892}
+    - mainObject: {fileID: 2122444057507197386}
+      stirButtonText: {fileID: 4601303719731347577}
+      stirIcon: {fileID: 4290472892415419910}
+    - mainObject: {fileID: 2323359789845158708}
+      stirButtonText: {fileID: 2262811632076244173}
+      stirIcon: {fileID: 2476847094669739525}
+  next:
+    button: {fileID: 281914543025872782}
+    icon: {fileID: 4912744429462995654}
+    text: {fileID: 1670717151164362243}
+  previous:
+    button: {fileID: 6552983113663042259}
+    icon: {fileID: 575242076749859493}
+    text: {fileID: 5727548703582476511}
+  xboxIcons:
+    buttonSouth: {fileID: 21300000, guid: f609c9b3b1675f947a865ec558b5ad90, type: 3}
+    buttonNorth: {fileID: 21300000, guid: 17fd7d74524d4cc4ea612a100880d012, type: 3}
+    buttonEast: {fileID: 21300000, guid: d08c52c09554ca8418a86627f4bd14e1, type: 3}
+    buttonWest: {fileID: 21300000, guid: cde7469096582e04897fae80dfc34fbe, type: 3}
+    startButton: {fileID: 21300000, guid: 5c1e24bea89729e4a8ed25e26a432f84, type: 3}
+    selectButton: {fileID: 21300000, guid: 4273c283a5e145a468dc60af5dcb46e7, type: 3}
+    leftTrigger: {fileID: 21300000, guid: d29819659aa175a459d7c519a30d70aa, type: 3}
+    rightTrigger: {fileID: 21300000, guid: 0ae60af4bd5e539409acc10ec4300105, type: 3}
+    leftShoulder: {fileID: 21300000, guid: 672696fcd6aec9d4c84945fa59765f64, type: 3}
+    rightShoulder: {fileID: 21300000, guid: ed60ff0de79971e468ae179e077d66ca, type: 3}
+    dpad: {fileID: 21300000, guid: bff5253ebc5a14f43b4bd8aa1d207855, type: 3}
+    dpadUp: {fileID: 21300000, guid: f375a935d0c38f84d94844236012f26c, type: 3}
+    dpadDown: {fileID: 21300000, guid: 5fc2490d4f2941f4ca46f33e329cf3d7, type: 3}
+    dpadLeft: {fileID: 21300000, guid: 4cb9b89846007d142a4a78a190c2d6fe, type: 3}
+    dpadRight: {fileID: 21300000, guid: be71706bc979d5240bf156bfdfee0ae6, type: 3}
+    leftStick: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
+    rightStick: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
+    leftStickPress: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
+    rightStickPress: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
+  ps4Icons:
+    buttonSouth: {fileID: 21300000, guid: 2da2d15ce082e12448ac493c55a33f0f, type: 3}
+    buttonNorth: {fileID: 21300000, guid: 47b0c8cbcd450124abdb1b62fb7f5806, type: 3}
+    buttonEast: {fileID: 21300000, guid: c7f381483fb41f14e935b2d6d9fec62f, type: 3}
+    buttonWest: {fileID: 21300000, guid: 428de70370df69d45bd4c0025b7ba36e, type: 3}
+    startButton: {fileID: 21300000, guid: 3e20a6306ae08e34f970de090c3a1cd1, type: 3}
+    selectButton: {fileID: 21300000, guid: a521d4effb3d3c64b9329370383eb640, type: 3}
+    leftTrigger: {fileID: 21300000, guid: f920addac480add4c99e64df920b61a3, type: 3}
+    rightTrigger: {fileID: 21300000, guid: 87dce22414624c74d90f8bfc4bf3582f, type: 3}
+    leftShoulder: {fileID: 21300000, guid: 7eaab648006558044a9680311037b8f9, type: 3}
+    rightShoulder: {fileID: 21300000, guid: 22b97dfa5af0d1947a62312c31e633e5, type: 3}
+    dpad: {fileID: 21300000, guid: bff5253ebc5a14f43b4bd8aa1d207855, type: 3}
+    dpadUp: {fileID: 21300000, guid: f375a935d0c38f84d94844236012f26c, type: 3}
+    dpadDown: {fileID: 21300000, guid: 5fc2490d4f2941f4ca46f33e329cf3d7, type: 3}
+    dpadLeft: {fileID: 21300000, guid: 4cb9b89846007d142a4a78a190c2d6fe, type: 3}
+    dpadRight: {fileID: 21300000, guid: be71706bc979d5240bf156bfdfee0ae6, type: 3}
+    leftStick: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
+    rightStick: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
+    leftStickPress: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
+    rightStickPress: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
 --- !u!1 &6294472500740803610
 GameObject:
   m_ObjectHideFlags: 0
@@ -4925,6 +5160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 502153133774814190}
+  - component: {fileID: 6297656714816106301}
   m_Layer: 6
   m_Name: Exit
   m_TagString: Untagged
@@ -4947,6 +5183,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6912728288701112207}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6297656714816106301
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6541463082169745183}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6546358654262245047
 GameObject:
   m_ObjectHideFlags: 0
@@ -5145,7 +5402,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2536541585055616895}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: RecipeBookUI, Assembly-CSharp
         m_MethodName: ButtonNavigation
         m_Mode: 6
@@ -6044,7 +6301,6 @@ GameObject:
   - component: {fileID: 2240342482127368098}
   - component: {fileID: 6615929739503425632}
   - component: {fileID: 4280033200726902133}
-  - component: {fileID: 2536541585055616895}
   m_Layer: 0
   m_Name: RecipeBook
   m_TagString: Untagged
@@ -6115,118 +6371,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2536541585055616895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8838291415264404701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54300ad0144fdd044ac2940d2d2c13b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recipeManager: {fileID: 5635559856003141154}
-  recipeUiLeftObj: {fileID: 8147066182497144317}
-  recipeUiRightObj: {fileID: 3855539660366807955}
-  pageFlipSounds: {fileID: 6351307525904921933}
-  previousPage: {fileID: 6552983113663042259}
-  nextPage: {fileID: 281914543025872782}
-  previousPageNav:
-    buttonIcon: {fileID: 575242076749859493}
-    buttonText: {fileID: 5727548703582476511}
-  nextPageNav:
-    buttonIcon: {fileID: 4912744429462995654}
-    buttonText: {fileID: 1670717151164362243}
-  recipeUiLeft:
-    recipeName: {fileID: 2887793582090919376}
-    potionIcon: {fileID: 6609530871745945418}
-    potionPrice: {fileID: 1793268911152994056}
-    recipeVisuals:
-    - mainObject: {fileID: 4384049950554709815}
-      stirIcon: {fileID: 5326881903976818878}
-      stirButtonText: {fileID: 8230731499598864738}
-    - mainObject: {fileID: 3816807579693593282}
-      stirIcon: {fileID: 3452040007236212996}
-      stirButtonText: {fileID: 6680081007002141119}
-    - mainObject: {fileID: 9112475612270753015}
-      stirIcon: {fileID: 7170281664013631882}
-      stirButtonText: {fileID: 8964926997335806402}
-    - mainObject: {fileID: 4109282302351931203}
-      stirIcon: {fileID: 1571855332905023030}
-      stirButtonText: {fileID: 7393094897112010315}
-    - mainObject: {fileID: 475520456937432344}
-      stirIcon: {fileID: 2193858916993349613}
-      stirButtonText: {fileID: 8339021673033229821}
-    - mainObject: {fileID: 5061103810412839526}
-      stirIcon: {fileID: 8314605880304739595}
-      stirButtonText: {fileID: 1808672903993609801}
-  recipeUiRight:
-    recipeName: {fileID: 8863688474429434227}
-    potionIcon: {fileID: 5069031371357788343}
-    potionPrice: {fileID: 3441332826653032847}
-    recipeVisuals:
-    - mainObject: {fileID: 2825075396719861979}
-      stirIcon: {fileID: 3889864570426320561}
-      stirButtonText: {fileID: 7645703255411843421}
-    - mainObject: {fileID: 971675093016463396}
-      stirIcon: {fileID: 1736107375311329874}
-      stirButtonText: {fileID: 6068483651316507334}
-    - mainObject: {fileID: 5780313363272186206}
-      stirIcon: {fileID: 750620982854755936}
-      stirButtonText: {fileID: 8874856152633861915}
-    - mainObject: {fileID: 921366656834166481}
-      stirIcon: {fileID: 5099170600045452892}
-      stirButtonText: {fileID: 2033905850485114640}
-    - mainObject: {fileID: 2122444057507197386}
-      stirIcon: {fileID: 4290472892415419910}
-      stirButtonText: {fileID: 4601303719731347577}
-    - mainObject: {fileID: 2323359789845158708}
-      stirIcon: {fileID: 2476847094669739525}
-      stirButtonText: {fileID: 2262811632076244173}
-  clockSprite: {fileID: 21300000, guid: 3b02d64a6455a2d4eb068176b2de017d, type: 3}
-  counterClockSprite: {fileID: 21300000, guid: 9e0e82dc67d65c04e94f625c6b06582b, type: 3}
-  xboxIcons:
-    buttonSouth: {fileID: 21300000, guid: f609c9b3b1675f947a865ec558b5ad90, type: 3}
-    buttonNorth: {fileID: 21300000, guid: 17fd7d74524d4cc4ea612a100880d012, type: 3}
-    buttonEast: {fileID: 21300000, guid: d08c52c09554ca8418a86627f4bd14e1, type: 3}
-    buttonWest: {fileID: 21300000, guid: cde7469096582e04897fae80dfc34fbe, type: 3}
-    startButton: {fileID: 21300000, guid: 5c1e24bea89729e4a8ed25e26a432f84, type: 3}
-    selectButton: {fileID: 21300000, guid: 4273c283a5e145a468dc60af5dcb46e7, type: 3}
-    leftTrigger: {fileID: 21300000, guid: d29819659aa175a459d7c519a30d70aa, type: 3}
-    rightTrigger: {fileID: 21300000, guid: 0ae60af4bd5e539409acc10ec4300105, type: 3}
-    leftShoulder: {fileID: 21300000, guid: 672696fcd6aec9d4c84945fa59765f64, type: 3}
-    rightShoulder: {fileID: 21300000, guid: ed60ff0de79971e468ae179e077d66ca, type: 3}
-    dpad: {fileID: 21300000, guid: bff5253ebc5a14f43b4bd8aa1d207855, type: 3}
-    dpadUp: {fileID: 21300000, guid: f375a935d0c38f84d94844236012f26c, type: 3}
-    dpadDown: {fileID: 21300000, guid: 5fc2490d4f2941f4ca46f33e329cf3d7, type: 3}
-    dpadLeft: {fileID: 21300000, guid: 4cb9b89846007d142a4a78a190c2d6fe, type: 3}
-    dpadRight: {fileID: 21300000, guid: be71706bc979d5240bf156bfdfee0ae6, type: 3}
-    leftStick: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
-    rightStick: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
-    leftStickPress: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
-    rightStickPress: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
-  ps4Icons:
-    buttonSouth: {fileID: 21300000, guid: 2da2d15ce082e12448ac493c55a33f0f, type: 3}
-    buttonNorth: {fileID: 21300000, guid: 47b0c8cbcd450124abdb1b62fb7f5806, type: 3}
-    buttonEast: {fileID: 21300000, guid: c7f381483fb41f14e935b2d6d9fec62f, type: 3}
-    buttonWest: {fileID: 21300000, guid: 428de70370df69d45bd4c0025b7ba36e, type: 3}
-    startButton: {fileID: 21300000, guid: 3e20a6306ae08e34f970de090c3a1cd1, type: 3}
-    selectButton: {fileID: 21300000, guid: a521d4effb3d3c64b9329370383eb640, type: 3}
-    leftTrigger: {fileID: 21300000, guid: f920addac480add4c99e64df920b61a3, type: 3}
-    rightTrigger: {fileID: 21300000, guid: 87dce22414624c74d90f8bfc4bf3582f, type: 3}
-    leftShoulder: {fileID: 21300000, guid: 7eaab648006558044a9680311037b8f9, type: 3}
-    rightShoulder: {fileID: 21300000, guid: 22b97dfa5af0d1947a62312c31e633e5, type: 3}
-    dpad: {fileID: 21300000, guid: bff5253ebc5a14f43b4bd8aa1d207855, type: 3}
-    dpadUp: {fileID: 21300000, guid: f375a935d0c38f84d94844236012f26c, type: 3}
-    dpadDown: {fileID: 21300000, guid: 5fc2490d4f2941f4ca46f33e329cf3d7, type: 3}
-    dpadLeft: {fileID: 21300000, guid: 4cb9b89846007d142a4a78a190c2d6fe, type: 3}
-    dpadRight: {fileID: 21300000, guid: be71706bc979d5240bf156bfdfee0ae6, type: 3}
-    leftStick: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
-    rightStick: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
-    leftStickPress: {fileID: 21300000, guid: 7e177675a5fc16248b6e164ef7a7f2a6, type: 3}
-    rightStickPress: {fileID: 21300000, guid: 04f2711270cd5b64099d2ca2f99529de, type: 3}
 --- !u!1 &9112475612270753015
 GameObject:
   m_ObjectHideFlags: 0
