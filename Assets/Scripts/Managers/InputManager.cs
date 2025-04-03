@@ -143,7 +143,6 @@ public class InputManager : MonoBehaviour
             PickupAction?.Invoke(input);
     }
 
-
     public void PauseInput(InputAction.CallbackContext input)
     {
         PauseAction?.Invoke(input);
@@ -170,24 +169,9 @@ public class InputManager : MonoBehaviour
     {
         PreviousPageAction?.Invoke(input);
     }
-
-
-    // internal void TurnOffInteraction()
-    // {
-    //     _playerControls.SwitchCurrentActionMap("UI");
-    // }
-    //
-    // internal void TurnOnInteraction()
-    // {
-    //     _playerControls.SwitchCurrentActionMap("Player");
-    // }
     #endregion
 
-    private bool IsControllerConnected()
-    {
-        return Gamepad.all.Count > 0;
-    }
-
+    
     private void GameplayInputs()
     {
         MoveInputAction.Enable();

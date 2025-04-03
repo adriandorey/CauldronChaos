@@ -105,6 +105,7 @@ public class UiManager : MonoBehaviour
     private void MainMenu()
     {
         // InputManager.Instance.TurnOnInteraction();
+        Actions.OnResetValues?.Invoke();
         MenuVirtualCamera.TurnCameraBrainOn?.Invoke();
         Actions.OnSetUiLocation(Page.MainMenu);
         Time.timeScale = 1;
