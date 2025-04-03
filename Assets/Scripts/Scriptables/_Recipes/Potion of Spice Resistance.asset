@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion of Spice Resistance
   m_EditorClassIdentifier: 
   recipeName: Potion of Spice Resistance
+  recipeNameIcon: {fileID: 21300000, guid: 82c87b719a47411418494a340e7ea9ad, type: 3}
   weight: 8
   sellAmount: 50
   steps:

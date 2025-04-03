@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion of Hydration
   m_EditorClassIdentifier: 
   recipeName: Potion of Hydration
+  recipeNameIcon: {fileID: 21300000, guid: 03c490b5c6a359543b047a2253acffdf, type: 3}
   weight: 3
   sellAmount: 10
   steps:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion of Stamina
   m_EditorClassIdentifier: 
   recipeName: Potion of Stamina
+  recipeNameIcon: {fileID: 21300000, guid: 730fb52a8e705014dae6bd69a7b66644, type: 3}
   weight: 5
   sellAmount: 80
   steps:

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion of Gumption
   m_EditorClassIdentifier: 
   recipeName: Potion of Gumption
+  recipeNameIcon: {fileID: 21300000, guid: 6facdd0091406174992418d243048bbe, type: 3}
   weight: 5
   sellAmount: 80
   steps:

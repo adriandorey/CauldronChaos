@@ -5099,7 +5099,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2079494219999610102}
-  - component: {fileID: 6242979879473526914}
+  - component: {fileID: 5200165320065531180}
+  - component: {fileID: 2517135539693224364}
   - component: {fileID: 5184939874115157038}
   - component: {fileID: 3220542176493294801}
   - component: {fileID: 8594767435848946595}
@@ -5128,7 +5129,7 @@ Transform:
   - {fileID: 1057436368561243326}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6242979879473526914
+--- !u!114 &5200165320065531180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5137,7 +5138,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6356803835694476596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baec4f8b9c0e21e4190c79685cf66736, type: 3}
+  m_Script: {fileID: 11500000, guid: 4391d8b83d38d8e49bfc5464f01bd940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   customerName: 
@@ -5145,9 +5146,21 @@ MonoBehaviour:
   orderUiPrefab: {fileID: 6402695683748899613, guid: 5f38278dd2ddd4b4faeb7fff945b6fde,
     type: 3}
   coin: {fileID: 1738945206456837713}
+  sfxOrderIn: {fileID: 8300000, guid: 4aa87d943f0ee714e9f015932315fb0a, type: 3}
+--- !u!114 &2517135539693224364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6356803835694476596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4862a68d622128449bd1c1f2b4bbba22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   moveSpeed: 3
   animator: {fileID: 5184939874115157038}
-  sfxOrderIn: {fileID: 8300000, guid: 4aa87d943f0ee714e9f015932315fb0a, type: 3}
   sfxCustomerWalk: {fileID: 5613780721377749614}
   customerStepTime: 0.3
 --- !u!95 &5184939874115157038

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion of Anti-Perspirant
   m_EditorClassIdentifier: 
   recipeName: Potion of Anti-Perspirant
+  recipeNameIcon: {fileID: 21300000, guid: 943bb775cc5c48f4292571677ebcdda1, type: 3}
   weight: 8
   sellAmount: 50
   steps:

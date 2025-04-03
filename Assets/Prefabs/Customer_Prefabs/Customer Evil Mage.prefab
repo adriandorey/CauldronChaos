@@ -78,6 +78,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: db1054fc5d56bd543b5d2373bb373b1b, type: 2}
+    - target: {fileID: 5200165320065531180, guid: 96e79bc864b817642932067c309ecb93,
+        type: 3}
+      propertyPath: customerName
+      value: Evil Mage
+      objectReference: {fileID: 0}
     - target: {fileID: 5793240767321800637, guid: 96e79bc864b817642932067c309ecb93,
         type: 3}
       propertyPath: customerName

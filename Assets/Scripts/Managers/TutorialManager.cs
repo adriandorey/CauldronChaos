@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -77,11 +76,11 @@ public class TutorialManager : MonoBehaviour
 
     private void StartTutorial()
     {
-        //Debug.Log("Starting Tutorial");
+        Debug.Log("Starting Tutorial");
         _tutorialPart = 1;
         SpawnCustomer();
 
-        highlighter.ChangeMaterial("recipeBook", true);
+        highlighter.HighlightMaterial("recipeBook");
     }
 
     
@@ -96,7 +95,7 @@ public class TutorialManager : MonoBehaviour
     private void HandlePotionServing() => HandleTutorialStep(TutorialStep.ServePotion);
 
 
-    internal void HandleTutorialStep(TutorialStep step, Renderer rend = null)
+    internal void HandleTutorialStep(TutorialStep step, HighlightableObject highlight = null)
     {
         // Debug.Log(step);
         if (_tutorialPart != 1) return;
@@ -107,18 +106,18 @@ public class TutorialManager : MonoBehaviour
         }
 
         // Specific conditions
-        if (step == TutorialStep.StirCauldron && highlighter.StirStick != rend ||
-            step == TutorialStep.FillPotionBottle && highlighter.LastCauldron != rend)
-        {
-            RestartTutorial();
-            return;
-        }
+        // if (step == TutorialStep.StirCauldron && highlighter.StirStick != rend ||
+        //     step == TutorialStep.FillPotionBottle && highlighter.LastCauldron != rend)
+        // {
+        //     RestartTutorial();
+        //     return;
+        // }
 
         // Get next step details
         if (!_tutorialSteps.TryGetValue(step, out var stepData)) return;
 
         // Disable current highlight
-        highlighter.ChangeMaterial(stepData.highlightTarget, false);
+        highlighter.RevertMaterial(stepData.highlightTarget);
 
         if (stepData.nextStep == TutorialStep.Completed)
         {
@@ -128,7 +127,7 @@ public class TutorialManager : MonoBehaviour
 
         // Proceed to the next step
         NextStep(stepData.nextStep);
-        highlighter.ChangeMaterial(_tutorialSteps[stepData.nextStep].highlightTarget, true);
+        highlighter.HighlightMaterial(_tutorialSteps[stepData.nextStep].highlightTarget);
     }
 
 
@@ -195,13 +194,13 @@ public class TutorialManager : MonoBehaviour
         if (_tutorialPart != 1) return;
         
         Actions.BlowUpCauldron?.Invoke(); // Reset both cauldrons
-        highlighter.ResetAllMaterials(); // Reset all the highlighted materials
+        // highlighter.ResetAllMaterials(); // Reset all the highlighted materials
         _hasInteracted = false; // reset the has interacted - used for the book
         
         tutorialUI.ActivatePopUp("You made a mistake!\nTry again!"); 
         
         CurrentStep = TutorialStep.HighlightRecipeBook;
-        highlighter.ChangeMaterial("recipeBook", true);
+        // highlighter.ChangeMaterial("recipeBook", true);
     }
 
 

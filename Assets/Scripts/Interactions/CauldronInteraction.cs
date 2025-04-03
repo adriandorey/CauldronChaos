@@ -52,9 +52,9 @@ public class CauldronInteraction : MonoBehaviour
     [SerializeField] private float stickRotationSpeed = 0.6f;
     [SerializeField] private Transform stirStick;
 
-    [Header("Model Renderers")]
-    [SerializeField] private Renderer modelRenderer;
-    [SerializeField] private Renderer stirStickRend;
+    [Header("To Be Highlighted")]
+    [SerializeField] private HighlightableObject thisModel;
+    [SerializeField] private HighlightableObject stickModel;
 
     //sound libraries and clips
     [Header("Sounds")]
@@ -292,18 +292,18 @@ public class CauldronInteraction : MonoBehaviour
             {
                 // checks to see if the ingredient inserted was a mushroom
                 case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
-                    Actions.LastCauldronUsed?.Invoke(modelRenderer, stirStickRend);
+                    Actions.LastCauldronUsed?.Invoke(thisModel, stickModel);
                     _tutorialManager.HandleTutorialStep(TutorialStep.InsertIngredient);
                     // Actions.OnIngredientInserted?.Invoke();
                     break;
                 // checks to see if filled bottle is the last cauldron was used
                 case TutorialStep.FillPotionBottle when _currentStep == "Bottle_Potion": 
-                    _tutorialManager.HandleTutorialStep(TutorialStep.FillPotionBottle, modelRenderer);
+                    _tutorialManager.HandleTutorialStep(TutorialStep.FillPotionBottle, thisModel);
                     // Actions.OnPotionFilled?.Invoke(modelRenderer); 
                     break;
                 // checks to see if the last cauldron was used and if they stirred in the right direction
                 case TutorialStep.StirCauldron when _currentStep == "Stir_C":
-                    _tutorialManager.HandleTutorialStep(TutorialStep.StirCauldron, stirStickRend);
+                    _tutorialManager.HandleTutorialStep(TutorialStep.StirCauldron, stickModel);
                     // Actions.OnCauldronStirred?.Invoke(stirStickRend); 
                     break;
                 default: _tutorialManager.RestartTutorial(); break;

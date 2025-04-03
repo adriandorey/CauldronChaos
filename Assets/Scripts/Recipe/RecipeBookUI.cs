@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.DualShock;
-using UnityEngine.InputSystem.XInput;
 using UnityEngine.UI;
 
 public class RecipeBookUI : MonoBehaviour
@@ -98,7 +96,7 @@ public class RecipeBookUI : MonoBehaviour
 
     #endregion
 
-    private void ToggleRecipeBook()
+    public void ToggleRecipeBook()
     {
         if (recipeBook.activeSelf) DeactivateRecipeBook();
         else ActivateRecipeBook();
@@ -133,6 +131,7 @@ public class RecipeUI
 {
     public GameObject recipeObject;
     public TextMeshProUGUI recipeName;
+    public Image recipeNameSprite;
     public Image potionIcon;
     public TextMeshProUGUI potionPrice;
     public RecipeVisuals[] stepVisual;

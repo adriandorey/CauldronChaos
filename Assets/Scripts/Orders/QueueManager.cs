@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using DG.Tweening;
 
 public class QueueManager : MonoBehaviour
 {
@@ -71,7 +70,7 @@ public class QueueManager : MonoBehaviour
     internal void SpawnCustomer()
     {
         var newCustomer = Instantiate(PickCustomer(), entryPoint.position,  Quaternion.identity);
-        var customer = newCustomer.GetComponent<CustomerBehaviour>();
+        var customer = newCustomer.GetComponent<CustomerOrder>();
 
         AssignOrder(customer);
     }
@@ -86,10 +85,10 @@ public class QueueManager : MonoBehaviour
     }
 
     
-    private void AssignOrder(CustomerBehaviour customer)
+    private void AssignOrder(CustomerOrder customer)
     {
         var order = orderManager.GiveOrder(customer.customerName);
-        customer.AssignOrder(order, orderHolder.transform);
+        customer.Assign(order, orderHolder.transform);
 
         AddToQueue(customer.gameObject);
     }
@@ -99,19 +98,18 @@ public class QueueManager : MonoBehaviour
     internal void CheckCustomerRecipes(PotionOutput potionOutput)
     {
         var potion = potionOutput.potionInside;
-        var potionObj = potionOutput.gameObject;
 
         foreach (var person in _customers)
         {
-            var customer = person.GetComponent<CustomerBehaviour>();
+            var order = person.GetComponent<CustomerOrder>();
+            var movement = person.GetComponent<CustomerMovement>();
             
-            if(customer.RequestedOrder != potion || !customer.HasJoinedQueue || customer.HasReceivedPotion) 
+            if(order.RequestedOrder != potion || !movement.HasJoinedQueue() || order.HasReceivedPotion()) 
                 continue;
             
-            customer.HasReceivedPotion = true;
-            potionOutput.GoToCustomer(customer);
-
-            FinishOrder(customer);
+            order.Complete();
+            Debug.Log("Order received");
+            potionOutput.JumpToCustomer(order, () => FinishOrder(order));
             return;
         }
         
@@ -119,9 +117,10 @@ public class QueueManager : MonoBehaviour
     }
 
 
-    private void FinishOrder(CustomerBehaviour customer)
+    private void FinishOrder(CustomerOrder customer)
     {
-        customer.OrderComplete();
+        Debug.Log("Finishing order");
+        // customer.OrderComplete(); 
         RemoveCustomer(customer.gameObject);
         
         //playing SFX for potion sale
@@ -135,13 +134,10 @@ public class QueueManager : MonoBehaviour
 
     private void RemoveCustomer(GameObject customer)
     {
-        if (_customers.Contains(customer) && customer.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+        if (_customers.Contains(customer) && customer.GetComponent<CustomerMovement>().HasJoinedQueue())
         {
             _customers.Remove(customer);
-            customer.GetComponent<CustomerBehaviour>().LeaveQueue(exitPoint.position, () =>
-            {
-                Destroy(customer);
-            });
+            customer.GetComponent<CustomerMovement>().LeaveQueue(exitPoint.position);
             UpdateQueuePositions();
         }
     }
@@ -151,7 +147,7 @@ public class QueueManager : MonoBehaviour
     {
         // Filters the customers list and keeps only those that are in queue
         var customersInQueue = _customers.
-            Where(c => c.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+            Where(c => c.GetComponent<CustomerMovement>().HasJoinedQueue())
             .ToList();
     
         // returns a random customer that is in queue.
@@ -162,37 +158,42 @@ public class QueueManager : MonoBehaviour
     {
         if (customerToScare == null) return;
         
-        customerToScare.GetComponent<CustomerBehaviour>().ScareAway();
-        _customers.Remove(customerToScare);
+        customerToScare.GetComponent<CustomerMovement>().ScareAway(exitPoint.position);
+        RemoveCustomer(customerToScare);
     }
   
     #region Queue Methods
+    /// <summary> Sets the position of the customer queue </summary>
     private void SetQueue()
     {
         _queuePositions[0] = firstPos.position;
-        for (var i = 1; i < 5; i++)
+        for (var i = 1; i < MaxCustomers; i++)
         {
             _queuePositions[i] = firstPos.position + new Vector3(i, 0, 0);
         }
     }
 
+    /// <summary> Adds customer to list and updates the queue positions </summary>
     private void AddToQueue(GameObject customer)
     {
         _customers.Add(customer);
         UpdateQueuePositions();
     }
     
+    /// <summary> Tells all customers in that line to update their positions </summary>
     private void UpdateQueuePositions()
     {
         for (var i = 0; i < _customers.Count; i++)
         {
-            _customers[i].GetComponent<CustomerBehaviour>().SetTarget(_queuePositions[i]);
+            _customers[i].GetComponent<CustomerMovement>().SetTarget(_queuePositions[i]);
         }
     }
     
     private void ResetQueue()
     {
-        StopCoroutine(_spawnCoroutine);
+        if(_spawnCoroutine != null)
+            StopCoroutine(_spawnCoroutine);
+        
         _startCustomers = false;
     
         foreach (var customer in _customers)
@@ -216,10 +217,5 @@ public class QueueManager : MonoBehaviour
         Actions.OnEndDay -= ResetQueue;
         Actions.OnStartDay -= StartCustomerQueue;
         Actions.OnResetValues -= ResetQueue;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("Triggerd from queue");
     }
 }

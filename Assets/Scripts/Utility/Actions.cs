@@ -142,6 +142,6 @@ public static class Actions
     public static Action BlowUpCauldron;
 
     // This will be used to set the last cauldron used and the stir stick that belongs to it
-    public static Action<Renderer, Renderer> LastCauldronUsed; 
+    public static Action<HighlightableObject, HighlightableObject> LastCauldronUsed; 
     #endregion
 }

@@ -1,23 +1,10 @@
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomerBehaviour : MonoBehaviour
 {
-    // Order details
-    [Header("Order Details")]
-    internal RecipeSO RequestedOrder;
-
-    public string customerName;
-    public Transform customerHands;
-
-    [Header("UI for Order")]
-    [SerializeField] private GameObject orderUiPrefab;
-    [SerializeField] private ParticleSystem coin;
-    private Image _orderIcon;
-    private Transform _orderUiParent;
-    private bool _hasShownOrder;
+    private static readonly int IsWalking = Animator.StringToHash("isWalking");
 
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
@@ -27,8 +14,6 @@ public class CustomerBehaviour : MonoBehaviour
     private bool _leavingQueue;
     internal bool HasJoinedQueue;
     internal bool HasReceivedPotion;
-
-    private GameObject _orderUiInstance;
 
     [Header("SFX")]
     [SerializeField] private AudioClip sfxOrderIn;
@@ -48,9 +33,6 @@ public class CustomerBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if (!_leavingQueue)
-            MoveToTarget();
-
         if (!isWalking) return; //clause statement to stop logic below if not walking
 
         if (stepTimer <= 0f)
@@ -66,77 +48,76 @@ public class CustomerBehaviour : MonoBehaviour
 
     #region Order Events
 
-    internal void AssignOrder(RecipeSO order, Transform parent)
-    {
-        this.RequestedOrder = order;
-        _orderUiParent = parent;
-    }
+    // internal void AssignOrder(RecipeSO order, Transform parent)
+    // {
+    //     this.RequestedOrder = order;
+    //     _orderUiParent = parent;
+    // }
 
     private void DisplayOrderUI()
     {
-        _orderUiInstance = Instantiate(orderUiPrefab, _orderUiParent);
-        // Find the Image component in the instantiated object, not globally
-
-        var child = _orderUiInstance.transform.GetChild(0);
-        _orderIcon = child.GetComponent<Image>();
-        _orderIcon.sprite = RequestedOrder.potionIcon;
-
-        AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, sfxOrderIn, true);
+        // if(_hasShownOrder)  return;
+        //
+        // _orderUiInstance = Instantiate(orderUiPrefab, _orderUiParent);
+        // // Find the Image component in the instantiated object, not globally
+        //
+        // var child = _orderUiInstance.transform.GetChild(0);
+        // _orderIcon = child.GetComponent<Image>();
+        // _orderIcon.sprite = RequestedOrder.potionIcon;
+        //
+        // AudioManager.instance.sfxManager.PlaySFX(SFX_Type.ShopSounds, sfxOrderIn, true);
+        // _hasShownOrder = true;
     }
 
-    internal void OrderComplete()
-    {
-        Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
-        coin.Play();
-    }
+    // internal void OrderComplete()
+    // {
+    //     Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
+    //     coin.Play();
+    // }
 
     #endregion
 
     #region Positioning
 
+    private IEnumerator MoveToPosition(Vector3 position)
+    {
+        animator.SetBool(IsWalking, true);
+        isWalking = true;
+
+        while (Vector3.Distance(transform.position, position) > 0.1f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, position, moveSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.LookRotation(position - transform.position);
+            yield return null; // Wait until next frame
+        }
+
+        transform.rotation = Quaternion.identity;
+        HasJoinedQueue = true;
+        animator.SetBool(IsWalking, false);
+        isWalking = false;
+
+       
+    }
+    
+    
     internal void SetTarget(Vector3 position)
     {
-        animator.SetBool("isWalking", true);
-        isWalking = true;
-        _targetPosition = position;
-        _leavingQueue = false;
-    }
-
-    private void MoveToTarget()
-    {
-        if (Vector3.Distance(transform.position, _targetPosition) > 0.1f)
-        {
-            animator.SetBool("isWalking", true);
-            isWalking = true;
-            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, moveSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Euler(0, 270, 0);
-        }
-        else
-        {
-            transform.rotation = Quaternion.identity;
-            HasJoinedQueue = true;
-            animator.SetBool("isWalking", false);
-            isWalking = false;
-
-            if (!_hasShownOrder)
-            {
-                _hasShownOrder = true;
-                DisplayOrderUI();
-            }
-        }
+        if (transform.position == position) return;
+     
+        _customerCoroutine = StartCoroutine(MoveToPosition(position));     
     }
 
     // Leave the queue and call a callback once finished
     internal void LeaveQueue(Vector3 exitPosition, System.Action onExitComplete)
     {
         _leavingQueue = true;
-        Destroy(_orderUiInstance);
+        
         StartCoroutine(LeaveAndExit(exitPosition, onExitComplete));
     }
 
     private IEnumerator LeaveAndExit(Vector3 exitPosition, System.Action onExitComplete)
     {
-        animator.SetBool("isWalking", true);
+        animator.SetBool(IsWalking, true);
         isWalking = true;
 
         const float stepDistance = 1.2f; // Distance to step back
@@ -150,7 +131,6 @@ public class CustomerBehaviour : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
             yield return null;
         }
-
 
         transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
 
@@ -167,11 +147,11 @@ public class CustomerBehaviour : MonoBehaviour
 
 
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 5f);
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawLine(transform.position, transform.position + transform.forward * 5f);
+    // }
 
     internal void ScareAway()
     {

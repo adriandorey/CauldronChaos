@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using System;
 using Random = UnityEngine.Random;
 
 public class PotionOutput : MonoBehaviour
@@ -55,14 +56,15 @@ public class PotionOutput : MonoBehaviour
             Wobble();
     }
 
-    internal void GoToCustomer(CustomerBehaviour customer)
+    internal void JumpToCustomer(CustomerOrder customer, Action onComplete)
     {
         GivenToCustomer = true;
         _rb.isKinematic = true;
         _col.enabled = false;
         
         transform.SetParent(customer.customerHands);
-        transform.DOJump(customer.customerHands.position, 1,1, 0.3f);
+        transform.DOJump(customer.customerHands.position, 1,1, 0.3f)
+            .OnComplete(() => onComplete?.Invoke());
     }
 
     internal void NoCustomerAvailable()

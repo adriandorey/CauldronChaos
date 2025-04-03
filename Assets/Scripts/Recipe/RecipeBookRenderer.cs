@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -44,8 +42,9 @@ public class RecipeBookRenderer : MonoBehaviour
     {
         recipeUI.recipeObject.SetActive(true);
         recipeUI.potionIcon.sprite = recipe.potionIcon;
-        recipeUI.recipeName.text = recipe.recipeName;
-        recipeUI.potionPrice.text = recipe.sellAmount.ToString();
+        recipeUI.recipeNameSprite.sprite = recipe.recipeNameIcon;
+        // recipeUI.recipeName.text = recipe.recipeName;
+        recipeUI.potionPrice.text = $"Value: {recipe.sellAmount.ToString()}";
         
         CreateSteps(recipe,  recipeUI);
     }
@@ -148,29 +147,16 @@ public class RecipeBookRenderer : MonoBehaviour
     // Picks icon for controller 
     private Sprite PickIcon(string displayString)
     {
-        Sprite icon = null; // Ensure icon has a default value
         var gamepad = Gamepad.current;
 
         // Debug.Log($"Looking for icon for: {displayString}");
-        
-        // if it's an xbox controller it will pick from xbox icons
-        if (gamepad is XInputControllerWindows)
-        {
-            icon = xboxIcons.GetSprite(displayString);
-            // Debug.Log($"Using Xbox Icons: {icon}");
-        }
-        // if a ps4 controller it will pick from xbox icons
-        else if (gamepad is DualShockGamepad)
-        {
-            icon = ps4Icons.GetSprite(displayString);
-            // Debug.Log($"Using PS4 Icons: {icon}");
-        }
-        else
-        {
-            // Debug.Log("No recognized gamepad found, defaulting to Xbox Icons.");
-            icon = xboxIcons.GetSprite(displayString);
-        }
 
-        return icon;
+        // returns an icon depending on what's connected. Default is xbox icons
+        return gamepad switch
+        {
+            XInputControllerWindows => xboxIcons.GetSprite(displayString),
+            DualShockGamepad => ps4Icons.GetSprite(displayString),
+            _ => xboxIcons.GetSprite(displayString)
+        };
     }
 }
