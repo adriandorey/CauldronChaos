@@ -44,7 +44,7 @@ public class RecipeBookRenderer : MonoBehaviour
         recipeUI.potionIcon.sprite = recipe.potionIcon;
         recipeUI.recipeNameSprite.sprite = recipe.recipeNameIcon;
         // recipeUI.recipeName.text = recipe.recipeName;
-        recipeUI.potionPrice.text = $"Value: {recipe.sellAmount.ToString()}";
+        recipeUI.potionPrice.text = $"Sells For: {recipe.sellAmount.ToString()}";
         
         CreateSteps(recipe,  recipeUI);
     }

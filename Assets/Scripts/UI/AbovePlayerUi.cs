@@ -69,27 +69,12 @@ public class AbovePlayerUi : MonoBehaviour
     // Picks icon for controller 
     private Sprite PickIcon(string displayString)
     {
-        Sprite icon = null; // Ensure icon has a default value
-        var gamepad = Gamepad.current;
-
-        // if its an xbox controller it will pick from xbox icons
-        if (gamepad is XInputControllerWindows)
+        return Gamepad.current switch
         {
-            icon = xboxIcons.GetSprite(displayString);
-        }
-        // if an ps4 controller it will pick from xbox icons
-        else if (gamepad is DualShockGamepad)
-        {
-            icon = ps4Icons.GetSprite(displayString);
-        }
-        else
-        {
-            // if it's neither, it will default to xbox icons
-            //Debug.Log("Gamepad is not XInputController or DualShockGamepad");
-            icon = xboxIcons.GetSprite(displayString);
-        }
-
-        return icon;
+            XInputControllerWindows => xboxIcons.GetSprite(displayString),
+            DualShockGamepad => ps4Icons.GetSprite(displayString),
+            _ => xboxIcons.GetSprite(displayString) // Fallback to Xbox
+        };
     }
 
     // Show interaction above player
@@ -118,18 +103,18 @@ public class AbovePlayerUi : MonoBehaviour
         abovePlayerInteraction.enabled = true;
         interactionSprite.enabled = true;
         
-        if (FirstSelect.IsKeyboardControlling)
+        if (FirstSelect.IsControllerControlling)
+        {
+            abovePlayerText.enabled = false;
+            interactionSprite.rectTransform.sizeDelta = new Vector2(0.6f, 0.6f);
+            interactionSprite.sprite = PickIcon(InputManager.Instance.PickupInputAction.GetBindingDisplayString(1));
+        }
+        else
         {
             abovePlayerText.enabled = true;
             interactionSprite.sprite = keyboardIcon;
             interactionSprite.rectTransform.sizeDelta = new Vector2(1.2f, 0.6f);
             abovePlayerText.text = InputManager.Instance.PickupInputAction.GetBindingDisplayString(0);
-        }
-        else
-        {
-            abovePlayerText.enabled = false;
-            interactionSprite.rectTransform.sizeDelta = new Vector2(0.6f, 0.6f);
-            interactionSprite.sprite = PickIcon(InputManager.Instance.PickupInputAction.GetBindingDisplayString(1));
         }
     }
 
@@ -138,7 +123,15 @@ public class AbovePlayerUi : MonoBehaviour
         abovePlayerInteraction.enabled = true;
         stirUI.SetActive(true);
         
-        if (FirstSelect.IsKeyboardControlling)
+        if (FirstSelect.IsControllerControlling)
+        {
+            stirLeft.actionIcon.sprite = PickIcon(InputManager.Instance.StirCcAction.GetBindingDisplayString(1));
+            stirLeft.actionText.enabled = false;
+            
+            stirRight.actionIcon.sprite = PickIcon(InputManager.Instance.StirCAction.GetBindingDisplayString(1));
+            stirRight.actionText.enabled = false;
+        }
+        else
         {
             stirLeft.actionIcon.sprite = keyboardIcon;
             stirLeft.actionText.enabled = true;
@@ -147,14 +140,6 @@ public class AbovePlayerUi : MonoBehaviour
             stirRight.actionIcon.sprite = keyboardIcon;
             stirRight.actionText.enabled = true;
             stirRight.actionText.text = InputManager.Instance.StirCAction.GetBindingDisplayString(0);
-        }
-        else
-        {
-            stirLeft.actionIcon.sprite = PickIcon(InputManager.Instance.StirCcAction.GetBindingDisplayString(1));
-            stirLeft.actionText.enabled = false;
-            
-            stirRight.actionIcon.sprite = PickIcon(InputManager.Instance.StirCAction.GetBindingDisplayString(1));
-            stirRight.actionText.enabled = false;
         }
     }
 

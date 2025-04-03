@@ -237,9 +237,10 @@ public class FirstSelect : MonoBehaviour
 
     private void CheckForController()
     {
-        if (Gamepad.current == null) return;
+        if (Gamepad.current == null || !Gamepad.current.enabled) return;
         var gamepad = Gamepad.current;
 
+        Debug.Log(gamepad);
         if (IsControllerControlling) return;
 
         // Only switch if the controller is actively used
@@ -272,7 +273,16 @@ public class FirstSelect : MonoBehaviour
                     IsControllerControlling = false;
                     OnRemoveSelection();
                     break;
+                case InputDeviceChange.Disconnected:
+                    IsControllerControlling = false;
+                    IsKeyboardControlling = true;
+                    break;
             }
         }
+    }
+
+    public static bool IsControllerEnabled()
+    {
+        return Gamepad.current == null || Gamepad.current.enabled;
     }
 }

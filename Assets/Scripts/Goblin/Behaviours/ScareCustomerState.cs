@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ScareCustomerState : GoblinState
@@ -36,7 +35,7 @@ public class ScareCustomerState : GoblinState
         while (!_goblinAI.ReachedDestination())
         {
             // Refresh customers list and check if the target is still valid
-            if (_customerToScare == null || !_customerToScare.GetComponent<CustomerBehaviour>().HasJoinedQueue)
+            if (_customerToScare == null || !_customerToScare.GetComponent<CustomerMovement>().HasJoinedQueue())
             {
                 AudioManager.instance.sfxManager.StopConstantSFX(); // Stop movement sound
                 _goblinAI.ChangeState();
