@@ -43,6 +43,8 @@ public class DayManager : MonoBehaviour
 
     private Coroutine _coroutine;
 
+    private bool _increasingMusic;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -131,6 +133,12 @@ public class DayManager : MonoBehaviour
         var remainingSeconds = Mathf.FloorToInt(_gameplayTimer.GetRemainingTime());
 
         if (remainingSeconds > 60) return;
+
+        if (!_increasingMusic)
+        {
+            AudioManager.instance.musicManager.musicSource.pitch = 1.4f;
+            _increasingMusic = true;
+        }
         
         // pulse every 15 seconds before 30s, then every 5 seconds afterwards
         var pulseInterval = remainingSeconds > 30 ? 15 : 5;
@@ -196,6 +204,8 @@ public class DayManager : MonoBehaviour
 
     private void ResetValues()
     {
+        AudioManager.instance.musicManager.musicSource.pitch = 1f;
+        _increasingMusic = false;
         timerFill.fillAmount = 0;
         _gameplayTimerStarted = false;
         _gameplayTimer.ResetTimer();

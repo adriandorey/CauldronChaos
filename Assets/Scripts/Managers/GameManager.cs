@@ -95,23 +95,6 @@ public class GameManager : MonoBehaviour
         // sets gamestate
         gameState = state;
        
-        // Moving to Change Music as all game states go through change music
-        // // null check for audio manager
-        // if (AudioManager.instance != null)
-        // {
-        //     // if the state isn't gameplay, this will end environment sfx
-        //     if (gameState != GameState.Gameplay)
-        //     {
-        //         AudioManager.instance.environmentManager.EndEnvironmentSFX();
-        //     }
-        //
-        //     // if the gamestate isn't pause it will return the music pitch to 1
-        //     if (gameState != GameState.Pause)
-        //     {
-        //         AudioManager.instance.musicManager.musicSource.pitch = 1f;
-        //     }
-        // }
-
         // takes the state and finds the action that's connected to that state and invokes it.
         if (_stateActions.TryGetValue(gameState, out var action))
             action.Invoke();
