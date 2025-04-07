@@ -105,7 +105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9046614243756169170
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6913,7 +6913,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Development Team:
 
-    Load Artist: Colton Snook
+    Lead Artist: Colton Snook
 
     Game Designer: Lucas
     Sharkey-Choinard
