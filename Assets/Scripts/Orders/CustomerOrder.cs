@@ -53,7 +53,9 @@ public class CustomerOrder : MonoBehaviour
     {
         _hasReceivedPotion = true;
         Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
-        coin.Play();
+        if(!coin.isPlaying)
+            coin.Play();
+
         Destroy(_orderUiInstance);
     }
 }

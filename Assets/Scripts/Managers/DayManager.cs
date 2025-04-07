@@ -145,8 +145,8 @@ public class DayManager : MonoBehaviour
         if (remainingSeconds % pulseInterval != 0 || Mathf.Approximately(_lastPulseTime, remainingSeconds)) return;
         
         _lastPulseTime = remainingSeconds; // update last pulse time
-        timerHand.DOScale(1.2f, 0.2f).SetLoops(2, LoopType.Yoyo);
-        digitalText.transform.DOScale(1.2f,0.2f).SetLoops(2, LoopType.Yoyo);
+        timerHand.DOScale(1.5f, 0.3f).SetLoops(2, LoopType.Yoyo);
+        digitalText.transform.DOScale(1.5f,0.3f).SetLoops(2, LoopType.Yoyo);
     }
     
     
