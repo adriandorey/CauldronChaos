@@ -8,7 +8,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Movement Variables")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 180;
-    [SerializeField] private ParticleSystem movementParticles;
+    [SerializeField] private ParticleSystem dustParticles;
+    [SerializeField] private ParticleSystem iceParticles;
+
     private float _defaultSpeed;
 
     [Header("Collision Detection")]
@@ -56,7 +58,8 @@ public class PlayerMovement : MonoBehaviour
         _spawnPosition = transform.localPosition;
         _spawnRotation = transform.rotation;
         _playerAnimation = GetComponentInChildren<Animator>();
-        movementParticles.Stop();
+        dustParticles.Stop();
+        iceParticles.Stop();
 
 
         if(SceneManager.GetActiveScene().name != "MainMenu")
@@ -156,7 +159,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _canMove = false;
         _isInWindZone = false;
-        movementParticles.Stop();
+        dustParticles.Stop();
+        iceParticles.Stop();
     }
 
     private void ToggleIceMode(bool isIcy)
@@ -194,13 +198,13 @@ public class PlayerMovement : MonoBehaviour
             var toRotation = Quaternion.LookRotation(movement, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.fixedDeltaTime);
             _playerAnimation.SetBool("isMoving", true);
-            if(!movementParticles.isPlaying)
-                movementParticles.Play();
+            if(!dustParticles.isPlaying)
+                dustParticles.Play();
         }
         else
         {
             _playerAnimation.SetBool("isMoving", false);
-            movementParticles.Stop();
+            dustParticles.Stop();
         }
 
         //apply multipliers
@@ -231,6 +235,9 @@ public class PlayerMovement : MonoBehaviour
             // Rotate towards input direction
             var toRotation = Quaternion.LookRotation(targetVelocity.normalized, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.fixedDeltaTime);
+            
+            if(!iceParticles.isPlaying)
+                iceParticles.Play();
         }
         else if (_playerRb.velocity.sqrMagnitude > 0.01f)
         {
@@ -238,12 +245,17 @@ public class PlayerMovement : MonoBehaviour
             var toRotation = Quaternion.LookRotation(_playerRb.velocity.normalized, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.fixedDeltaTime);
         }
+        else
+        {
+            iceParticles.Stop();
+        }
 
         // Handle acceleration and deceleration smoothly
         if (_moveDir.sqrMagnitude > 0.001f)
         {
             _playerRb.velocity = Vector3.MoveTowards(_playerRb.velocity, targetVelocity, acceleration * Time.fixedDeltaTime);
             _playerAnimation.SetBool("isMoving", true);
+            
         }
         else
         {
