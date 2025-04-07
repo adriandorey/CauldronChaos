@@ -110,7 +110,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfx_Type: 1
   audioSource: {fileID: 5270476254455450068}
-  pitchVariance: 0.05
+  pitchVariance: 0.025
   cooldownTime: 0
   fadeTime: 0
 --- !u!82 &5270476254455450068
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfx_Type: 0
   audioSource: {fileID: 724405729574158209}
-  pitchVariance: 0
+  pitchVariance: 0.1
   cooldownTime: 0
   fadeTime: 0
 --- !u!82 &724405729574158209
