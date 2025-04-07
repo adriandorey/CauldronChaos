@@ -8152,8 +8152,9 @@ MonoBehaviour:
     the troll has died. Check the recipe book for new recipes!
   - "Yuck! Master\u2019s snail in-laws stopped by to give you a hug, and now you\u2019re
     covered in their sticky slime. Right as you open up shop too\u2026"
+  timerColour: {r: 0, g: 0, b: 0, a: 0}
   startDaySfx: {fileID: 8300000, guid: da32e896bb83a1a4a922b1eb83cb258d, type: 3}
-  endDaySfx: {fileID: 8300000, guid: 232f504a7739c1f429065a8f60337c66, type: 3}
+  endDaySfx: {fileID: 8300000, guid: ce48ee2b26d04c44d900a76d5c6af884, type: 3}
 --- !u!1 &3278787302276337074
 GameObject:
   m_ObjectHideFlags: 0
@@ -15718,7 +15719,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6971208047623907001}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009353974, y: 0.62398297, z: 0.00747008, w: 0.7813463}
+  m_LocalRotation: {x: -0.0093528535, y: 0.6240974, z: 0.0074714306, w: 0.7812548}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20542,7 +20543,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8788826478654998836}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009353972, y: 0.6239829, z: 0.0074700788, w: 0.7813463}
+  m_LocalRotation: {x: -0.009352853, y: 0.6240974, z: 0.007471429, w: 0.7812548}
   m_LocalPosition: {x: -2.5189395, y: 6.974099, z: -9.164787}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -23830,7 +23831,7 @@ PrefabInstance:
     - target: {fileID: 6391333154800664166, guid: f25dcd618d3acd64795bf8bb32edb6c9,
         type: 3}
       propertyPath: m_text
-      value: Menu
+      value: Start
       objectReference: {fileID: 0}
     - target: {fileID: 6391333154800664166, guid: f25dcd618d3acd64795bf8bb32edb6c9,
         type: 3}
