@@ -34,6 +34,7 @@ public class DayManager : MonoBehaviour
 
     [TextArea]
     [SerializeField] private string[] dayExplanation;
+    [SerializeField] private Color timerColour;
 
     [Header("SFX")]
     [SerializeField] private AudioClip startDaySfx;
@@ -133,6 +134,12 @@ public class DayManager : MonoBehaviour
         
         // pulse every 15 seconds before 30s, then every 5 seconds afterwards
         var pulseInterval = remainingSeconds > 30 ? 15 : 5;
+
+
+        if(remainingSeconds <= 30)
+        {
+            clockText.color = timerColour;
+        }
 
         // Check if it's time to pulse and ensure it doesn't repeat in the same second
         if (remainingSeconds % pulseInterval != 0 || Mathf.Approximately(_lastPulseTime, remainingSeconds)) return;

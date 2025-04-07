@@ -99,13 +99,11 @@ public class ScoreManager : MonoBehaviour
         // Sets the EOD win/lose sprite and score text
         if (!increaseDayCount)
         {
-            eodScoreText.color = Color.red;
             eodWinLoseSprite.sprite = loseSprite;
             eodScoreText.text = $"Score: {_score}\nTry Level Again?";
         }
         else
         {
-            eodScoreText.color = Color.green;
             eodWinLoseSprite.sprite = winSprite;
             eodScoreText.text = $"Score: {_score}\nYOU WIN!";
         }

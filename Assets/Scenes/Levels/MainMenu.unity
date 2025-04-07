@@ -61244,6 +61244,36 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6237910563601088754, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.961
+      objectReference: {fileID: 0}
+    - target: {fileID: 6237910563601088754, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.316
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295639176221900703, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: timerColour.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295639176221900703, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: timerColour.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295639176221900703, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: timerColour.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295639176221900703, guid: 2799942a5de093f46a85f6f5ded04166,
+        type: 3}
+      propertyPath: timerColour.r
+      value: 0.7058824
+      objectReference: {fileID: 0}
     - target: {fileID: 6637322071866597167, guid: 2799942a5de093f46a85f6f5ded04166,
         type: 3}
       propertyPath: m_AnchorMax.y
