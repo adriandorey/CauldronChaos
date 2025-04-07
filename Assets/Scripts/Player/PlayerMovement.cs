@@ -35,8 +35,11 @@ public class PlayerMovement : MonoBehaviour
     private bool _isInSlime;
 
     [Header("SFX")]
-    [SerializeField] private SFXLibrary playerMovementSounds;
+    [SerializeField] private SFXLibrary regularMovementSounds;
+    [SerializeField] private SFXLibrary iceMovementSounds;
+    [SerializeField] private SFXLibrary slimeMovementSounds;
     [SerializeField] private float timeBetweenSFX;
+    [SerializeField] private float slowMovementMult;
     private float sfxTimer;
 
 
@@ -185,8 +188,22 @@ public class PlayerMovement : MonoBehaviour
         //plays move SFX if there is input && timer allows it
         if (sfxTimer < 0f && _moveDir != Vector2.zero && Time.timeScale > 0f)
         {
-            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, playerMovementSounds.PickAudioClip(), true);
-            sfxTimer = timeBetweenSFX;
+            if (_isOnIce)
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, iceMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX * slowMovementMult;
+            }
+            else if (_isInSlime)
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, slimeMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX * slowMovementMult;
+            }
+            else
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, regularMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX;
+            } 
+            
         }
 
         //translate Vector2 to Vector3
@@ -223,8 +240,22 @@ public class PlayerMovement : MonoBehaviour
         //plays move SFX if there is input && timer allows it
         if (sfxTimer < 0f && _moveDir != Vector2.zero && Time.timeScale > 0f)
         {
-            AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, playerMovementSounds.PickAudioClip(), true);
-            sfxTimer = timeBetweenSFX;
+            if (_isOnIce)
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, iceMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX * slowMovementMult;
+            }
+            else if (_isInSlime)
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, slimeMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX * slowMovementMult;
+            }
+            else
+            {
+                AudioManager.instance.sfxManager.PlaySFX(SFX_Type.PlayerSounds, regularMovementSounds.PickAudioClip(), true);
+                sfxTimer = timeBetweenSFX;
+            }
+
         }
 
         var targetVelocity = new Vector3(_moveDir.x, 0, _moveDir.y) * maxSpeed;

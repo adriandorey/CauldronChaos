@@ -74,8 +74,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   slowMultiplier: 0.5
-  playerMovementSounds: {fileID: 4339691143549273958}
+  regularMovementSounds: {fileID: 4339691143549273958}
+  iceMovementSounds: {fileID: 7696997245743112875}
+  slimeMovementSounds: {fileID: 3375220459115170418}
   timeBetweenSFX: 0.15
+  slowMovementMult: 2
 --- !u!54 &7643185493547467135
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10219,6 +10222,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2115660061829388284}
+  - {fileID: 2386692158146343738}
+  - {fileID: 1140439061430477375}
   m_Father: {fileID: 6248754792270158461}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3487340693053342542
@@ -10600,6 +10605,57 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &4131543882037605945
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2386692158146343738}
+  - component: {fileID: 7696997245743112875}
+  m_Layer: 7
+  m_Name: IceMovementSFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2386692158146343738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4131543882037605945}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4646406613937018363}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7696997245743112875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4131543882037605945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953697c0e7782b748887310ece8ca880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: 5f4448725739caa47948ed9c60221253, type: 3}
+  - {fileID: 8300000, guid: 9b08a3ca0800aad4b933672d728b1e16, type: 3}
+  - {fileID: 8300000, guid: 2a7236c54ca30ed439471d767bfeaa84, type: 3}
+  - {fileID: 8300000, guid: 9f5a6be0fb2b4324981ac90a71fbc4ea, type: 3}
+  - {fileID: 8300000, guid: 68fae267f453a5348ba1108bc55d29f7, type: 3}
+  - {fileID: 8300000, guid: fc4803db40b04b4418d9b158da6a852a, type: 3}
 --- !u!1 &5429949579032569632
 GameObject:
   m_ObjectHideFlags: 0
@@ -11651,3 +11707,54 @@ MonoBehaviour:
   m_Spacing: {x: 0.1, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 2
+--- !u!1 &9186559286003240824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1140439061430477375}
+  - component: {fileID: 3375220459115170418}
+  m_Layer: 7
+  m_Name: SlimeMovementSFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1140439061430477375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9186559286003240824}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4646406613937018363}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3375220459115170418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9186559286003240824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953697c0e7782b748887310ece8ca880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: b6c8432e71fa6fc4baa737a789abf74c, type: 3}
+  - {fileID: 8300000, guid: 3dc328cc2e00ff74ab09a2cf199d5eb5, type: 3}
+  - {fileID: 8300000, guid: a237c803df0f737498a3118c25fd227b, type: 3}
+  - {fileID: 8300000, guid: 29b8299a3092943468a9e7a55702a817, type: 3}
+  - {fileID: 8300000, guid: f6744db15c739194e8bf3793f9bbdfbb, type: 3}
+  - {fileID: 8300000, guid: 3b16ddfcf3e502f4d9126248f3208dea, type: 3}
