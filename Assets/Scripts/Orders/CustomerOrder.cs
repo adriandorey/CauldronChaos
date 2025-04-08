@@ -52,7 +52,7 @@ public class CustomerOrder : MonoBehaviour
     internal void Complete()
     {
         _hasReceivedPotion = true;
-        Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount);
+        Actions.OnCustomerServed?.Invoke(RequestedOrder.sellAmount, transform);
         if(!coin.isPlaying)
             coin.Play();
 

@@ -8,6 +8,8 @@ public class ScoreManager : MonoBehaviour
     [Header("Gameplay UI")]
     [SerializeField] private Image quotaFill;
     [SerializeField] private GameObject coinImage;
+    [SerializeField] private GameObject coinCollection;
+    [SerializeField] private GameObject coinCollectionImage;
 
     [Header("EOD UI")]
     [SerializeField] private TextMeshProUGUI eodTitle;
@@ -62,9 +64,11 @@ public class ScoreManager : MonoBehaviour
         _currentDay = day;
     }
 
-    private void UpdateScore(int regularScore)
+    private void UpdateScore(int regularScore, Transform position)
     {
         _score += regularScore;
+
+        MoveCoin(position);
 
         if (quotaFill.fillAmount == 1)
         {
@@ -111,6 +115,17 @@ public class ScoreManager : MonoBehaviour
         _score = 0;
     }
 
+    private void MoveCoin(Transform customerPos)
+    {
+        GameObject coin1 = Instantiate(coinCollectionImage, customerPos.position, Quaternion.Euler(-55.2f, 0f, 0f));
+        GameObject coin2 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(-0.5f, 0f,0f), Quaternion.Euler(-55.2f, 0f, 0f));
+        GameObject coin3 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(0.5f, 0f,0f), Quaternion.Euler(-55.2f, 0f, 0f));
+
+        coin1.transform.DOMove(coinCollection.transform.position, 1f).SetEase(Ease.OutQuad);
+        coin2.transform.DOMove(coinCollection.transform.position, 1f).SetEase(Ease.OutQuad);
+        coin3.transform.DOMove(coinCollection.transform.position, 1f).SetEase(Ease.OutQuad);
+    }
+
 
     private void ResetValues()
     {
@@ -121,7 +136,7 @@ public class ScoreManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other);
+        Destroy(other.gameObject);
         coinImage.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f, 1, 0.5f);
     }
 }

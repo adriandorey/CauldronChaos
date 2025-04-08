@@ -17,7 +17,7 @@ public static class Actions
     public static Action OnEndDay;
 
     /// <summary> When a customer is served this will trigger any other script that needs to know about it </summary>
-    public static Action<int> OnCustomerServed;
+    public static Action<int, Transform> OnCustomerServed;
 
     /// <summary> Sets the day for everything that needs to know what the day is </summary>
     public static Action<int> OnSetDay;
