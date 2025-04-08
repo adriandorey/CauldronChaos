@@ -108,7 +108,7 @@ public class QueueManager : MonoBehaviour
                 continue;
             
             order.Complete();
-            Debug.Log("Order received");
+            //Debug.Log("Order received");
             potionOutput.JumpToCustomer(order, () => FinishOrder(order));
             return;
         }
@@ -119,7 +119,7 @@ public class QueueManager : MonoBehaviour
 
     private void FinishOrder(CustomerOrder customer)
     {
-        Debug.Log("Finishing order");
+        // Debug.Log("Finishing order");
         // customer.OrderComplete(); 
         RemoveCustomer(customer.gameObject);
         

@@ -8,8 +8,8 @@ public class TutorialHighlighter : MonoBehaviour
     [SerializeField] private HighlightableObject[] cauldrons;
     [SerializeField] private HighlightableObject[] potionShelves;
     
-    private HighlightableObject _lastCauldron;
-    private HighlightableObject _stick;
+    internal HighlightableObject LastCauldron;
+    internal HighlightableObject Stick;
     
     #region Enable / Disable / Destroy
     
@@ -51,8 +51,8 @@ public class TutorialHighlighter : MonoBehaviour
         }
     }
     
-    private void HighlightLastCauldron() => _lastCauldron.SetHighlight();
-    private void HighlightStirStick() => _stick.SetHighlight();
+    private void HighlightLastCauldron() => LastCauldron.SetHighlight();
+    private void HighlightStirStick() => Stick.SetHighlight();
 
     internal void HighlightMaterial(string objName)
     {
@@ -89,9 +89,19 @@ public class TutorialHighlighter : MonoBehaviour
             potion.RevertHighlight();
         }
     }
-    
-    private void RevertLastCauldron() => _lastCauldron.RevertHighlight();
-    private void RevertStirStick() => _stick.RevertHighlight();
+
+    private void RevertLastCauldron()
+    {
+        if(LastCauldron != null)
+            LastCauldron.RevertHighlight();
+    }
+
+    private void RevertStirStick()
+    {
+        if(Stick != null)
+            Stick.RevertHighlight();
+    }
+
 
     internal void RevertMaterial(string objName)
     {
@@ -106,12 +116,22 @@ public class TutorialHighlighter : MonoBehaviour
             case "servingCounter":   RevertServingCounter(); break;
         }
     }
+
+    internal void RevertAll()
+    {
+        RevertRecipeBook();
+        RevertCrate();
+        RevertStirStick();
+        RevertPotionShelves();
+        RevertStirStick();
+        RevertServingCounter();
+    }
     
     #endregion
     
     private void SetLastUsed(HighlightableObject cauldron, HighlightableObject stick)
     {
-        _lastCauldron = cauldron;
-        _stick = stick;
+        LastCauldron = cauldron;
+        Stick = stick;
     }
 }

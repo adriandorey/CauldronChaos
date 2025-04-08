@@ -45,7 +45,7 @@ public class TutorialManager : MonoBehaviour
         CurrentStep = TutorialStep.HighlightRecipeBook;
     }
 
-   
+
     #region Enable / Disable / Destroy
 
     private void OnEnable()
@@ -76,14 +76,14 @@ public class TutorialManager : MonoBehaviour
 
     private void StartTutorial()
     {
-        Debug.Log("Starting Tutorial");
+        //Debug.Log("Starting Tutorial");
         _tutorialPart = 1;
         SpawnCustomer();
 
         highlighter.HighlightMaterial("recipeBook");
     }
 
-    
+
     // Just makes sure the book can be interacted with multiple times
     internal void HandleBookInteraction()
     {
@@ -97,7 +97,6 @@ public class TutorialManager : MonoBehaviour
 
     internal void HandleTutorialStep(TutorialStep step, HighlightableObject highlight = null)
     {
-        // Debug.Log(step);
         if (_tutorialPart != 1) return;
         if (CurrentStep != step)
         {
@@ -106,12 +105,12 @@ public class TutorialManager : MonoBehaviour
         }
 
         // Specific conditions
-        // if (step == TutorialStep.StirCauldron && highlighter.StirStick != rend ||
-        //     step == TutorialStep.FillPotionBottle && highlighter.LastCauldron != rend)
-        // {
-        //     RestartTutorial();
-        //     return;
-        // }
+        if (step == TutorialStep.StirCauldron && highlighter.Stick.name != highlight.name ||
+            step == TutorialStep.FillPotionBottle && highlighter.LastCauldron.name != highlight.name)
+        {
+            RestartTutorial();
+            return;
+        }
 
         // Get next step details
         if (!_tutorialSteps.TryGetValue(step, out var stepData)) return;
@@ -123,7 +122,7 @@ public class TutorialManager : MonoBehaviour
         {
             CurrentStep = stepData.nextStep;
             return;
-        } 
+        }
 
         // Proceed to the next step
         NextStep(stepData.nextStep);
@@ -163,19 +162,18 @@ public class TutorialManager : MonoBehaviour
     // Spawns Two Customers with a pause between the two so they're not spawned on each other.
     private IEnumerator SpawnTwoCustomers()
     {
-        for(var i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
         {
             SpawnCustomer();
             yield return new WaitForSeconds(3);
-
         }
     }
 
     /// <summary> Spawns a single customer and increments the customer spawed count</summary>
     private void SpawnCustomer()
     {
-            queueManager.SpawnCustomer();
-            _customersSpawned++;
+        queueManager.SpawnCustomer();
+        _customersSpawned++;
     }
 
 
@@ -189,18 +187,20 @@ public class TutorialManager : MonoBehaviour
         enabled = false;
     }
 
+    /// <summary>  </summary>
     internal void RestartTutorial()
     {
         if (_tutorialPart != 1) return;
-        
+
         Actions.BlowUpCauldron?.Invoke(); // Reset both cauldrons
         // highlighter.ResetAllMaterials(); // Reset all the highlighted materials
         _hasInteracted = false; // reset the has interacted - used for the book
-        
-        tutorialUI.ActivatePopUp("You made a mistake!\nTry again!"); 
-        
+
+        highlighter.RevertAll();
+        tutorialUI.ActivatePopUp("You made a mistake!\nTry again!");
+
         CurrentStep = TutorialStep.HighlightRecipeBook;
-        // highlighter.ChangeMaterial("recipeBook", true);
+        highlighter.HighlightMaterial("recipeBook");
     }
 
 
@@ -215,7 +215,7 @@ public class TutorialManager : MonoBehaviour
             queueManager.SpawnCustomer();
             return;
         }
-         
+
         //Debug.Log("Tutorial Part:" + _tutorialPart);
         _tutorialPart++;
         NextPartOfTutorial();

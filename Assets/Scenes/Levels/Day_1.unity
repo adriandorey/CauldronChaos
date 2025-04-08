@@ -34333,6 +34333,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CauldronModel1
       objectReference: {fileID: 0}
+    - target: {fileID: 5671352220420065976, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: Cylinder1
+      objectReference: {fileID: 0}
     - target: {fileID: 6467418012529647783, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
       propertyPath: m_IsTrigger
@@ -64787,6 +64792,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CauldronModel2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671352220420065976, guid: 7ce4f7651a1f047449c653277d1cc9ae,
+        type: 3}
+      propertyPath: m_Name
+      value: Cylinder2
       objectReference: {fileID: 0}
     - target: {fileID: 7651719252592166061, guid: 7ce4f7651a1f047449c653277d1cc9ae,
         type: 3}
