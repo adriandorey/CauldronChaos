@@ -77,11 +77,7 @@ public class ScoreManager : MonoBehaviour
 
         pulse = StartCoroutine(PulseCoin());
 
-        if (quotaFill.fillAmount == 1)
-        {
-            coinImage.transform.DOScale(Vector3.one * 1.5f, 1f).OnComplete(ResetCoinSize);
-            return;
-        }
+        if (quotaFill.fillAmount == 1) return;
 
         quotaFill.fillAmount = (float)_score / (float)scorePerLevel[_currentDay];
     }
@@ -160,6 +156,7 @@ public class ScoreManager : MonoBehaviour
 
     private void ResetCoin()
     {
-        coinImage.transform.DOScale(1.0f, 0.3f);
+        if(coinImage.transform.localScale != Vector3.one)
+            coinImage.transform.DOScale(1.0f, 0.3f);
     }
 }
