@@ -205,6 +205,7 @@ public class DayManager : MonoBehaviour
 
     private void ResetValues()
     {
+        clockText.color = Color.white;
         AudioManager.instance.musicManager.musicSource.pitch = 1f;
         _increasingMusic = false;
         timerFill.fillAmount = 0;
