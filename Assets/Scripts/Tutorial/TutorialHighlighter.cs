@@ -122,6 +122,7 @@ public class TutorialHighlighter : MonoBehaviour
         RevertRecipeBook();
         RevertCrate();
         RevertStirStick();
+        RevertCauldrons();
         RevertPotionShelves();
         RevertStirStick();
         RevertServingCounter();

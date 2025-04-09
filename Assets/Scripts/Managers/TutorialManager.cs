@@ -192,6 +192,8 @@ public class TutorialManager : MonoBehaviour
     {
         if (_tutorialPart != 1) return;
 
+        Debug.Log("Resetting Tutorial");
+
         Actions.BlowUpCauldron?.Invoke(); // Reset both cauldrons
         // highlighter.ResetAllMaterials(); // Reset all the highlighted materials
         _hasInteracted = false; // reset the has interacted - used for the book
@@ -212,7 +214,8 @@ public class TutorialManager : MonoBehaviour
 
         if (CurrentStep != TutorialStep.Completed)
         {
-            queueManager.SpawnCustomer();
+            ResetFlags();
+            SpawnCustomer();
             return;
         }
 
