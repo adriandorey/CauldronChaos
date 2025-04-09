@@ -136,7 +136,8 @@ public class ScoreManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Destroy(other.gameObject);
         coinImage.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f, 1, 0.5f);
+        other.transform.DOKill();
+        Destroy(other.gameObject);
     }
 }

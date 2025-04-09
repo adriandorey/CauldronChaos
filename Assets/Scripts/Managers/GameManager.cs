@@ -93,8 +93,6 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Settings)
             _previousState = gameState;
 
-        Debug.Log("Audio Manager pitch before state change " + AudioManager.instance.musicManager.musicSource.pitch);
-
         if (state == GameState.Pause)
             _previousPitch = AudioManager.instance.musicManager.musicSource.pitch;
 
