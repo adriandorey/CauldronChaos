@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +27,8 @@ public class ScoreManager : MonoBehaviour
     // keeps track of current day / day score
     private int _score;
     private int _currentDay;
+
+    private Coroutine pulse;
 
     private void Start()
     {
@@ -69,6 +72,10 @@ public class ScoreManager : MonoBehaviour
         _score += regularScore;
 
         MoveCoin(position);
+        if (pulse != null)
+            StopCoroutine(PulseCoin());
+
+        pulse = StartCoroutine(PulseCoin());
 
         if (quotaFill.fillAmount == 1)
         {
@@ -135,17 +142,24 @@ public class ScoreManager : MonoBehaviour
         ResetCoin();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator PulseCoin()
     {
+        yield return new WaitForSeconds(1);
+
         coinImage.transform.DOKill();
         coinImage.transform.DOScale(1.2f, 0.3f).OnComplete(ResetCoin);
+    }
+
+
+
+    private void OnTriggerEnter(Collider other)
+    {
         other.transform.DOKill();
         Destroy(other.gameObject);
     }
 
     private void ResetCoin()
     {
-
         coinImage.transform.DOScale(1.0f, 0.3f);
     }
 }

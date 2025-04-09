@@ -46,7 +46,7 @@ public class DayManager : MonoBehaviour
     private bool _increasingMusic;
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         _gameplayTimer = new CustomTimer(dayLength, true);
     }
