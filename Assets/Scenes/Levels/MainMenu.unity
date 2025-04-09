@@ -61344,11 +61344,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7782932320102687655, guid: 2799942a5de093f46a85f6f5ded04166,
-        type: 3}
-      propertyPath: m_FillAmount
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8014733959822588864, guid: 2799942a5de093f46a85f6f5ded04166,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -61370,8 +61365,7 @@ PrefabInstance:
       value: 0.007471445
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 2009421986240873802, guid: 2799942a5de093f46a85f6f5ded04166, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5455484262196731037, guid: 2799942a5de093f46a85f6f5ded04166,

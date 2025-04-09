@@ -181,9 +181,10 @@ public class UiManager : MonoBehaviour
     // How to play
     public void ActivateHowToPlay(bool isLoading)
     {
+        howToPlayPanelUI.SetActive(true);
+        
         if (isLoading)
         {
-            howToPlayPanelUI.SetActive(true);
             howToPlayBg.enabled = false;
             howToPlayBack.gameObject.SetActive(false);
         }
@@ -194,7 +195,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    private void DeactivateHowToPlay()
+    public void DeactivateHowToPlay()
     {
         howToPlayPanelUI.SetActive(false);
     }
