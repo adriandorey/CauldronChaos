@@ -38,8 +38,8 @@ public class DayManager : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] private AudioClip startDaySfx;
-
     [SerializeField] private AudioClip endDaySfx;
+    [SerializeField] private AudioClip alarm;
 
     private Coroutine _coroutine;
 
@@ -133,12 +133,6 @@ public class DayManager : MonoBehaviour
         var remainingSeconds = Mathf.FloorToInt(_gameplayTimer.GetRemainingTime());
 
         if (remainingSeconds > 60) return;
-
-        if (!_increasingMusic)
-        {
-            AudioManager.instance.musicManager.musicSource.pitch = 1.4f;
-            _increasingMusic = true;
-        }
         
         // pulse every 15 seconds before 30s, then every 5 seconds afterwards
         var pulseInterval = remainingSeconds > 30 ? 15 : 5;
@@ -147,6 +141,13 @@ public class DayManager : MonoBehaviour
         if(remainingSeconds <= 30)
         {
             clockText.color = timerColour;
+
+            if (!_increasingMusic)
+            {
+                AudioManager.instance.musicManager.musicSource.pitch = 1.4f;
+                AudioManager.instance.sfxManager.PlayMenuSFX(alarm);
+                _increasingMusic = true;
+            }
         }
 
         // Check if it's time to pulse and ensure it doesn't repeat in the same second
