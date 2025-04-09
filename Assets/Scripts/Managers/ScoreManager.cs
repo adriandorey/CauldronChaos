@@ -118,8 +118,8 @@ public class ScoreManager : MonoBehaviour
     private void MoveCoin(Transform customerPos)
     {
         GameObject coin1 = Instantiate(coinCollectionImage, customerPos.position, Quaternion.Euler(-55.2f, 0f, 0f));
-        GameObject coin2 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(-0.5f, 0f,0f), Quaternion.Euler(-55.2f, 0f, 0f));
-        GameObject coin3 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(0.5f, 0f,0f), Quaternion.Euler(-55.2f, 0f, 0f));
+        GameObject coin2 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(-0.5f, 0f, 0f), Quaternion.Euler(-55.2f, 0f, 0f));
+        GameObject coin3 = Instantiate(coinCollectionImage, customerPos.position + new Vector3(0.5f, 0f, 0f), Quaternion.Euler(-55.2f, 0f, 0f));
 
         coin1.transform.DOMove(coinCollection.transform.position, 1f).SetEase(Ease.OutQuad);
         coin2.transform.DOMove(coinCollection.transform.position, 1f).SetEase(Ease.OutQuad);
@@ -132,11 +132,20 @@ public class ScoreManager : MonoBehaviour
         //coinParticles.Stop();
         quotaFill.fillAmount = 0;
         _score = 0;
+        ResetCoin();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        coinImage.transform.DOKill();
+        coinImage.transform.DOScale(1.2f, 0.3f).OnComplete(ResetCoin);
+        other.transform.DOKill();
         Destroy(other.gameObject);
-        coinImage.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.5f, 1, 0.5f);
+    }
+
+    private void ResetCoin()
+    {
+
+        coinImage.transform.DOScale(1.0f, 0.3f);
     }
 }

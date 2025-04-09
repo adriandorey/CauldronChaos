@@ -67000,6 +67000,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6248754791941675646}
+  - component: {fileID: 6248754791941675647}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -67700,7 +67701,7 @@ Transform:
   m_GameObject: {fileID: 5429949577203083043}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.1404165, y: 0.55362785, z: 0.37490642}
+  m_LocalPosition: {x: -0.1404165, y: 0.5536278, z: 0.37490642}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76054,14 +76055,35 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946590695728835526}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.94931585, z: -0, w: -0.31432372}
-  m_LocalPosition: {x: 3.27, y: 1.09, z: 1.12}
+  m_LocalRotation: {x: -0.024850171, y: 0.9489906, z: 0.008228028, w: -0.31421602}
+  m_LocalPosition: {x: 3.2699997, y: 1.09, z: 1.1200001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5540948703636789984}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 216.64, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 216.64, z: -3}
+--- !u!95 &6248754791941675647
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946590695728835526}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ea1047acdb139d4cbbfd15cab258fda, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!64 &6263227685504397805
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -76556,7 +76578,7 @@ Animator:
   m_GameObject: {fileID: 3112075036166875362}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 63aa22f2facd4ba43a0651f128b55f9b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 60263631833ef0344ad54eed07cf3180, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     private bool _isInDebugMode;
     private bool _isInTutorialMode;
+    private float _previousPitch = 1;
 
     private Dictionary<GameState, Action> _stateActions;
     
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour
         {
             { GameState.MainMenu, () => ChangeMusic(Song.SongType.MainMenuMusic, 1) },
             { GameState.Loading , () => ChangeMusic(Song.SongType.MainMenuMusic, 1f)},
-            { GameState.Gameplay, () => ChangeMusic(Song.SongType.GameplayMusic, 1f) },
+            { GameState.Gameplay, () => ChangeMusic(Song.SongType.GameplayMusic, _previousPitch) },
             { GameState.Pause, () => ChangeMusic(Song.SongType.GameplayMusic, 0.5f) },
             { GameState.EndOfDay, () => ChangeMusic(Song.SongType.MainMenuMusic, 1f) },
             { GameState.LevelSelect, () => ChangeMusic(Song.SongType.MainMenuMusic, 1f) }
@@ -92,6 +93,9 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Settings)
             _previousState = gameState;
 
+        if (state == GameState.Pause)
+            _previousPitch = AudioManager.instance.musicManager.musicSource.pitch;
+
         // sets gamestate
         gameState = state;
        
@@ -114,7 +118,7 @@ public class GameManager : MonoBehaviour
         {
             AudioManager.instance.musicManager.PlayMusic(songType);
         }
-        
+
         // change the pitch to whatever was requested
         AudioManager.instance.musicManager.musicSource.pitch = pitch;
         
