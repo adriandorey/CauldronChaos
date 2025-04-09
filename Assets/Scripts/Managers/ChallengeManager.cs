@@ -77,32 +77,6 @@ public class ChallengeManager : MonoBehaviour
         {
             // Debug.Log("Challenge Started: " + challenge);
             action.Invoke();
-
-            // Removing this switch statement and turning it into a function. 
-
-            ////play the environmental audio for correct challenge
-            //switch (challenge)
-            //{
-            //    case 1:
-            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.icy);
-            //        break;
-
-            //    case 2:
-            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-            //        break;
-
-            //    case 3:
-            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-            //        break;
-
-            //    case 4:
-            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.windy);
-            //        break;
-
-            //    case 5:
-            //        AudioManager.instance.environmentManager.StartEnvironmentSFX(EnvironmentSound.regular);
-            //        break;
-            //}
         }
         else
         {

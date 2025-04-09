@@ -69,6 +69,9 @@ public class PotionOutput : MonoBehaviour
 
     internal void NoCustomerAvailable()
     {
+        if (_rb == null)
+            return;
+
         GivenToCustomer = false;
         _rb.isKinematic = false;
         _col.enabled = true;
