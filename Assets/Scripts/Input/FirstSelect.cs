@@ -240,7 +240,7 @@ public class FirstSelect : MonoBehaviour
         if (Gamepad.current == null || !Gamepad.current.enabled) return;
         var gamepad = Gamepad.current;
 
-        Debug.Log(gamepad);
+        // Debug.Log(gamepad);
         if (IsControllerControlling) return;
 
         // Only switch if the controller is actively used

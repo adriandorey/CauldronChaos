@@ -159,7 +159,8 @@ public class QueueManager : MonoBehaviour
         if (customerToScare == null) return;
         
         customerToScare.GetComponent<CustomerMovement>().ScareAway(exitPoint.position);
-        RemoveCustomer(customerToScare);
+        _customers.Remove(customerToScare);
+        UpdateQueuePositions();
     }
   
     #region Queue Methods

@@ -133,7 +133,7 @@ MonoBehaviour:
   - {fileID: 8284360445958240951, guid: 6d64f097513119e4a8a8933fc9ecfac9, type: 3}
   - {fileID: 8284360445958240951, guid: e808f7e3a18ac334f8de68f08d968e03, type: 3}
   - {fileID: 8284360445958240951, guid: f361799234783404f8703ce30aef5671, type: 3}
-  timeForCustomer: 1
+  timeForCustomer: 3
   firstPos: {fileID: 6904375236869376088}
   entryPoint: {fileID: 1452921653096776414}
   exitPoint: {fileID: 502153133774814190}

@@ -82,6 +82,7 @@ public class DayManager : MonoBehaviour
             Actions.OnEndDay?.Invoke();
             Actions.OnStateChange("EndOfDay");
 
+            AudioManager.instance.musicManager.musicSource.pitch = 1;
             _gameplayTimerStarted = false;
 
             //playing end of day SFX

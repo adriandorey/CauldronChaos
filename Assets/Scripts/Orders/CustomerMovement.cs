@@ -93,7 +93,7 @@ public class CustomerMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 180, 0);
 
         // Step 1: Move 1 unit backward
-        while (Vector3.Distance(transform.position, backwardStep) > 0.1f)
+        while ((transform.position - backwardStep).sqrMagnitude > 0.01f) // 0.1 squared
         {
             transform.position = Vector3.MoveTowards(transform.position, backwardStep, moveSpeed * Time.deltaTime);
             yield return null;
@@ -102,7 +102,7 @@ public class CustomerMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 90, 0); // Rotate -90 degrees
 
         // Step 3: Move to the exit
-        while (Vector3.Distance(transform.position, _targetPosition) > 0.1f)
+        while ((transform.position - _targetPosition).sqrMagnitude > 0.01f) // 0.1 squared
         {
             transform.position = Vector3.MoveTowards(transform.position, _targetPosition, moveSpeed * Time.deltaTime);
             yield return null;
@@ -116,7 +116,12 @@ public class CustomerMovement : MonoBehaviour
         moveSpeed = 12f;
         _joinedQueue = false;
         _customerOrder.RemoveOrderUI();
-        StartCoroutine(LeaveAndExit());
+        
+        if (_customerCoroutine != null)
+            StopCoroutine(_customerCoroutine);
+
+        _customerCoroutine = StartCoroutine(LeaveAndExit());
+
     }
     
     internal bool HasJoinedQueue() => _joinedQueue;

@@ -90,11 +90,7 @@ public class GameManager : MonoBehaviour
     private void SetState(GameState state)
     {
         // this will save the previous state if the state is going into settings
-        if (state == GameState.Settings)
-            _previousState = gameState;
-
-        if (state == GameState.Pause)
-            _previousPitch = AudioManager.instance.musicManager.musicSource.pitch;
+        SavePreviousData(state);
 
         // sets gamestate
         gameState = state;
@@ -121,7 +117,8 @@ public class GameManager : MonoBehaviour
 
         // change the pitch to whatever was requested
         AudioManager.instance.musicManager.musicSource.pitch = pitch;
-        
+        // Debug.Log($"Changing pitch to: {pitch}");
+
         // if gamestate isnt gameplay end environment sfx
         if (gameState != GameState.Gameplay)
         {
@@ -141,6 +138,23 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Pause: SetState(GameState.Gameplay); break;
             case GameState.Gameplay:  SetState(GameState.Pause); break;
+        }
+    }
+
+    private void SavePreviousData(GameState state)
+    {
+        if (state == GameState.Settings)
+            _previousState = gameState;
+
+        switch (gameState)
+        {
+            // Store the pitch BEFORE we change it during pause
+            case GameState.Gameplay when state == GameState.Pause:
+                _previousPitch = AudioManager.instance.musicManager.musicSource.pitch;
+                break;
+            case GameState.Gameplay when state == GameState.Loading:
+                _previousPitch = 1;
+                break;
         }
     }
 

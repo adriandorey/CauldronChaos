@@ -190,6 +190,7 @@ public class UiManager : MonoBehaviour
         }
         else
         {
+            Actions.OnSetUiLocation(Page.HowToPlay);            
             howToPlayBg.enabled = true;
             howToPlayBack.gameObject.SetActive(true);
         }

@@ -124,18 +124,21 @@ public class GoblinAI : MonoBehaviour
     private void OnEnable()
     {
         Actions.OnStartGoblin += StartChaos;
+        Actions.OnEndDay += EndChaos;
         Actions.OnEndGoblin += EndChaos;
     }
 
     private void OnDisable()
     {
         Actions.OnStartGoblin -= StartChaos;
+        Actions.OnEndDay -= EndChaos;
         Actions.OnEndGoblin -= EndChaos;
     }
 
     private void OnDestroy()
     {
         Actions.OnStartGoblin -= StartChaos;
+        Actions.OnEndDay -= EndChaos;
         Actions.OnEndGoblin -= EndChaos;
     }
 
@@ -154,6 +157,7 @@ public class GoblinAI : MonoBehaviour
     private void EndChaos()
     {
         _isGoblinActive = false;
+        _noiseTimer.StopTimer();
         if (_goblinBehaviour == null) return;
 
         if (_currentAction != null)
