@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum WindDirection
 {
@@ -26,18 +29,18 @@ public class WindyDay : MonoBehaviour
     [SerializeField] private GameObject windUpParticles;
     [SerializeField] private GameObject windDownParticles;
 
+    [SerializeField] private Wind windLeft;
+    [SerializeField] private Wind windRight;
+    [SerializeField] private Wind windUp;
+    [SerializeField] private Wind windDown;
+    
+    private Wind _currentWind;
+    private Coroutine _windDirectionCoroutine;
+
 
     private void Awake()
     {
         _windDirectionChange = new CustomTimer(_windChangeTime, false);
-    }
-
-    private void Start()
-    {
-        windUpParticles.SetActive(false);
-        windDownParticles.SetActive(false);
-        windLeftParticles.SetActive(false);
-        windRightParticles.SetActive(false);
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -90,6 +93,9 @@ public class WindyDay : MonoBehaviour
         Debug.Log("Stopping windy day");
         _currentStrength = 0;
         _windDirectionChange.StopTimer();
+        
+        if(_windDirectionCoroutine != null)
+            StopCoroutine(_windDirectionCoroutine);
         foreach (var window in windows)
         {
             window.SetActive(true);
@@ -101,24 +107,31 @@ public class WindyDay : MonoBehaviour
         // picks a random direction for the wind to change to
         windDirect = (WindDirection)Random.Range(0, 4);
         
+        if(_windDirectionCoroutine != null)
+            StopCoroutine(_windDirectionCoroutine);
+        
         // Depending on which direction, it will change the transform of the force
         switch (windDirect)
         {
             case WindDirection.GoingLeft: 
                 _direction = -transform.right;
-                SetParticleSystem(windLeftParticles);
+                _windDirectionCoroutine = StartCoroutine(WindDelay(windLeft));
+                // SetParticleSystem(windLeftParticles);
                 break;
             case WindDirection.GoingRight: 
                 _direction = transform.right;
-                SetParticleSystem(windRightParticles);
+                _windDirectionCoroutine = StartCoroutine(WindDelay(windRight));
+                // SetParticleSystem(windRightParticles);
                 break;
             case WindDirection.TowardsScreen: 
                 _direction = -transform.forward;
-                SetParticleSystem(windDownParticles);
+                _windDirectionCoroutine = StartCoroutine(WindDelay(windDown));
+                // SetParticleSystem(windDownParticles);
                 break;
             case WindDirection.AwayFromScreen: 
                 _direction = transform.forward;
-                SetParticleSystem(windUpParticles);
+                _windDirectionCoroutine = StartCoroutine(WindDelay(windUp));
+                // SetParticleSystem(windUpParticles);
                 break;
         }
         Debug.Log("Wind Direction Changed to: " + windDirect);
@@ -141,4 +154,27 @@ public class WindyDay : MonoBehaviour
 
         newSystem.SetActive(true);
     }
+
+    private IEnumerator WindDelay(Wind direction)
+    {
+        if (_currentWind != null)
+        {
+            _currentWind.loop.Stop();
+            _currentWind.wind.Stop();
+        }
+        
+        yield return new WaitForSeconds(0.2f);
+        
+        direction.loop.Play();
+        direction.wind.Play();
+        
+        _currentWind = direction;
+    }
+}
+
+[Serializable]
+public class Wind
+{
+    public ParticleSystem loop;
+    public ParticleSystem wind;
 }

@@ -49,7 +49,11 @@ public class SlimeTrail : MonoBehaviour
         // Once the last spawned position is far enough away from the last position, it will spawn a new slime prefab.
         if(Vector3.Distance(_lastSpawnedPosition, transform.position) >= distanceBetweenPoints)
         {
-            var slime = Instantiate(slimePrefab, transform.position, Quaternion.identity);
+            var angle = Random.RandomRange(0, 360);
+            var rotation = Quaternion.Euler(0, angle, 0);
+            
+            
+            var slime = Instantiate(slimePrefab, transform.position, rotation);
             _slimeTrail.Enqueue(slime);
             _lastSpawnedPosition = transform.position;
         }
