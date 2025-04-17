@@ -66233,28 +66233,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1793328975341606478}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &96109204948626702
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2481710780347295319}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3660275907326674588, guid: 071f6042e4b641b4b8dfca616b385e29, type: 3}
 --- !u!23 &131669540070769325
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68294,24 +68272,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3153887190252281110}
   m_Mesh: {fileID: 7889587706240618379, guid: 63e5cd2e9e9689945905faff5e87e6ce, type: 3}
---- !u!114 &1682806397470506430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3045649279611063108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 4247430468868494256, guid: dfe4edd3577e1c5418627583d9a1f7c4,
-    type: 3}
-  crateType: 4
-  particles: {fileID: 0}
 --- !u!1 &1688120856197117840
 GameObject:
   m_ObjectHideFlags: 0
@@ -68781,25 +68741,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2842254931530781837}
   m_Mesh: {fileID: 2943395109716765318, guid: 36548931f8c37cc4f9f121b1a8b4c78e, type: 3}
---- !u!114 &1988498361829628168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6108962486509113226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!64 &1997310196852298202
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -69734,9 +69675,6 @@ GameObject:
   - component: {fileID: 2971001788715236589}
   - component: {fileID: 2203603784576594760}
   - component: {fileID: 4138863851048535938}
-  - component: {fileID: 96109204948626702}
-  - component: {fileID: 4081908943706399877}
-  - component: {fileID: 6106376176085829579}
   m_Layer: 6
   m_Name: MushroomCrate
   m_TagString: Crate
@@ -70614,8 +70552,6 @@ GameObject:
   - component: {fileID: 1630402964992237147}
   - component: {fileID: 3550153249573825169}
   - component: {fileID: 676083086892744733}
-  - component: {fileID: 1682806397470506430}
-  - component: {fileID: 5667788638960068880}
   m_Layer: 6
   m_Name: MandrakeCrate
   m_TagString: Crate
@@ -71275,8 +71211,6 @@ GameObject:
   - component: {fileID: 1299248854626303199}
   - component: {fileID: 3882996485339842581}
   - component: {fileID: 992600428340978329}
-  - component: {fileID: 3549237518848460350}
-  - component: {fileID: 3936358698266640770}
   m_Layer: 6
   m_Name: TrollBoneCrate
   m_TagString: Crate
@@ -71498,24 +71432,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868678230699546459}
   m_Mesh: {fileID: 2943395109716765318, guid: 36548931f8c37cc4f9f121b1a8b4c78e, type: 3}
---- !u!114 &3549237518848460350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3378773714855930304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 1434587993371374756, guid: b64cc5b20396d344f8749f65e36e350c,
-    type: 3}
-  crateType: 5
-  particles: {fileID: 0}
 --- !u!23 &3550153249573825169
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -72319,44 +72235,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8500761133377019981}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3936358698266640770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3378773714855930304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
---- !u!114 &3960318999414118914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8488942778391313076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!23 &3964486278115912229
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -72605,24 +72483,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 323656527886988067}
   m_Mesh: {fileID: -7587030971442298145, guid: bf7aea9960cf9d44898a5888907c30ff, type: 3}
---- !u!114 &4081908943706399877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2481710780347295319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 6429869540098028704, guid: 8066bd2877328af4cb4a54c396506d76,
-    type: 3}
-  crateType: 1
-  particles: {fileID: 0}
 --- !u!1 &4084069943525109121
 GameObject:
   m_ObjectHideFlags: 0
@@ -74080,24 +73940,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5885090576153703262, guid: 8ae2d62ccd280a646974c2fb83a393aa, type: 3}
---- !u!114 &5115808527978951404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8488942778391313076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 1589310688748638498, guid: 01b029e4cae001c46aab15e01288d2eb,
-    type: 3}
-  crateType: 3
-  particles: {fileID: 0}
 --- !u!33 &5151106808226757892
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -75205,25 +75047,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5667788638960068880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3045649279611063108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!33 &5678737546274329904
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -75902,25 +75725,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4185473435230441436}
   m_LocalEulerAnglesHint: {x: 70.016, y: 352.123, z: -305.224}
---- !u!114 &6106376176085829579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2481710780347295319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!1 &6108962486509113226
 GameObject:
   m_ObjectHideFlags: 0
@@ -75933,8 +75737,6 @@ GameObject:
   - component: {fileID: 7503962599888738965}
   - component: {fileID: 5748732172794048095}
   - component: {fileID: 8638705756508521683}
-  - component: {fileID: 6650816549926312788}
-  - component: {fileID: 1988498361829628168}
   m_Layer: 0
   m_Name: RabbitFootCrate
   m_TagString: Crate
@@ -76888,24 +76690,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3199468932623301952}
   m_LocalEulerAnglesHint: {x: 25.321, y: -129.735, z: -47.341}
---- !u!114 &6650816549926312788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6108962486509113226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 1434587993371374756, guid: 975a5059dc8b283458e14c38676c0266,
-    type: 3}
-  crateType: 2
-  particles: {fileID: 0}
 --- !u!1 &6654570658585534084
 GameObject:
   m_ObjectHideFlags: 0
@@ -79755,8 +79539,6 @@ GameObject:
   - component: {fileID: 5272241005584641963}
   - component: {fileID: 7984376412264864609}
   - component: {fileID: 6263227685504397805}
-  - component: {fileID: 5115808527978951404}
-  - component: {fileID: 3960318999414118914}
   m_Layer: 6
   m_Name: EyeOfBasiliskCrate
   m_TagString: Crate

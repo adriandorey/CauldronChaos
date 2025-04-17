@@ -154,8 +154,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mustBePickedUp: 0
   isContainer: 1
-  ingredientPrefab: {fileID: 232629980984179058, guid: 3b72e527b01d2d24fa35b5ba8840f703,
-    type: 3}
+  crateType: 0
+  particles: {fileID: 0}
+  prefabReference:
+    m_AssetGUID: 3b72e527b01d2d24fa35b5ba8840f703
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!64 &8287291730705920111
 MeshCollider:
   m_ObjectHideFlags: 0

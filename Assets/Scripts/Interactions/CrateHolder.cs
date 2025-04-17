@@ -1,66 +1,57 @@
+using System;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Random = UnityEngine.Random;
 
 public class CrateHolder : Interactable
 {
-    public GameObject ingredientPrefab;
     public enum CrateType { Bottle, Mushroom, RabbitFoot, EyeOfBasilisk, Mandrake, TrollBone };
     public CrateType crateType;
-    private Vector3 _originalScale;
     [SerializeField] private ParticleSystem particles;
     private TutorialManager _tutorialManager;
 
-
+    [SerializeField] private AssetReference prefabReference;
+    private AsyncOperationHandle<GameObject> _prefabLoadOpHandle;
+    private PickupBehaviour _parent;
+    
     public void Start()
     {
         _tutorialManager = FindObjectOfType<TutorialManager>();
-        _originalScale = transform.localScale;
+    }
 
-        // If no ingredient prefab is assigned, load the default prefab based on the crate type
-        if (ingredientPrefab != null) return;
-        
-        switch (crateType)
-        {
-            case CrateType.Bottle: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Bottle_Prefab"); break;
-            case CrateType.Mushroom: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Mushroom"); break;
-            case CrateType.RabbitFoot: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Rabbit_Foot_Prefab"); break;
-            case CrateType.EyeOfBasilisk: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Eye_of_Basilisk_Prefab"); break;
-            case CrateType.Mandrake: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Mandrake"); break;
-            case CrateType.TrollBone: ingredientPrefab = LoadPrefab("Ingredient_Prefabs/Troll_Bone"); break;
-        }
+    private void OnDisable()
+    {
+        if(_prefabLoadOpHandle.IsValid())
+            _prefabLoadOpHandle.Completed -= OnPrefabLoadComplete;
+
     }
 
     //Unimplemented regular interact function
     public override void Interact()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
-    //Function that holds interact functionality for the ingedient crate - Interaction between player and crate
+    //Function that holds interact functionality for the ingredient crate - Interaction between player and crate
     public override void Interact(PickupBehaviour playerPickup)
     {
         //Debug.Log("Create Interact called");
-
+        _parent = playerPickup;
         //Exit function  if no ingredient is selected
-        if (ingredientPrefab == null)
-        {
-            Debug.LogError("No ingredient prefab assigned to " + gameObject.name);
-            return;
-        }
 
         if(GameManager.Instance.IsInTutorial())
         {
             CheckTutorialSteps();
         }
 
+        LoadPrefab();
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
        
         if (particles != null)
             particles.Play();
         
-        var newIngredient = Instantiate(ingredientPrefab, playerPickup.GetHolderLocation()); //spawning new ingredient
-        playerPickup.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
     }
 
     // Function that handles the interaction between the goblin and the crate
@@ -70,8 +61,8 @@ public class CrateHolder : Interactable
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
 
         // Instantiate ingredient & makes it small
-        var ingredient = Instantiate(ingredientPrefab, goblin.position, Quaternion.identity);
-        ingredient.transform.localScale = Vector3.zero;
+        // var ingredient = Instantiate(_ingredientPrefab, goblin.position, Quaternion.identity);
+        // ingredient.transform.localScale = Vector3.zero;
 
         if(particles != null)
             particles.Play();
@@ -85,20 +76,33 @@ public class CrateHolder : Interactable
         
         var ingredientSequence = DOTween.Sequence();
 
-        ingredientSequence
-            .Append(ingredient.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine))
-            .Join(ingredient.transform.DOLocalJump(throwTarget, 1f, 1, 0.5f).SetEase(Ease.InOutSine));
+        // ingredientSequence
+        //     .Append(ingredient.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine))
+        //     .Join(ingredient.transform.DOLocalJump(throwTarget, 1f, 1, 0.5f).SetEase(Ease.InOutSine));
     }
 
     // Function that loads a prefab from the resources folder
-    private GameObject LoadPrefab(string path)
+    private void LoadPrefab()
     {
-        var prefab = Resources.Load<GameObject>(path);
-
-        if (prefab != null) return prefab;
+        if (!prefabReference.RuntimeKeyIsValid())
+        {
+            Debug.LogError("Prefab reference is invalid");
+            return;
+        }
         
-        Debug.LogError("Prefab not found at path: " + path);
-        return null;
+        _prefabLoadOpHandle = prefabReference.LoadAssetAsync<GameObject>();
+        _prefabLoadOpHandle.Completed += OnPrefabLoadComplete;
+    }
+
+
+    private void OnPrefabLoadComplete(AsyncOperationHandle<GameObject> asyncOperationHandle)
+    {
+        if (asyncOperationHandle.Status != AsyncOperationStatus.Succeeded) return;
+        
+        var newIngredient = Instantiate(asyncOperationHandle.Result, _parent.GetHolderLocation());
+        _parent.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
+        
+        Addressables.Release(asyncOperationHandle);
     }
     
     private void CheckTutorialSteps()

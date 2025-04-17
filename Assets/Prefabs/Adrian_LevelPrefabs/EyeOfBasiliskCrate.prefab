@@ -5117,10 +5117,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mustBePickedUp: 0
   isContainer: 1
-  ingredientPrefab: {fileID: 1589310688748638498, guid: 01b029e4cae001c46aab15e01288d2eb,
-    type: 3}
   crateType: 3
   particles: {fileID: 9093031612537885110}
+  prefabReference:
+    m_AssetGUID: 01b029e4cae001c46aab15e01288d2eb
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!114 &3960319000239472032
 MonoBehaviour:
   m_ObjectHideFlags: 0

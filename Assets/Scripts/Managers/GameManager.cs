@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour
                 _previousPitch = AudioManager.instance.musicManager.musicSource.pitch;
                 break;
             case GameState.Gameplay when state == GameState.Loading:
+                Debug.Log("reversing pitch");
                 _previousPitch = 1;
                 break;
         }

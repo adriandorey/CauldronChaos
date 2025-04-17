@@ -68,6 +68,9 @@ public class InteractionDetection : MonoBehaviour
         //loop through interactables list
         for (int i = 0; i < interactables.Count; i++)
         {
+            
+            if(interactables[i] == null) continue;
+            
             //if does not require being picked up for use return
             if (interactables[i].IsContainer())
             {
