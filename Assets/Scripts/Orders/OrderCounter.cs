@@ -11,21 +11,19 @@ public class OrderCounter : MonoBehaviour
         transform.DOKill();
     }
 
-    // When a potion hits the order counter, it will check to see if a customer needs it or not
+    // When a pickup hits the order counter, it will check to see if a customer needs it or not
     private void OnTriggerEnter(Collider other)
     {
-        // Check to see if there's a potion output on the object
-        if (other.TryGetComponent(out PotionOutput potion))
-        {
-            if (potion.GivenToCustomer) return;
+        if (!other.gameObject.CompareTag("Ingredient")) return;
 
-            queueManager.CheckCustomerRecipes(potion);
+        // Check to see if there's a pickup output on the object
+        if (other.TryGetComponent(out PickupItem pickup))
+        {
+            if ((pickup.IsHeld || pickup.GivenToCustomer ) && pickup.type != ItemType.Potion) return;
+
+            queueManager.CheckCustomerRecipes(pickup);
             return;
         }
-
-        // if there isn't check to see if there's a pickup object on it & check to see if it's being held
-        if (!other.TryGetComponent(out PickupObject pickup)) return;
-        if (pickup.isHeld) return;
 
         // This takes the starting position of the object, and then "bounces" the object back in a random direction
         var startPos = other.transform.position;

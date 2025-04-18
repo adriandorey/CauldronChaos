@@ -105,10 +105,10 @@ public class TutorialManager : MonoBehaviour
         }
 
         // Specific conditions
-        if (step == TutorialStep.StirCauldron && highlighter.Stick.name != highlight.name ||
-            step == TutorialStep.FillPotionBottle && highlighter.LastCauldron.name != highlight.name)
+        if (highlight != null && (step == TutorialStep.StirCauldron && highlighter.Stick.name != highlight.name ||
+                                  step == TutorialStep.FillPotionBottle && highlighter.LastCauldron.name != highlight.name))
         {
-            RestartTutorial();
+            tutorialUI.ActivatePopUp("Use the same cauldron you started with!");
             return;
         }
 
@@ -128,6 +128,27 @@ public class TutorialManager : MonoBehaviour
         NextStep(stepData.nextStep);
         highlighter.HighlightMaterial(_tutorialSteps[stepData.nextStep].highlightTarget);
     }
+
+    internal void ShowSoftBlockFeedback(string currentStep)
+    {
+        switch (CurrentStep)
+        {
+            case TutorialStep.StirCauldron when currentStep != "Stir_C":
+                tutorialUI.ActivatePopUp("Make sure to stir *clockwise*! Try again.");
+                break;
+            case TutorialStep.InsertIngredient:
+                tutorialUI.ActivatePopUp("Looks like that's not the right ingredient. Try checking the recipe!");
+                break;
+            case TutorialStep.FillPotionBottle:
+                tutorialUI.ActivatePopUp("Make sure to stir the cauldron before filling the bottle.");
+                break;
+            default:
+                // fallback
+                tutorialUI.ActivatePopUp("That's not quite right. Try again!");
+                break;
+        }
+    }
+
 
 
     private void NextStep(TutorialStep nextStep)
@@ -188,16 +209,14 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>  </summary>
-    internal void RestartTutorial()
+    private void RestartTutorial()
     {
         if (_tutorialPart != 1) return;
 
-        Debug.Log("Resetting Tutorial");
-
         Actions.BlowUpCauldron?.Invoke(); // Reset both cauldrons
-        // highlighter.ResetAllMaterials(); // Reset all the highlighted materials
         _hasInteracted = false; // reset the has interacted - used for the book
 
+        // Resets all the material highlights
         highlighter.RevertAll();
         tutorialUI.ActivatePopUp("You made a mistake!\nTry again!");
 

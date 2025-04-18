@@ -9,6 +9,17 @@ using UnityEngine.VFX;
 
 public class CauldronInteraction : MonoBehaviour
 {
+    #region Shader Property IDs
+    private static readonly int IsCauldronEmpty = Shader.PropertyToID("_IsCauldronEmpty");
+    private static readonly int IsPotionDone = Shader.PropertyToID("_IsPotionDone");
+    private static readonly int PotionColor = Shader.PropertyToID("_PotionColor");
+    private static readonly int EyeBool = Shader.PropertyToID("_EyeBool");
+    private static readonly int MandrakeBool = Shader.PropertyToID("_MandrakeBool");
+    private static readonly int MushroomBool = Shader.PropertyToID("_MushroomBool");
+    private static readonly int FootBool = Shader.PropertyToID("_FootBool");
+    private static readonly int BoneBool = Shader.PropertyToID("_BoneBool");
+    #endregion
+
     // Reference to the RecipeManager script
     private RecipeManager _recipeManager;
     private TutorialManager _tutorialManager;
@@ -63,9 +74,6 @@ public class CauldronInteraction : MonoBehaviour
     [SerializeField] private SFXLibrary incorrectStepSounds;
     [SerializeField] private SFXLibrary stirSounds;
 
-    private PickupBehaviour _player;
-
-
     public void Start()
     {
         // Set the starting position of the cauldron
@@ -75,7 +83,7 @@ public class CauldronInteraction : MonoBehaviour
         _cauldronFillMesh = cauldronFill.GetComponent<MeshRenderer>();
 
         _propBlock = new MaterialPropertyBlock();
-        _propBlock.SetInt("_IsCauldronEmpty", 1);
+        _propBlock.SetInt(IsCauldronEmpty, 1);
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
 
         // Get the incorrect step particles
@@ -84,7 +92,6 @@ public class CauldronInteraction : MonoBehaviour
         // Get the RecipeManager script & set the craft-able recipes
         _recipeManager = FindObjectOfType<RecipeManager>();
         _availRecipes = _recipeManager.GetAvailableRecipes();
-        _player = FindObjectOfType<PickupBehaviour>();
         _tutorialManager = FindObjectOfType<TutorialManager>();
     }
 
@@ -117,7 +124,7 @@ public class CauldronInteraction : MonoBehaviour
     {
         // Set the ingredient to the current ingredient
         _ingredientAdded = ingredientObject;
-        var ingredientStep = _ingredientAdded.GetComponent<PickupObject>().recipeIngredient.stepName;
+        var ingredientStep = _ingredientAdded.GetComponent<PickupItem>().ingredient.stepName;
 
         // if the current step is something, set the last step to it.
         if (_currentStep != null)
@@ -211,8 +218,12 @@ public class CauldronInteraction : MonoBehaviour
     private void CheckRecipeProgress()
     {
         if (GameManager.Instance.IsInTutorial())
-            CheckTutorialSteps();
+        {
+            if (!CheckTutorialSteps())
+                return; // STOP here — don’t mess with internal state of cauldron
+        }
 
+        // Safe to continue
         if (_recipe == null)
             FindPossibleRecipes();
         else
@@ -283,28 +294,29 @@ public class CauldronInteraction : MonoBehaviour
         _stepIndex++;
     }
 
-    private void CheckTutorialSteps()
+    private bool CheckTutorialSteps()
     {
-        if (_tutorialManager.CurrentStep != TutorialStep.Completed)
+        if (_tutorialManager.CurrentStep == TutorialStep.Completed)
+            return true; // allow normal gameplay
+
+        switch (_tutorialManager.CurrentStep)
         {
-            // This will check what step the tutorial is on only in part one
-            switch (_tutorialManager.CurrentStep)
-            {
-                // checks to see if the ingredient inserted was a mushroom
-                case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
-                    Actions.LastCauldronUsed?.Invoke(thisModel, stickModel);
-                    _tutorialManager.HandleTutorialStep(TutorialStep.InsertIngredient);
-                    break;
-                // checks to see if filled bottle is the last cauldron was used
-                case TutorialStep.FillPotionBottle when _currentStep == "Bottle_Potion": 
-                    _tutorialManager.HandleTutorialStep(TutorialStep.FillPotionBottle, thisModel);
-                    break;
-                // checks to see if the last cauldron was used and if they stirred in the right direction
-                case TutorialStep.StirCauldron when _currentStep == "Stir_C":
-                    _tutorialManager.HandleTutorialStep(TutorialStep.StirCauldron, stickModel);
-                    break;
-                default: _tutorialManager.RestartTutorial(); break;
-            }
+            case TutorialStep.InsertIngredient when _currentStep == "Mushroom":
+                Actions.LastCauldronUsed?.Invoke(thisModel, stickModel);
+                _tutorialManager.HandleTutorialStep(TutorialStep.InsertIngredient, thisModel);
+                return true;
+
+            case TutorialStep.FillPotionBottle when _currentStep == "Bottle_Potion":
+                _tutorialManager.HandleTutorialStep(TutorialStep.FillPotionBottle, thisModel);
+                return true;
+
+            case TutorialStep.StirCauldron when _currentStep == "Stir_C":
+                _tutorialManager.HandleTutorialStep(TutorialStep.StirCauldron, stickModel);
+                return true;
+
+            default:
+                _tutorialManager.ShowSoftBlockFeedback(_currentStep);
+                return false; // NOT continue recipe logic - allows for soft locking player
         }
     }
 
@@ -347,13 +359,13 @@ public class CauldronInteraction : MonoBehaviour
         if (_ingredientAdded == null) return;
 
         _ingredientAdded.GetComponent<Rigidbody>().isKinematic = false;
-        _ingredientAdded.GetComponent<PotionOutput>().enabled = true;
-        _ingredientAdded.GetComponent<PotionOutput>().potionInside = _recipe;
+        _ingredientAdded.GetComponent<PickupItem>().potionRecipe = _recipe;
+        _ingredientAdded.GetComponent<PickupItem>().type = ItemType.Potion;
         _ingredientAdded.transform.SetParent(null);
 
         _cauldronFillMesh.GetPropertyBlock(_propBlock);
-        _propBlock.SetInt("_IsPotionDone", 1);
-        _propBlock.SetColor("_PotionColor", _recipe.potionColor);
+        _propBlock.SetInt(IsPotionDone, 1);
+        _propBlock.SetColor(PotionColor, _recipe.potionColor);
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
 
         // Instantiate the completed potion prefab
@@ -370,7 +382,7 @@ public class CauldronInteraction : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        if (thrownPotion.TryGetComponent<PotionOutput>(out var potionOutput))
+        if (thrownPotion.TryGetComponent<PickupItem>(out var potionOutput))
             potionOutput.SetPotionColor();
 
         // Play a sound here
@@ -416,15 +428,15 @@ public class CauldronInteraction : MonoBehaviour
     {
 
         _cauldronFillMesh.GetPropertyBlock(_propBlock);
-        _propBlock.SetInt("_IsCauldronEmpty", 0);
+        _propBlock.SetInt(IsCauldronEmpty, 0);
 
         switch (ingredient)
         {
-            case "Eye_of_Basilisk": _propBlock.SetInt("_EyeBool", 1); break;
-            case "Mandrake_Root": _propBlock.SetInt("_MandrakeBool", 1); break;
-            case "Mushroom": _propBlock.SetInt("_MushroomBool", 1); break;
-            case "Rabbit_Foot": _propBlock.SetInt("_FootBool", 1); break;
-            case "Troll_Bone": _propBlock.SetInt("_BoneBool", 1); break;
+            case "Eye_of_Basilisk": _propBlock.SetInt(EyeBool, 1); break;
+            case "Mandrake_Root": _propBlock.SetInt(MandrakeBool, 1); break;
+            case "Mushroom": _propBlock.SetInt(MushroomBool, 1); break;
+            case "Rabbit_Foot": _propBlock.SetInt(FootBool, 1); break;
+            case "Troll_Bone": _propBlock.SetInt(BoneBool, 1); break;
         }
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
     }
@@ -442,7 +454,7 @@ public class CauldronInteraction : MonoBehaviour
     {
         // Creates a new property block for the material and sets it to empty
         _propBlock = new MaterialPropertyBlock();
-        _propBlock.SetInt("_IsCauldronEmpty", 1);
+        _propBlock.SetInt(IsCauldronEmpty, 1);
         _cauldronFillMesh.SetPropertyBlock(_propBlock);
 
         // Resets cauldron fill level back to the top
@@ -472,13 +484,9 @@ public class CauldronInteraction : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!other.gameObject.CompareTag("Player")) return;
-        if (_player.IsHoldingItem)
-            _canInteract = false;
-        else
-        {
-            _canInteract = true;
-            Actions.OnShowStir?.Invoke();
-        }
+
+        _canInteract = true;
+        Actions.OnShowStir?.Invoke();
     }
 
     // using this to check if the player has left the range to stir the cauldron

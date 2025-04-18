@@ -740,8 +740,8 @@ MonoBehaviour:
   throwDuration: 1
   stickRotationSpeed: 0.6
   stirStick: {fileID: 8901120777319129939}
-  modelRenderer: {fileID: 3221904393584103392}
-  stirStickRend: {fileID: 3143820256570925506}
+  thisModel: {fileID: 0}
+  stickModel: {fileID: 0}
   addIngredientSounds: {fileID: 2229680116212076389}
   finishPotionSounds: {fileID: 6391177040410721172}
   incorrectStepSounds: {fileID: 2355451675625078802}
@@ -785,12 +785,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 685c37436174fc94aab51eca9cff2e9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cauldronMinDistance: 1
-  wanderRadius: 8
-  minMovementTime: 3
-  maxMovementTime: 10
+  movementSo: {fileID: 11400000, guid: ffd579e8533d6d8409207984df6a14bf, type: 2}
   cauldronModel: {fileID: 1284849389141246093}
-  liftAmount: 0.4
+  otherCauldron: {fileID: 0}
 --- !u!195 &7987518720466273988
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8638705757422825108}
   - component: {fileID: 6650816551144042771}
   - component: {fileID: 1988498360613614415}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RabbitFootCrate
   m_TagString: Crate
   m_Icon: {fileID: 0}
@@ -124,12 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 1434587993371374756, guid: 975a5059dc8b283458e14c38676c0266,
-    type: 3}
-  crateType: 2
   particles: {fileID: 7315798826110037326}
+  prefabReference:
+    m_AssetGUID: 975a5059dc8b283458e14c38676c0266
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  newLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!114 &1988498360613614415
 MonoBehaviour:
   m_ObjectHideFlags: 0

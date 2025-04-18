@@ -9,12 +9,10 @@ public class CauldronTrigger : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         //try to get ingredient component of collider
-        var ingredientHolder = other.GetComponent<PickupObject>();
-        if (ingredientHolder != null && !ingredientHolder.AddedToCauldron() && !ingredientHolder.isHeld)
+        var ingredientHolder = other.GetComponent<PickupItem>();
+        if (ingredientHolder != null && !ingredientHolder.AddedToCauldron() && !ingredientHolder.IsHeld)
         {
-            ingredientHolder.GetComponent<Rigidbody>().isKinematic = true;
-            ingredientHolder.AddToCauldron();
-            
+            ingredientHolder.InsertInCauldron();
             cauldron.AddIngredient(ingredientHolder.gameObject);
         }
     }

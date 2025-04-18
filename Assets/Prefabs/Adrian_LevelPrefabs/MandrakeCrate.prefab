@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 502615419060955008}
   - component: {fileID: 878000431575569047}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: Interaction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 259582000233637742}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: JumpPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 676083087572384402}
   - component: {fileID: 1682806397076047665}
   - component: {fileID: 5667788638817571743}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: MandrakeCrate
   m_TagString: Crate
   m_Icon: {fileID: 0}
@@ -208,12 +208,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  ingredientPrefab: {fileID: 4247430468868494256, guid: dfe4edd3577e1c5418627583d9a1f7c4,
-    type: 3}
-  crateType: 4
   particles: {fileID: 6257281959120150112}
+  prefabReference:
+    m_AssetGUID: dfe4edd3577e1c5418627583d9a1f7c4
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  newLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!114 &5667788638817571743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +247,7 @@ GameObject:
   - component: {fileID: 3140651414573641543}
   - component: {fileID: 6257281959120150112}
   - component: {fileID: 1544561967901679696}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5148,6 +5151,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2382264903107275633}
     m_Modifications:
+    - target: {fileID: 362667516946447942, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 770188676804285459, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1174279436686293670, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2545254876348577293, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 3059843704791234743, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5198,10 +5221,55 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4217016675600454701, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 4922705298845805244, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
         type: 3}
       propertyPath: m_Name
       value: MandrakeHolder
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922705298845805244, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5006717853529878032, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5732848885102936398, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6037676584412707245, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6314657560578196924, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271175921100771982, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7619039268618949634, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347734579235488720, guid: 5ccc98ff9b6ea9c43ad3238ffe2c92e7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

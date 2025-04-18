@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2006841645770080295}
   - component: {fileID: 5568785398282025786}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Interaction
   m_TagString: Crate
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   - component: {fileID: 2261273893763520388}
   - component: {fileID: 4807543733924469273}
   - component: {fileID: 7210131913789746292}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 7638596177007507243}
   - component: {fileID: 806206835508782741}
   - component: {fileID: 751646300883502365}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Lid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 519845784022924805}
   - component: {fileID: -3621242988887641985}
   - component: {fileID: 4778670102613199257}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312,10 +312,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 0
-  ingredientPrefab: {fileID: 0}
-  crateType: 0
+  particles: {fileID: 0}
+  prefabReference:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  newLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!65 &4778670102613199257
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -346,7 +351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5495971047512085639}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: JumpPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,7 +385,7 @@ GameObject:
   - component: {fileID: 623095699057406003}
   - component: {fileID: 779550995877714967}
   - component: {fileID: 353042563041646736}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

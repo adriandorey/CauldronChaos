@@ -33,7 +33,6 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         quotaFill.fillAmount = 0;
-        //coinParticles.Stop();
     }
 
     #region OnEnable / OnDisable / OnDestroy Events
@@ -132,7 +131,6 @@ public class ScoreManager : MonoBehaviour
 
     private void ResetValues()
     {
-        //coinParticles.Stop();
         quotaFill.fillAmount = 0;
         _score = 0;
         ResetCoin();
