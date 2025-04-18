@@ -80,17 +80,10 @@ public class ThrowItemsFromFloorState : GoblinState
         if (item == null) return false;
 
         // Check if item is a PickupObject and has been added to the cauldron or picked up
-        var pickup = item.GetComponent<PickupObject>();
+        var pickup = item.GetComponent<PickupItem>();
         if (pickup != null)
         {
-            if (pickup.isHeld || pickup.AddedToCauldron()) return false;
-        }
-
-        // Check if item is a PotionOutput and has been given to a customer
-        var potion = item.GetComponent<PotionOutput>();
-        if (potion != null)
-        {
-            if (potion.GivenToCustomer) return false;
+            if (pickup.IsHeld || pickup.AddedToCauldron() || pickup.GivenToCustomer) return false;
         }
 
         return true;
@@ -103,30 +96,21 @@ public class ThrowItemsFromFloorState : GoblinState
     }
     
     
-    /// <summary> Used to find all the ingredients on the floor </summary>
+    /// <summary> Used to find all the pickupItems on the floor </summary>
     private GameObject GetItem()
     {
-        var ingredients = new List<GameObject>();
-        var ing = Object.FindObjectsOfType<PickupObject>();
-        var potions = Object.FindObjectsOfType<PotionOutput>();
+        var pickupItems = new List<GameObject>();
+        var ing = Object.FindObjectsOfType<PickupItem>();
 
-        foreach (var ingredient in ing)
+        foreach (var item in ing)
         {
-            if (!ingredient.AddedToCauldron() && !ingredient.isHeld)
-                ingredients.Add(ingredient.gameObject);
+            if (!item.AddedToCauldron() && !item.IsHeld && !item.GivenToCustomer)
+                pickupItems.Add(item.gameObject);
         }
 
-        foreach (var potion in potions)
-        {
-            var pickup = potion.GetComponent<PickupObject>();
-
-            if (!potion.GivenToCustomer && !pickup.isHeld)
-                ingredients.Add(potion.gameObject);
-        }
-
-        if (ingredients.Count == 0) return null;
+        if (pickupItems.Count == 0) return null;
         
-        return ingredients[Random.Range(0, ingredients.Count)];
+        return pickupItems[Random.Range(0, pickupItems.Count)];
     }
 
 }

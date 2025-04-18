@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CounterTrigger : MonoBehaviour
 {
-    private PickupObject _pickup;
+    private PickupItem _pickup;
     [SerializeField] private float ejectPower = 2f;
     [SerializeField] private float jumpPower = 1f;
     [SerializeField] private float duration = 0.5f;
@@ -24,7 +24,7 @@ public class CounterTrigger : MonoBehaviour
 
         if (_pickup == null)
         {
-            _pickup = other.gameObject.GetComponent<PickupObject>();
+            _pickup = other.gameObject.GetComponent<PickupItem>();
             _pickup.GetComponent<Rigidbody>().velocity = Vector3.zero;
             _pickup.GetComponent<Rigidbody>().isKinematic = true;
             _pickup.transform.position = transform.position;

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8669957698060456420}
   - component: {fileID: 670165231551600326}
   - component: {fileID: 1643581298711982421}
-  - component: {fileID: 8244831767989834012}
+  - component: {fileID: 5462935563931329622}
   m_Layer: 6
   m_Name: Troll_Bone
   m_TagString: Ingredient
@@ -107,7 +107,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.12727222
-  m_Height: 0.5
+  m_Height: 0.8
   m_Direction: 0
   m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!54 &1643581298711982421
@@ -137,7 +137,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8244831767989834012
+--- !u!114 &5462935563931329622
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,14 +146,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1434587993371374756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2365aa82508257248828513cc11c57a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 55d6bbebfb6978748b21740874422f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipeIngredient: {fileID: 11400000, guid: 11e2bae846f4c604f86f9a6b84af9011, type: 2}
-  ingredientColor: {r: 0.7568628, g: 0.7843138, b: 0.78823537, a: 0}
-  isHeld: 0
-  pickUpSFX: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
-  dropSFX: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
+  type: 1
+  ingredient: {fileID: 11400000, guid: 11e2bae846f4c604f86f9a6b84af9011, type: 2}
+  potionRecipe: {fileID: 0}
+  rend: {fileID: 0}
+  pickUpSfx: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
+  dropSfx: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
 --- !u!1 &3353341840672888303
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4482620317544593492}
   - component: {fileID: 3968397687864584453}
   - component: {fileID: 8359349773208293746}
-  - component: {fileID: -2830861367294610075}
+  - component: {fileID: 5681190582561052481}
   m_Layer: 6
   m_Name: Eye_of_Basilisk
   m_TagString: Ingredient
@@ -135,7 +135,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.23403068
   m_Center: {x: -0.000000014901161, y: 0.23403068, z: 0}
---- !u!114 &-2830861367294610075
+--- !u!114 &5681190582561052481
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,14 +144,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1589310688748638498}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2365aa82508257248828513cc11c57a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 55d6bbebfb6978748b21740874422f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipeIngredient: {fileID: 11400000, guid: 0ac84d26587e92d419335d287def4e69, type: 2}
-  ingredientColor: {r: 0.1137255, g: 0.1254902, b: 0.37254903, a: 1}
-  isHeld: 0
-  pickUpSFX: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
-  dropSFX: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
+  type: 1
+  ingredient: {fileID: 11400000, guid: 0ac84d26587e92d419335d287def4e69, type: 2}
+  potionRecipe: {fileID: 0}
+  rend: {fileID: 0}
+  pickUpSfx: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
+  dropSfx: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
 --- !u!1 &1779145839040358372
 GameObject:
   m_ObjectHideFlags: 0

@@ -3639,7 +3639,7 @@ MonoBehaviour:
   eodWinLoseSprite: {fileID: 2324646736613793425}
   winSprite: {fileID: 21300000, guid: bd9010951a98eb84e9ccadda8030f89f, type: 3}
   loseSprite: {fileID: 21300000, guid: 90f7d7e29624dda41a965e335edb26a1, type: 3}
-  scorePerLevel: 90010000f401000058020000bc020000200300008403000084030000840300008403000084030000
+  scorePerLevel: 90010000c2010000f40100008a020000bc0200008403000084030000840300008403000084030000
 --- !u!54 &1400075501141493662
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7664,7 +7664,7 @@ MonoBehaviour:
     gusts blowing you and your ingredients around\u2026"
   - A new ingredient! Troll bones exhibit strong regenerative properties even after
     the troll has died. Check the recipe book for new recipes!
-  - "Yuck! Master\u2019s snail in-laws stopped by to give you a hug, and now you\u2019re
+  - "Yuck! Master's snail in-laws stopped by to give you a hug, and now you\u2019re
     covered in their sticky slime. Right as you open up shop too\u2026"
   timerColour: {r: 0.7058824, g: 0, b: 0, a: 1}
   startDaySfx: {fileID: 8300000, guid: da32e896bb83a1a4a922b1eb83cb258d, type: 3}
@@ -23317,7 +23317,7 @@ PrefabInstance:
     - target: {fileID: 6391333154800664166, guid: f25dcd618d3acd64795bf8bb32edb6c9,
         type: 3}
       propertyPath: m_text
-      value: Menu
+      value: Start
       objectReference: {fileID: 0}
     - target: {fileID: 6391333154800664166, guid: f25dcd618d3acd64795bf8bb32edb6c9,
         type: 3}
@@ -34053,6 +34053,11 @@ PrefabInstance:
       propertyPath: m_PreserveAspect
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8355679158723595963, guid: ced472106d5717446a58a4a8ad5dbb10,
+        type: 3}
+      propertyPath: pickupHolder
+      value: 
+      objectReference: {fileID: 2851366009231129147}
     - target: {fileID: 8716038327507622429, guid: ced472106d5717446a58a4a8ad5dbb10,
         type: 3}
       propertyPath: pickupUIHolder

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1993949880440651007}
   - component: {fileID: 8069316920501685512}
   - component: {fileID: 3896916314995809668}
-  - component: {fileID: -6700979364788646378}
+  - component: {fileID: 3274688301233455225}
   m_Layer: 6
   m_Name: Mandrake
   m_TagString: Ingredient
@@ -137,7 +137,7 @@ CapsuleCollider:
   m_Height: 0.8490778
   m_Direction: 2
   m_Center: {x: 0.00076675415, y: 0.08112198, z: 0}
---- !u!114 &-6700979364788646378
+--- !u!114 &3274688301233455225
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,14 +146,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4247430468868494256}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2365aa82508257248828513cc11c57a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 55d6bbebfb6978748b21740874422f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recipeIngredient: {fileID: 11400000, guid: 97e7804a0ec3fb94aba85a91aef9dbf8, type: 2}
-  ingredientColor: {r: 0.2784314, g: 0.5137255, b: 0.1254902, a: 1}
-  isHeld: 0
-  pickUpSFX: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
-  dropSFX: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
+  type: 1
+  ingredient: {fileID: 11400000, guid: 97e7804a0ec3fb94aba85a91aef9dbf8, type: 2}
+  potionRecipe: {fileID: 0}
+  rend: {fileID: 0}
+  pickUpSfx: {fileID: 8300000, guid: 28ab638ca864b3d45afa85039f2c9c25, type: 3}
+  dropSfx: {fileID: 8300000, guid: 958eab05f15fc7b4f842e5ec094944d6, type: 3}
 --- !u!1 &5959358759721375588
 GameObject:
   m_ObjectHideFlags: 0

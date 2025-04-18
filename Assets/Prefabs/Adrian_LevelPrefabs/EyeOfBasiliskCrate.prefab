@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7130165400677433502}
   - component: {fileID: 9093031612537885110}
   - component: {fileID: 7331873182316694470}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Particle System (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4917,7 +4917,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8161756082213942890}
   - component: {fileID: 2576213448645827587}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: Interaction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4969,7 +4969,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4961653748945714053}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: JumpPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5005,7 +5005,7 @@ GameObject:
   - component: {fileID: 6263227684167243343}
   - component: {fileID: 5115808527202817358}
   - component: {fileID: 3960319000239472032}
-  m_Layer: 6
+  m_Layer: 14
   m_Name: EyeOfBasiliskCrate
   m_TagString: Crate
   m_Icon: {fileID: 0}
@@ -5115,15 +5115,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f159ea61a31e54a4891aa9761009ffff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mustBePickedUp: 0
-  isContainer: 1
-  crateType: 3
   particles: {fileID: 9093031612537885110}
   prefabReference:
     m_AssetGUID: 01b029e4cae001c46aab15e01288d2eb
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  newLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!114 &3960319000239472032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5154,17 +5154,17 @@ PrefabInstance:
     - target: {fileID: 152082405266992918, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 380773547648644645, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1026015292157143384, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1035753430492127208, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
@@ -5219,7 +5219,7 @@ PrefabInstance:
     - target: {fileID: 1668082976035116446, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1931773372637192450, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
@@ -5229,72 +5229,72 @@ PrefabInstance:
     - target: {fileID: 1931773372637192450, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1937765869513050513, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2456774289534422775, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2487959629744100340, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3081449769355504613, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3330229906301711859, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5690501695887104407, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5695161484782649428, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6129479745416130077, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6567207024828354077, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7651601524274386220, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7787118292325169197, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7972528828469821284, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8447116464369551353, guid: ea3980ee3e74fe640afcd9e81a886083,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

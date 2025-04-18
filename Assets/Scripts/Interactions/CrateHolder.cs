@@ -1,69 +1,79 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using Random = UnityEngine.Random;
 
-public class CrateHolder : Interactable
+public class CrateHolder : MonoBehaviour, IPickupable
 {
-    public enum CrateType { Bottle, Mushroom, RabbitFoot, EyeOfBasilisk, Mandrake, TrollBone };
-    public CrateType crateType;
     [SerializeField] private ParticleSystem particles;
+    [SerializeField] private AssetReference prefabReference;
+    [SerializeField] private LayerMask newLayerMask;
+    
+    private AsyncOperationHandle<GameObject> _prefabLoadOpHandle;
+    private PickupInteractionController _playerGivenTo;
+    private GameObject _cachedPrefab;
+    private GameObject _ingredientSpawned;
+    
     private TutorialManager _tutorialManager;
 
-    [SerializeField] private AssetReference prefabReference;
-    private AsyncOperationHandle<GameObject> _prefabLoadOpHandle;
-    private PickupBehaviour _parent;
-    
-    public void Start()
+    private void Start()
     {
         _tutorialManager = FindObjectOfType<TutorialManager>();
+        
+        // caches prefab
+        _prefabLoadOpHandle = prefabReference.LoadAssetAsync<GameObject>();
+        _prefabLoadOpHandle.Completed += handle =>
+        {
+            _cachedPrefab = handle.Result;
+        };
     }
+
 
     private void OnDisable()
     {
-        if(_prefabLoadOpHandle.IsValid())
-            _prefabLoadOpHandle.Completed -= OnPrefabLoadComplete;
-
-    }
-
-    //Unimplemented regular interact function
-    public override void Interact()
-    {
-        throw new NotImplementedException();
+        if (_prefabLoadOpHandle.IsValid())
+            Addressables.Release(_prefabLoadOpHandle);
     }
 
     //Function that holds interact functionality for the ingredient crate - Interaction between player and crate
-    public override void Interact(PickupBehaviour playerPickup)
+    public void OnPickup(PickupInteractionController controller)
     {
-        //Debug.Log("Create Interact called");
-        _parent = playerPickup;
-        //Exit function  if no ingredient is selected
+        _playerGivenTo = controller;
 
-        if(GameManager.Instance.IsInTutorial())
+        // Checks tutorial steps if its in tutorial
+        if (GameManager.Instance.IsInTutorial())
         {
-            CheckTutorialSteps();
+            CheckTutorialStep();
         }
-
-        LoadPrefab();
+        
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
+        GetObject();
        
         if (particles != null)
             particles.Play();
-        
+    }
+   
+    // not needed for crate but needed for interface
+    public void OnDrop()
+    {
+        // Not needed for the crate
+    }
+    
+    // not needed for crate but needed for interface
+    public Sprite GetSprite()
+    {
+        // not needed for the crate
+        return null;
     }
 
     // Function that handles the interaction between the goblin and the crate
-    internal void GoblinInteraction(Transform goblin)
+    internal void GoblinInteraction(GameObject goblin)
     {
         // Bounces the crate when interacted with
         transform.DOScale(1.2f, 0.08f).SetLoops(2, LoopType.Yoyo);
 
-        // Instantiate ingredient & makes it small
-        // var ingredient = Instantiate(_ingredientPrefab, goblin.position, Quaternion.identity);
-        // ingredient.transform.localScale = Vector3.zero;
-
+        GetObject();
+        
         if(particles != null)
             particles.Play();
         
@@ -72,60 +82,57 @@ public class CrateHolder : Interactable
         var randomSpread = Random.insideUnitCircle * 1.5f;
         
         // calculate final throw direction, forward + spread
-        var throwTarget = goblin.position + forwardDirection + new Vector3(randomSpread.x, 0, randomSpread.y);
+        var throwTarget = goblin.transform.position + forwardDirection + new Vector3(randomSpread.x, 0, randomSpread.y);
         
         var ingredientSequence = DOTween.Sequence();
 
-        // ingredientSequence
-        //     .Append(ingredient.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine))
-        //     .Join(ingredient.transform.DOLocalJump(throwTarget, 1f, 1, 0.5f).SetEase(Ease.InOutSine));
+        ingredientSequence
+            .Append(_ingredientSpawned.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InOutSine))
+            .Join(_ingredientSpawned.transform.DOLocalJump(throwTarget, 1f, 1, 0.5f).SetEase(Ease.InOutSine));
     }
 
     // Function that loads a prefab from the resources folder
-    private void LoadPrefab()
+    private void GetObject()
     {
-        if (!prefabReference.RuntimeKeyIsValid())
+        if (_cachedPrefab != null)
         {
-            Debug.LogError("Prefab reference is invalid");
-            return;
-        }
-        
-        _prefabLoadOpHandle = prefabReference.LoadAssetAsync<GameObject>();
-        _prefabLoadOpHandle.Completed += OnPrefabLoadComplete;
-    }
+            _ingredientSpawned = Instantiate(_cachedPrefab);
+            _ingredientSpawned.layer = LayerMaskToLayer(newLayerMask);
 
-
-    private void OnPrefabLoadComplete(AsyncOperationHandle<GameObject> asyncOperationHandle)
-    {
-        if (asyncOperationHandle.Status != AsyncOperationStatus.Succeeded) return;
-        
-        var newIngredient = Instantiate(asyncOperationHandle.Result, _parent.GetHolderLocation());
-        _parent.SetHeldObject(newIngredient.GetComponent<PickupObject>()); //adding manually to player's held slot
-        
-        Addressables.Release(asyncOperationHandle);
-    }
-    
-    private void CheckTutorialSteps()
-    {
-        if (_tutorialManager.CurrentStep != TutorialStep.Completed)
-        {
-            switch (crateType)
+            // only gives item to the player not the goblin
+            if (_playerGivenTo != null && _ingredientSpawned.TryGetComponent(out IPickupable pickupable))
             {
-                case CrateType.Mushroom
-                    when _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
-                    return;
-                case CrateType.Mushroom:
-                    _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
-                    // Actions.OnMushroomPickedUp?.Invoke(); 
-                    break;
-                case CrateType.Bottle
-                    when _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
-                    return;
-                case CrateType.Bottle:
-                    _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
-                    // Actions.OnPotionBottlePickedUp?.Invoke(); 
-                    break;
+                pickupable.OnPickup(_playerGivenTo);
+                _playerGivenTo = null;
             }
         }
+        else
+        {
+            Debug.LogWarning("Ingredient prefab not yet loaded!");
+        }
+    }
+
+    private void CheckTutorialStep()
+    {
+        switch (prefabReference.Asset.name)
+        {
+            case "Mushroom" when  
+                _tutorialManager.CurrentStep < TutorialStep.PickUpMushroom:
+                return;
+            case "Mushroom":
+                _tutorialManager.HandleTutorialStep(TutorialStep.PickUpMushroom);
+                break;
+            case "Bottle_Prefab" when 
+                _tutorialManager.CurrentStep < TutorialStep.PickUpPotionBottle:
+                return;
+            case "Bottle_Prefab":
+                _tutorialManager.HandleTutorialStep(TutorialStep.PickUpPotionBottle);
+                break;
+        }
+    }
+    
+    int LayerMaskToLayer(LayerMask mask)
+    {
+        return Mathf.RoundToInt(Mathf.Log(mask.value, 2));
     }
 }

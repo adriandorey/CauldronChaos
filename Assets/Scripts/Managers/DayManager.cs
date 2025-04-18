@@ -206,6 +206,7 @@ public class DayManager : MonoBehaviour
 
     private void ResetValues()
     {
+        GameManager.Instance.SetTutorialMode(false);
         clockText.color = Color.white;
         AudioManager.instance.musicManager.musicSource.pitch = 1f;
         _increasingMusic = false;

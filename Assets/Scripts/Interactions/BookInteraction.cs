@@ -1,6 +1,6 @@
-using System;
+using UnityEngine;
 
-public class BookInteraction : Interactable
+public class BookInteraction : MonoBehaviour,  IInteractable
 {
     private TutorialManager _tutorialManager;
 
@@ -10,7 +10,7 @@ public class BookInteraction : Interactable
     }
 
     //Function that broadcasts the action to toggle the recipe book being on
-    public override void Interact()
+    public void Interact()
     {
         //Debug.Log("BookInteraction");
         Actions.OnToggleRecipeBook?.Invoke();
@@ -19,12 +19,5 @@ public class BookInteraction : Interactable
         {
             _tutorialManager.HandleBookInteraction();
         }
-
-    }
-
-    //Unimplemented crate interact method
-    public override void Interact(PickupBehaviour pickup)
-    {
-        throw new System.NotImplementedException();
     }
 }

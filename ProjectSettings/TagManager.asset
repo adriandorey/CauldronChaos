@@ -14,6 +14,7 @@ TagManager:
   - Queue
   - Customer
   - WindArea
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - Wind
   - Slime
   - Cauldron
-  - 
+  - Pickup
   - 
   - 
   - 

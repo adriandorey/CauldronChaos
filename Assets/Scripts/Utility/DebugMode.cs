@@ -77,7 +77,6 @@ public class DebugMode : MonoBehaviour
 
         if (debugToggle.isOn)
         {
-            Debug.Log("Debug Mode Enabled");
             if (_textCoroutine != null)
                 StopCoroutine(_textCoroutine);
 
@@ -88,7 +87,6 @@ public class DebugMode : MonoBehaviour
         else
         {
             debugMenuToggle.isOn = false;
-            Debug.Log("Debug Mode Disabled");
             if (_textCoroutine != null)
                 StopCoroutine(_textCoroutine);
 
@@ -108,7 +106,6 @@ public class DebugMode : MonoBehaviour
 
         if (debugMenuToggle.isOn)
         {
-            Debug.Log("Debug Mode Enabled");
             if (_textCoroutine != null)
                 StopCoroutine(_textCoroutine);
 
@@ -118,7 +115,6 @@ public class DebugMode : MonoBehaviour
         }
         else
         {
-            Debug.Log("Debug Mode Disabled");
             debugToggle.isOn = false;
             if (_textCoroutine != null)
                 StopCoroutine(_textCoroutine);

@@ -8,10 +8,6 @@ public class RecipeStepSO : ScriptableObject
 
     public string stepName;
 
-    // Ingredient
-    public enum Ingredient { Nothing, Bottle, Mushroom, Eye_of_Basilisk, Rabbit_Foot, Troll_Bone , Mandrake_Root };
-    public Ingredient ingredient;
-   
     public Sprite stepSprite;
 
     public Color ingredientColour;

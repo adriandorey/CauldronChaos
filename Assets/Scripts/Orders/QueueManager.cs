@@ -95,9 +95,9 @@ public class QueueManager : MonoBehaviour
 
     private bool CanAddCustomer() => _customers.Count < MaxCustomers;
 
-    internal void CheckCustomerRecipes(PotionOutput potionOutput)
+    internal void CheckCustomerRecipes(PickupItem potionOutput)
     {
-        var potion = potionOutput.potionInside;
+        var potion = potionOutput.potionRecipe;
 
         foreach (var person in _customers)
         {

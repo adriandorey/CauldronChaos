@@ -1,16 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Bucket : Interactable
+public class Bucket : MonoBehaviour, IInteractable
 {
-    public override void Interact()
+    public void Interact()
     {
         Debug.Log("Bucket interacted with");
-    }
-
-    public override void Interact(PickupBehaviour pickup)
-    {
-        throw new System.NotImplementedException();
     }
 }

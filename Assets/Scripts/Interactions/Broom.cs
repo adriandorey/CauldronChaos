@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-public class Broom : Interactable
+public class Broom : MonoBehaviour, IInteractable
 {
     [Header("Broom Variables")]
     [SerializeField] private LayerMask interactionLayers;//layers that interact with the broom effect
@@ -13,15 +10,9 @@ public class Broom : Interactable
     [SerializeField] private float forceRadius; //radius in which the force will be applied
 
     //Inherited method that allows the player to interact with the broom
-    public override void Interact()
+    public void Interact()
     {
         animator.Play("BroomHit");
-    }
-
-    //Unused inherited method for interating with pickups
-    public override void Interact(PickupBehaviour pickup)
-    {
-        throw new System.NotImplementedException();
     }
 
     //Method that handles the functionality for the broom swing

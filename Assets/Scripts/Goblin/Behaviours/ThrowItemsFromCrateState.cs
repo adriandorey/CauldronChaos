@@ -34,7 +34,7 @@ public class ThrowItemsFromCrateState : GoblinState
         
         for (var i = 0; i < amount; i++)
         {
-            crate.GoblinInteraction(_goblinAI.Hands());
+            crate.GoblinInteraction(_goblinAI.Hands().gameObject);
         }
         
         yield return new WaitForSeconds(_goblinAI.GetPauseTime()); 

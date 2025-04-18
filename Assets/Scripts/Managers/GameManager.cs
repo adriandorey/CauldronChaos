@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
     private void SetState(GameState state)
     {
         // this will save the previous state if the state is going into settings
-        SavePreviousData(state);
+        SavePreviousState(state);
 
         // sets gamestate
         gameState = state;
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SavePreviousData(GameState state)
+    private void SavePreviousState(GameState state)
     {
         if (state == GameState.Settings)
             _previousState = gameState;

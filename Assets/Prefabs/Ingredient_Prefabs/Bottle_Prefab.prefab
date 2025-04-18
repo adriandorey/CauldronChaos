@@ -10,9 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5575726294299768949}
   - component: {fileID: 673819675195865954}
-  - component: {fileID: 6996077545047624858}
-  - component: {fileID: 1302497976632463783}
   - component: {fileID: 7276789477590418464}
+  - component: {fileID: 4005908314306369710}
   m_Layer: 6
   m_Name: Bottle_Prefab
   m_TagString: Ingredient
@@ -66,41 +65,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6996077545047624858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 232629980984179058}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6575f28d0449666458b7c76d0ac6d6ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rend: {fileID: 7561190872824759389}
-  potionInside: {fileID: 0}
-  givenToCustomer: 0
-  MaxWobble: 0.03
-  WobbleSpeed: 1
-  Recovery: 1
---- !u!114 &1302497976632463783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 232629980984179058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2365aa82508257248828513cc11c57a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recipeIngredient: {fileID: 11400000, guid: 610915c10d0751b44b86fdcd1393864f, type: 2}
-  ingredientColor: {r: 0, g: 0, b: 0, a: 0}
-  isHeld: 0
-  pickUpSFX: {fileID: 8300000, guid: 53488736876667e49a3e8144163d9b48, type: 3}
-  dropSFX: {fileID: 8300000, guid: 39511eee0f93ee94fa41b9d4fe597b1f, type: 3}
 --- !u!136 &7276789477590418464
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -124,6 +88,24 @@ CapsuleCollider:
   m_Height: 0.6363088
   m_Direction: 1
   m_Center: {x: 0.00031365454, y: 0.31359094, z: 0}
+--- !u!114 &4005908314306369710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232629980984179058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55d6bbebfb6978748b21740874422f51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  ingredient: {fileID: 11400000, guid: 610915c10d0751b44b86fdcd1393864f, type: 2}
+  potionRecipe: {fileID: 0}
+  rend: {fileID: 7561190872824759389}
+  pickUpSfx: {fileID: 8300000, guid: 53488736876667e49a3e8144163d9b48, type: 3}
+  dropSfx: {fileID: 8300000, guid: 39511eee0f93ee94fa41b9d4fe597b1f, type: 3}
 --- !u!1 &1955220575334945324
 GameObject:
   m_ObjectHideFlags: 0
