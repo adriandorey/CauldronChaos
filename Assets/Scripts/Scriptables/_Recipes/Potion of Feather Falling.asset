@@ -21,7 +21,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1263d1af773c1934389a86be3ac2a831, type: 2}
   - {fileID: 11400000, guid: 56ac427984e910c40ad1fda1338d2022, type: 2}
   - {fileID: 11400000, guid: 97e7804a0ec3fb94aba85a91aef9dbf8, type: 2}
-  - {fileID: 11400000, guid: 56ac427984e910c40ad1fda1338d2022, type: 2}
+  - {fileID: 11400000, guid: ba23049bb157f0b4585f6153add679f3, type: 2}
   - {fileID: 11400000, guid: 610915c10d0751b44b86fdcd1393864f, type: 2}
   potionIcon: {fileID: 21300000, guid: 7e5c08846cd2ce04bbbc24ef17aff0d2, type: 3}
   potionColor: {r: 0.7764706, g: 0.42352942, b: 0.20392157, a: 1}

@@ -24,7 +24,7 @@ public class PickupInteractionController : MonoBehaviour
 
     private void Start()
     {
-        if(pickupHolder != null)
+        if (pickupHolder != null)
             pickupHolder.enabled = false;
     }
 
@@ -34,92 +34,98 @@ public class PickupInteractionController : MonoBehaviour
     private void OnEnable()
     {
         InputManager.InteractAction += TryInteract; //subscribing to the action for interacting
-        InputManager.PickupAction += Pickup; //subscribing to the action for picking up
-        Actions.OnResetValues += RemoveItem;
+        InputManager.PickupAction += TryPickUp; //subscribing to the action for picking up
+        Actions.OnResetValues += DropItem;
     }
 
     //Function that runs when Game object script is attached to is disabled
     private void OnDisable()
     {
         InputManager.InteractAction -= TryInteract; //un-subscribing to the action for interacting
-        InputManager.PickupAction -= Pickup; //un-subscribing to the action for picking up
-        Actions.OnResetValues -= RemoveItem;
+        InputManager.PickupAction -= TryPickUp; //un-subscribing to the action for picking up
+        Actions.OnResetValues -= DropItem;
     }
 
     private void OnDestroy()
     {
         InputManager.InteractAction -= TryInteract;
-        InputManager.PickupAction -= Pickup; //un-subscribing to the action for picking up
-        Actions.OnResetValues -= RemoveItem;
+        InputManager.PickupAction -= TryPickUp; //un-subscribing to the action for picking up
+        Actions.OnResetValues -= DropItem;
     }
 
     #endregion
 
+    /// <summary>
+    /// Attempts to interact with the first interactable object in range.
+    /// Uses the interactionMask and IInteractable interface.
+    /// </summary>
     private void TryInteract(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
+        if (!context.performed || _heldObject != null) return;
 
-        if (_heldObject != null)
-        {
-            // do a thing. Currently, nothing we have uses this but this would have been for broom
-            return;
-        }
+        var interactables = GetComponentsInActionZone<IInteractable>(interactionMask);
+        if (interactables.Count == 0) return;
 
-        if (actionZoneCollider == null) return;
-
-        var center = actionZoneCollider.bounds.center;
-        var halfExtents = actionZoneCollider.bounds.extents;
-
-        var colliders = Physics.OverlapBox(center, halfExtents, Quaternion.identity, interactionMask);
-
-        if (colliders.Length == 0) return;
-
-        colliders[0].GetComponent<IInteractable>()?.Interact();
+        Debug.Log("Interact with the thing: " + interactables[0]);
+        interactables[0].Interact();
     }
 
 
-    private void Pickup(InputAction.CallbackContext context)
+    /// <summary>
+    /// Attempts to find a pickupable object in range and pick it up.
+    /// Uses pickupMask and IPickupable interface.
+    /// </summary>
+    private void TryPickUp(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
 
         if (_heldObject != null)
         {
-            RemoveItem();
+            DropItem();
             return;
         }
 
-        GetObject();
-    }
+        var pickupables = GetComponentsInActionZone<IPickupable>(pickupMask);
+        if (pickupables.Count == 0) return;
 
-    private void GetObject()
-    {
-        if (actionZoneCollider == null) return;
-
-        var center = actionZoneCollider.bounds.center;
-        var halfExtents = actionZoneCollider.bounds.extents;
-
-        var colliders = Physics.OverlapBox(center, halfExtents, Quaternion.identity, pickupMask);
-
-        List<IPickupable> candidates = new();
-        foreach (var col in colliders)
-        {
-            if (col.TryGetComponent(out IPickupable pickupable))
-            {
-                candidates.Add(pickupable);
-            }
-        }
-
-        if (candidates.Count == 0) return;
-
-        var chosen = candidates[Random.Range(0, candidates.Count)];
+        var chosen = pickupables[Random.Range(0, pickupables.Count)];
         playerAnimator.SetBool(PickedUp, true);
         chosen.OnPickup(this);
     }
 
+
+    /// <summary>
+    /// Generic method to get components of type T within the action zone using the specified LayerMask.
+    /// This is used to find either IInteractable or IPickupable objects.
+    /// </summary>
+    /// <typeparam name="T">Interface type to search for (e.g., IInteractable, IPickupable)</typeparam>
+    /// <param name="mask">LayerMask to filter relevant objects</param>
+    /// <returns>List of components of type T within the zone</returns>
+    private List<T> GetComponentsInActionZone<T>(LayerMask mask) where T : class
+    {
+        var center = actionZoneCollider.bounds.center;
+        var halfExtents = actionZoneCollider.bounds.extents;
+
+        var colliders = Physics.OverlapBox(center, halfExtents, Quaternion.identity, mask);
+
+        List<T> components = new();
+        foreach (var col in colliders)
+        {
+            if (col.TryGetComponent(out T component))
+            {
+                components.Add(component);
+            }
+        }
+
+        return components;
+    }
+
+
+
     internal void NotifyHeldObject(IPickupable newObject)
     {
         if (_heldObject != null) return;
-        
+
         _heldObject = newObject;
         pickupHolder.enabled = true;
         pickupHolder.sprite = _heldObject.GetSprite();
@@ -130,7 +136,7 @@ public class PickupInteractionController : MonoBehaviour
         return holdPoint;
     }
 
-    private void RemoveItem()
+    private void DropItem()
     {
         // needed due to resetting at end of levels 
         if (_heldObject == null) return;
@@ -158,7 +164,7 @@ public class PickupInteractionController : MonoBehaviour
             Actions.OnHideUI();
     }
 
-    private void OnTriggerEnter(Collider coll)
+    private void OnTriggerStay(Collider coll)
     {
         if (coll.TryGetComponent(out IInteractable interactable))
         {

@@ -12,7 +12,7 @@ public class BookInteraction : MonoBehaviour,  IInteractable
     //Function that broadcasts the action to toggle the recipe book being on
     public void Interact()
     {
-        //Debug.Log("BookInteraction");
+        Debug.Log("BookInteraction");
         Actions.OnToggleRecipeBook?.Invoke();
 
         if (GameManager.Instance.IsInTutorial() && _tutorialManager.CurrentStep != TutorialStep.Completed)

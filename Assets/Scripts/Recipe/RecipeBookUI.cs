@@ -98,8 +98,11 @@ public class RecipeBookUI : MonoBehaviour
 
     public void ToggleRecipeBook()
     {
-        if (recipeBook.activeSelf) DeactivateRecipeBook();
-        else ActivateRecipeBook();
+        Debug.Log("Toggle Recipe Book");
+        if (recipeBook.activeSelf)
+            DeactivateRecipeBook();
+        else
+            ActivateRecipeBook();
     }
 
     private void ActivateRecipeBook()

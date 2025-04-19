@@ -18,9 +18,9 @@ MonoBehaviour:
   sellAmount: 120
   steps:
   - {fileID: 11400000, guid: 1263d1af773c1934389a86be3ac2a831, type: 2}
-  - {fileID: 11400000, guid: ba23049bb157f0b4585f6153add679f3, type: 2}
+  - {fileID: 11400000, guid: 56ac427984e910c40ad1fda1338d2022, type: 2}
   - {fileID: 11400000, guid: 0ac84d26587e92d419335d287def4e69, type: 2}
-  - {fileID: 11400000, guid: ba23049bb157f0b4585f6153add679f3, type: 2}
+  - {fileID: 11400000, guid: 56ac427984e910c40ad1fda1338d2022, type: 2}
   - {fileID: 11400000, guid: 11e2bae846f4c604f86f9a6b84af9011, type: 2}
   - {fileID: 11400000, guid: 610915c10d0751b44b86fdcd1393864f, type: 2}
   potionIcon: {fileID: 21300000, guid: f5b74caa0b50a0f45acdc1e3904dba51, type: 3}

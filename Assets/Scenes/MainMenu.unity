@@ -24407,11 +24407,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1040714489}
     m_Modifications:
-    - target: {fileID: 400675033083605361, guid: 42b6bca370c177d4db17d0dbc7b33f39,
-        type: 3}
-      propertyPath: m_ProvidesContacts
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3305949315815481490, guid: 42b6bca370c177d4db17d0dbc7b33f39,
         type: 3}
       propertyPath: m_LocalRotation.w
